@@ -1,4 +1,6 @@
 {
+  "appName" : "Shun Ho BD",
+  "product" : "库存管理系统",
   "ok": "确定",
   "cancel": "取消",
   "error_alert_title": "错误...",

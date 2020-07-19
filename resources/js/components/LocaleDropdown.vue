@@ -9,7 +9,7 @@
       <a v-for="(value, key) in locales" :key="key" class="dropdown-item" href="#"
          @click.prevent="setLocale(key)"
       >
-        {{ value }}
+      <span v-if="value != 'ES'">{{ value }}</span>        
       </a>
     </div>
   </li>

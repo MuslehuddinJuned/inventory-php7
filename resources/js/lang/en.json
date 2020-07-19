@@ -1,4 +1,6 @@
 {
+  "appName" : "Shun Ho BD",
+  "product" : "Inventory Management System",
   "ok": "Ok",
   "cancel": "Cancel",
   "error_alert_title": "Oops...",

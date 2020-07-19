@@ -1,38 +1,23 @@
 <template>
-  <div>
-    <div class="top-right links">
-      <template v-if="authenticated">
-        <router-link :to="{ name: 'home' }">
-          {{ $t('home') }}
-        </router-link>
-      </template>
-      <template v-else>
-        <router-link :to="{ name: 'login' }">
-          {{ $t('login') }}
-        </router-link>
-        <router-link :to="{ name: 'register' }">
-          {{ $t('register') }}
-        </router-link>
-      </template>
-    </div>
+  <div class="flex-center position-ref full-height">
+    <div class="content">
+        <div class="title m-b-md">
+            {{ $t('appName') }}
+        </div>
 
-    <div class="text-center">
-      <div class="title mb-4">
-        {{ title }}
-      </div>
-
-      <div class="links">
-        <a href="https://github.com/cretueusebiu/laravel-vue-spa">github.com/cretueusebiu/laravel-vue-spa</a>
-      </div>
+        <div class="links">
+            <a href="https://www.sustipe.com">{{ $t('product') }}</a>
+        </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import LocaleDropdown from '../components/LocaleDropdown'
 
 export default {
-  layout: 'basic',
+  // layout: 'basic',
 
   metaInfo () {
     return { title: this.$t('home') }
@@ -44,18 +29,63 @@ export default {
 
   computed: mapGetters({
     authenticated: 'auth/check'
-  })
+  }),
+
+  components: {
+    LocaleDropdown
+  },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+html, body {
+    background-color: #fff;
+    color: #636b6f;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 200;
+    height: 100vh;
+    margin: 0;
+}
+
+.full-height {
+    height: 80vh;
+}
+
+.flex-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.position-ref {
+    position: relative;
+}
+
 .top-right {
-  position: absolute;
-  right: 10px;
-  top: 18px;
+    position: absolute;
+    right: 10px;
+    top: 18px;
+}
+
+.content {
+    text-align: center;
 }
 
 .title {
-  font-size: 85px;
+    font-size: 84px;
+}
+
+.links > a {
+    color: #636b6f;
+    padding: 0 25px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.m-b-md {
+    margin-bottom: 30px;
 }
 </style>
