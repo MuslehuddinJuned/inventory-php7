@@ -1,4 +1,9 @@
 {
+  
+  "ItemIssue" : "项目发送",   
+  "ItemReceive" : "物品接收",
+  "InventoryItem" : "库存项目",
+  "Inventory" : "库存",
   "appName" : "Shun Ho BD",
   "product" : "库存管理系统",
   "ok": "确定",

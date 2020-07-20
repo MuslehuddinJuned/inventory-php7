@@ -1,4 +1,8 @@
 {
+  "ItemIssue" : "Item Issue",
+  "ItemReceive" : "Item Receive",
+  "InventoryItem" : "Inventory Item",
+  "Inventory" : "Inventory",
   "appName" : "Shun Ho BD",
   "product" : "Inventory Management System",
   "ok": "Ok",

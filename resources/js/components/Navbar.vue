@@ -12,9 +12,23 @@
       <div id="navbarToggler" class="collapse navbar-collapse">
         <ul class="navbar-nav">
           <locale-dropdown />
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li> -->
+          <li v-if="user" class="nav-item dropdown">
+            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="cart4"></b-icon> {{ $t('Inventory') }}</a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+                <b-icon icon="cart-check"></b-icon>
+                {{ $t('InventoryItem') }}
+              </router-link>
+              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+                <b-icon icon="cart-plus"></b-icon>
+                {{ $t('ItemReceive') }}
+              </router-link>
+              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+                <b-icon icon="cart-dash"></b-icon>
+                {{ $t('ItemIssue') }}
+              </router-link>
+            </div>
+          </li>
         </ul>
 
         <ul class="navbar-nav ml-auto">

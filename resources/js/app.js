@@ -29,6 +29,12 @@ Vue.use(IconsPlugin)
 //----------For searchable select option: https://www.npmjs.com/package/vue-search-select -----//
 import 'vue-search-select/dist/VueSearchSelect.css'
 
+// for chart: https://github.com/apexcharts/vue-apexcharts
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
+
+Vue.component('apexchart', VueApexCharts)
+
 Vue.config.productionTip = false
 
 
