@@ -1,15 +1,15 @@
 <template>
   <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" role="button"
-       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-    >
-      {{ locales[locale] }}
+    <a class="nav-link dropdown-toggle my-auto" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <fa icon="language"/>
+       <!-- {{ locales[locale] }} -->
     </a>
     <div class="dropdown-menu">
-      <a v-for="(value, key) in locales" :key="key" class="dropdown-item" href="#"
+     <a v-for="(value, key) in locales" :key="key" v-if="value != 'ES'" class="dropdown-item" href="#"
          @click.prevent="setLocale(key)"
       >
-      <span v-if="value != 'ES'">{{ value }}</span>        
+      <span v-if="value == 'EN'"><fa icon="user-secret" fixed-width/> {{ value }}</span>   
+      <span v-if="value == '中文'"><fa icon="user-ninja" fixed-width/> {{ value }}</span>   
       </a>
     </div>
   </li>
@@ -23,7 +23,7 @@ export default {
   computed: mapGetters({
     locale: 'lang/locale',
     locales: 'lang/locales'
-  }),
+  }),  
 
   methods: {
     setLocale (locale) {

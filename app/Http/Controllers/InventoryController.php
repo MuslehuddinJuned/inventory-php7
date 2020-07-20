@@ -8,13 +8,24 @@ use Illuminate\Http\Request;
 class InventoryController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $Inventory = Inventory::get();
+        return compact ('Inventory');
     }
 
     /**
@@ -35,7 +46,17 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code'
+        ]);
+
+        $InventoryList = $request->user()->inventories()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'InventoryList' => $InventoryList
+            ]);
+        } 
     }
 
     /**
@@ -69,7 +90,11 @@ class InventoryController extends Controller
      */
     public function update(Request $request, Inventory $inventory)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
+        ]); 
+
+        $inventory->update($request->all());
     }
 
     /**
@@ -80,6 +105,6 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
-        //
+        $inventory->delete();
     }
 }

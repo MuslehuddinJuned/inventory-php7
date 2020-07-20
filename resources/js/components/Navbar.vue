@@ -15,7 +15,7 @@
           <li v-if="user" class="nav-item dropdown">
             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="cart4"></b-icon> {{ $t('Inventory') }}</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+              <router-link :to="{ name: 'inventory.InventoryList' }" class="dropdown-item pl-3">                
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>

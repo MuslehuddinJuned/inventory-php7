@@ -12,6 +12,11 @@ export default [
   { path: '/email/verify/:id', name: 'verification.verify', component: page('auth/verification/verify.vue') },
   { path: '/email/resend', name: 'verification.resend', component: page('auth/verification/resend.vue') },
 
+
+  { path: '/inventory', name: 'inventory.InventoryList', component: page('inventory/InventoryList.vue') },
+  { path: '/inventoryreceive', name: 'inventory.InventoryReceive', component: page('inventory/InventoryReceive.vue') },
+  { path: '/inventoryissue', name: 'inventory.InventoryIssue', component: page('inventory/InventoryIssue.vue') },
+
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
     component: page('settings/index.vue'),

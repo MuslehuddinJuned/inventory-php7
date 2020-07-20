@@ -20,6 +20,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');
+    Route::resource('inventory', 'InventoryController');
+    Route::resource('inventoryreceive', 'InventoryreceiveController');
+    Route::resource('inventoryissue', 'InventoryissueController');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

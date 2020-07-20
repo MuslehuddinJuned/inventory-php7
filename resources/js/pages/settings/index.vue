@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row container mx-auto">
     <div class="col-md-3">
       <card :title="$t('settings')" class="settings-card">
         <ul class="nav flex-column nav-pills">
