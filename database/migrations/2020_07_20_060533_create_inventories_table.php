@@ -21,6 +21,7 @@ class CreateInventoriesTable extends Migration
             $table->string('specification')->nullable();
             $table->string('unit')->nullable();
             $table->string('unit_price')->nullable();
+            $table->string('item_image')->default('noimage.jpg');
             $table->unsignedBigInteger('user_id');
 
             $table->timestamps();

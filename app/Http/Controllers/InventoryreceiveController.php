@@ -24,7 +24,8 @@ class InventoryreceiveController extends Controller
      */
     public function index()
     {
-        //
+        $Inventoryreceive = Inventoryreceive::get();
+        return compact ('Inventoryreceive');
     }
 
     /**
@@ -45,7 +46,17 @@ class InventoryreceiveController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code'
+        ]);
+
+        $InventoryReceive = $request->user()->inventories()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'InventoryReceive' => $InventoryReceive
+            ]);
+        } 
     }
 
     /**
@@ -79,7 +90,11 @@ class InventoryreceiveController extends Controller
      */
     public function update(Request $request, Inventoryreceive $inventoryreceive)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
+        ]); 
+
+        $inventoryreceive->update($request->all());
     }
 
     /**
@@ -90,6 +105,6 @@ class InventoryreceiveController extends Controller
      */
     public function destroy(Inventoryreceive $inventoryreceive)
     {
-        //
+        $inventoryreceive->delete();
     }
 }

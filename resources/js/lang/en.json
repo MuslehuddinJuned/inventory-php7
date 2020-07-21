@@ -1,4 +1,6 @@
 {
+  "image_size_warning" : "Size should be less than 256 KB",
+  "image_format_warning" : "Invalid image format",
   "confirm" : "Confirm",
   "sure_to_delete" : "Are you sure to DELETE this?",
   "success_message_update" : "Updated Successfully",

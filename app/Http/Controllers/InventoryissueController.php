@@ -24,7 +24,8 @@ class InventoryissueController extends Controller
      */
     public function index()
     {
-        //
+        $Inventoryissue = Inventoryissue::get();
+        return compact ('Inventoryissue');
     }
 
     /**
@@ -45,7 +46,17 @@ class InventoryissueController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code'
+        ]);
+
+        $InventoryIssue = $request->user()->inventories()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'InventoryIssue' => $InventoryIssue
+            ]);
+        } 
     }
 
     /**
@@ -79,7 +90,11 @@ class InventoryissueController extends Controller
      */
     public function update(Request $request, Inventoryissue $inventoryissue)
     {
-        //
+        $this->validate($request, [
+            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
+        ]); 
+
+        $inventoryissue->update($request->all());
     }
 
     /**
@@ -90,6 +105,6 @@ class InventoryissueController extends Controller
      */
     public function destroy(Inventoryissue $inventoryissue)
     {
-        //
+        $inventoryissue->delete();
     }
 }

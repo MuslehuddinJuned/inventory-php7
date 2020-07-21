@@ -19,11 +19,11 @@
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>
-              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+              <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-plus"></b-icon>
                 {{ $t('ItemReceive') }}
               </router-link>
-              <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+              <router-link :to="{ name: 'inventory.InventoryIssue' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-dash"></b-icon>
                 {{ $t('ItemIssue') }}
               </router-link>

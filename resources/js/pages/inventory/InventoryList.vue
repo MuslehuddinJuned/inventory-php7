@@ -74,9 +74,10 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" :title="title" no-close-on-backdrop ok-only>
-                        <div class="container">
-                            <div class="modal-body">
+                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop ok-only>
+                        
+                        <div class="modal-body row m-0 p-0">
+                            <div class="col-md-8">
                                 <label class="col-form-label">{{ $t('store_name')}}</label>
                                 <input list="StoreList" class="form-control" v-model="task[0]['store_name']">
                                 <datalist id="StoreList">
@@ -94,13 +95,29 @@
                                 <input type="text" class="form-control" v-model="task[0]['specification']">
                                 
                                 <label class="col-form-label">{{ $t('unit')}}</label>
-                                <input type="text" class="form-control" v-model="task[0]['unit']">                                
+                                <input list="UnitList" class="form-control" v-model="task[0]['unit']">
+                                <datalist id="UnitList">
+                                    <option v-for="unit in unitlistview" :key="unit.unit">{{ unit }}</option>
+                                </datalist>
                             </div>
-                            <div class="modal-footer">
-                                <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                                <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+                            <div class="col-md-4">
+                                <div class="form-group m-auto col-md-12 text-center float-center">
+                                    <img id="blah" style="width: 70%;" :src="src + imageName" alt="product image" />
+                                </div>
+                                <div class="fileBrowser col-md-12 p-0 m-0">
+                                    <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
+                                        <button class="mdb btn btn-outline-success mx-auto">Browse</button>
+                                        <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
+                                    </div>
+                                </div>
                             </div>
+                                                            
                         </div>
+                        <div class="modal-footer mt-2">
+                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+                        </div>
+                        
                         <template v-slot:modal-footer="" class="d-none">
                             <b-button class="d-none">
                                 Close
@@ -115,7 +132,7 @@
                 
             </div>
         </div>  
-   </div>
+    </div>
 </template>
 
 <script>
@@ -137,10 +154,12 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0}],
+            task : [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
             taskId : null,
             Index : null,
             buttonTitle : this.$t('save'),
+
+            src : '/images/item/',
 
             transProps: {
                 // Transition name
@@ -157,7 +176,8 @@ export default {
     },
 
     mounted() {
-        this.isBusy = true;
+        this.isBusy = true
+        this.src = '/images/item/'
         fetch(`api/inventory`)
             .then( res => res.json())
             .then(res => {  
@@ -185,15 +205,38 @@ export default {
             this.currentPage = 1
         },
         addDetails(){
+            this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0}]
+            this.task = [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : null}]
         },
 
         viewDetails() {
 
         },
 
+        handleFileUpload(e) {
+            let file = e.target.files[0];
+            var fileReader = new FileReader();
+            
+            if(file['size'] <= 262144 &&  file['type'].split('/')[0]=='image' ){          //256 KB ~~ 262144 Byte
+                fileReader.onload = (e) => {
+                    this.src = '';
+                    this.task[0]['item_image'] = e.target.result;
+                }
+            } else {
+                let warningMessages;
+                file['size'] > 262144 ? warningMessages = this.$t('image_size_warning'): warningMessages = this.$t('image_format_warning');
+                this.$toast.warning(warningMessages, this.$t('error_alert_title'), {
+                    timeout: 10000,          
+                    position: 'center',
+                })
+            }
+
+            fileReader.readAsDataURL(e.target.files[0]);
+        },
+
         editDetails(id, index) {
+            this.src = '/images/item/'
             this.title = this.$t('UpdateItem')
             this.taskId = id
             this.Index = index
@@ -203,12 +246,17 @@ export default {
         save() {
             this.disable = !this.disable;
             this.buttonTitle = this.$t('saving')
+            let options = { headers: {'enctype': 'multipart/form-data'} };
 
             if(this.taskId == null){
-                axios.post(`api/inventory`, this.task[0])
+                axios.post(`api/inventory`, this.task[0], options)
                 .then(({data}) =>{
                     this.errors = ''
                     this.inventoryList.unshift(data.InventoryList)
+                    this.totalRows = this.inventoryList.length;
+                    for (let i = 0; i < this.totalRows; i++) {
+                        this.inventoryList[i]['sn'] = i                
+                    } 
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
@@ -223,21 +271,23 @@ export default {
                     alert(err.response.data.message)                      
                 })
             } else {
-                axios.patch(`api/inventory/${this.taskId}`, this.task[0])
-                    .then(res => {
-                        this.errors = '';
-                        this.inventoryList[this.Index] = this.task[0];
-                        this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                    })
-                    .catch(err => {
-                        if(err.response.status == 422){
-                            this.errors = err.response.data.errors
-                        }
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                    });
+                axios.patch(`api/inventory/${this.taskId}`, this.task[0], options)
+                .then(({data}) => {
+                    this.errors = ''
+                    this.src = '/images/item/'
+                    this.task[0]['item_image'] = data.fileName
+                    this.inventoryList[this.Index] = this.task[0];
+                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                    }
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                });
             }
         },
 
@@ -281,6 +331,13 @@ export default {
     },
 
     computed: {
+        imageName() {
+            if(this.task[0]['item_image'] == null || this.task[0]['item_image'] == 'noimage.jpg') {
+                this.task[0]['item_image'] = null
+                return 'noimage.jpg'
+            }
+            else return this.task[0]['item_image']
+        },
         singleTask() {
             let id = this.taskId
             return this.inventoryList.filter(function (item) {
@@ -312,6 +369,10 @@ export default {
 
         store_namelistview() {
             return uniq(this.inventoryList.map(({ store_name }) => store_name))
+        },
+
+        unitlistview() {
+            return uniq(this.inventoryList.map(({ unit }) => unit))
         },
 
         loading(){

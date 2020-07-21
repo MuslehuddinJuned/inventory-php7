@@ -1,4 +1,7 @@
 {
+  
+  "image_size_warning" : "大小应小于256 KB",
+  "image_format_warning" : "图片格式无效",
   "confirm" : "确认",
   "sure_to_delete" : "您确定要删除吗？",
   "success_message_update" : "更新成功",

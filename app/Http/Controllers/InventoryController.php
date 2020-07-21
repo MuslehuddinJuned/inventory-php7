@@ -50,7 +50,27 @@ class InventoryController extends Controller
             'item_code'=> 'required|unique:inventories,item_code'
         ]);
 
-        $InventoryList = $request->user()->inventories()->create($request->all());
+
+        if($request->item_image){
+            $exploded = explode(',', $request->item_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/item/'.$fileName;
+    
+            // store new image
+            file_put_contents($path, $decoded);
+            $InventoryList = $request->user()->inventories()->create($request->except('item_image') + [
+                'item_image' => $fileName
+            ]);
+        } else {
+            $InventoryList = $request->user()->inventories()->create($request->all());
+        }
 
         if(request()->expectsJson()){
             return response()->json([
@@ -94,7 +114,46 @@ class InventoryController extends Controller
             'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
         ]); 
 
-        $inventory->update($request->all());
+        if($request->item_image){
+            $exploded = explode(',', $request->item_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/item/'.$fileName;
+
+            // store new image
+            file_put_contents($path, $decoded);
+            
+            // delete previous image
+            $Inventory = Inventory::find($inventory->id);
+
+            if($Inventory->item_image != 'noimage.jpg'){
+                //Delete Image
+                $path = public_path().'/images/item/'.$Inventory->item_image;
+                @unlink($path);
+            }
+
+            // save Data
+            $inventory->update($request->except('item_image') + [
+                'item_image' => $fileName
+            ]);
+
+        } else {
+            $inventory->update($request->all());
+        }
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'fileName' => $fileName
+            ]);
+        } 
+
+        
     }
 
     /**
@@ -105,6 +164,15 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
+        // delete previous image
+        $Inventory = Inventory::find($inventory->id);
+
+        if($Inventory->item_image != 'noimage.jpg'){
+            //Delete Image
+            $path = public_path().'/images/item/'.$Inventory->item_image;
+            @unlink($path);
+        }
+
         $inventory->delete();
     }
 }
