@@ -121,4 +121,12 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function invenrecall(){
         return $this->hasMany(Invenrecall::class);
     }
+
+    public function rechead(){
+        return $this->hasMany(Rechead::class);
+    }
+
+    public function recdetails(){
+        return $this->hasMany(Recdetails::class);
+    }
 }

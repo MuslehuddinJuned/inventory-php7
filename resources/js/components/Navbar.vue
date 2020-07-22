@@ -27,6 +27,10 @@
                 <b-icon icon="cart-dash"></b-icon>
                 {{ $t('ItemIssue') }}
               </router-link>
+              <router-link :to="{ name: 'inventory.RequisitionList' }" class="dropdown-item pl-3">
+                <b-icon icon="basket2-fill"></b-icon>
+                {{ $t('requisition') }}
+              </router-link>
             </div>
           </li>
         </ul>

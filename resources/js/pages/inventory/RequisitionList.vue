@@ -3,7 +3,7 @@
        <div class="col-md-12">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
-                    <h3 class="panel-title float-left">{{ $t('ItemReceive') }}</h3> 
+                    <h3 class="panel-title float-left">{{ $t('requisition_list') }}</h3> 
                     <div class="ml-auto">
                         <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
@@ -33,7 +33,7 @@
                         </b-form-group>                        
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                    :items="inventoryreceiveList"
+                    :items="requisitionList"
                     :fields="fields"
                     :current-page="currentPage"
                     :per-page="perPage"
@@ -71,30 +71,16 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
                         
                         <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="col-form-label">{{ $t('store_name')}}</label>
                                 <b-form-select v-model="taskHead[0]['store_name']" :options="store_namelistview" class="form-control"></b-form-select>
-                                <label class="col-form-label">{{ $t('supplier')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['supplier_name']">
                             </div>
-                            <div class="col-md-4">
-                                <label class="col-form-label">{{ $t('invoice_no')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['challan_no']">
-                                <label class="col-form-label">{{ $t('invoice_date')}}</label>
-                                <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="col-form-label">{{ $t('receive_type')}}</label>
-                                <select class="form-control" v-model="taskHead[0]['stock_type']">
-                                    <option>Purchase</option>
-                                    <option>Return</option>
-                                    <option>Adjust</option>
-                                </select>
-                                <label class="col-form-label">{{ $t('receive_id')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['storeReceive_id']">
+                            <div class="col-md-6">
+                                <label class="col-form-label">{{ $t('requisition_no')}}</label>
+                                <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']">
                             </div>
                             <div class="col-md-12">
                                 <label class="col-form-label">{{ $t('remarks')}}</label>
@@ -139,7 +125,7 @@
                         </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ title }}</h3> 
+                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
                             </div>
                             <div class="col-md-3">
                                 <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
@@ -154,7 +140,7 @@
                     <!-- End Edit Details Modal -->
 
                     <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('ItemReceive')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="col-md-4">
                                 <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}<br>
@@ -205,7 +191,7 @@
                         </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('ItemReceive') }}</h3> 
+                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
                             </div>
                             <div class="col-md-3">
                                 <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
@@ -239,21 +225,13 @@ export default {
     data() {
         return{
             inventoryList : [],
-            inventoryreceiveList : [],
-            inventoryrec_h : [],
-            inventoryrec_d : [],
-            errors : [],
-            name : '',
-            description : '',
-            Id : '',
-            Index : '',
+            requisitionList : [],
             title: '',
             disable: false,
-            taskHead : [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'Purchase', 'storeReceive_id' : null}],
+            taskHead : [{'requisition_no' : null,'remarks' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
-            Index : null,
             grand_total : 0,
             buttonTitle : this.$t('save'),
             hideDetails : 'd-none',
@@ -304,7 +282,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : null, 'storeReceive_id' : null, 'inventory_id' : null}]
+            this.taskHead = [{'requisition_no' : null,'remarks' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -337,13 +315,13 @@ export default {
         },
 
         archive(check = 0) {
-            if(this.inventoryreceiveList.length < 1){                
+            if(this.requisitionList.length < 1){                
                 this.isBusy = true;
                 fetch(`api/inventoryreceive`)
                 .then(res => res.json())
                 .then(res => {
-                    this.inventoryreceiveList = res['Inventoryreceive']
-                    this.totalRows = this.inventoryreceiveList.length
+                    this.requisitionList = res['Inventoryreceive']
+                    this.totalRows = this.requisitionList.length
                     this.isBusy = false
                 })
                 .catch(err => {
@@ -378,17 +356,17 @@ export default {
             this.buttonTitle = this.$t('saving')
 
             if(this.taskHeadId == null){
-                axios.post(`api/inventoryreceive`, this.taskHead[0])
+                axios.post(`api/requisition`, this.taskHead[0])
                 .then(({data}) =>{
-                    this.taskHeadId = data.InventoryReceiveId
+                    this.taskHeadId = data.RecheadID
                     this.taskHead[0]['id'] = this.taskHeadId
-                    if(this.inventoryreceiveList.length > 0){
-                        this.inventoryreceiveList.unshift(this.taskHead[0])
+                    if(this.requisitionList.length > 0){
+                        this.requisitionList.unshift(this.taskHead[0])
                     }
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                     this.hideDetails = ''
-                    this.taskDetails = [{'quantity' : 0,'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -414,10 +392,10 @@ export default {
                         
                     }
 
-                    if(this.inventoryreceiveList.length > 0){
-                        for (let i = 0; i < this.inventoryreceiveList.length; i++) {
-                            if(this.inventoryreceiveList[i]['id'] == this.taskHead[0]['id']){
-                                this.inventoryreceiveList[i] = this.taskHead[0]
+                    if(this.requisitionList.length > 0){
+                        for (let i = 0; i < this.requisitionList.length; i++) {
+                            if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
+                                this.requisitionList[i] = this.taskHead[0]
                             }   
                         }
                     }
@@ -447,19 +425,19 @@ export default {
                     ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
                         axios.delete(`api/inventoryreceive/${this.taskHeadId}`)                        
                         .then(res => {
-                            if(this.inventoryreceiveList.length > 0){
+                            if(this.requisitionList.length > 0){
                                 let index = 0
-                                console.log('old=', this.inventoryreceiveList) 
-                                for (let i = 0; i < this.inventoryreceiveList.length; i++) {
-                                    if(this.inventoryreceiveList[i]['id'] == this.taskHead[0]['id']){
+                                console.log('old=', this.requisitionList) 
+                                for (let i = 0; i < this.requisitionList.length; i++) {
+                                    if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
                                         index = i
                                         console.log('index=', index)
                                         break
                                     }   
                                 }
-                                this.inventoryreceiveList.splice(index, 1); 
-                                console.log('new=', this.inventoryreceiveList)                           
-                                this.totalRows = this.inventoryreceiveList.length;
+                                this.requisitionList.splice(index, 1); 
+                                console.log('new=', this.requisitionList)                           
+                                this.totalRows = this.requisitionList.length;
                                 this.$refs['dataView'].hide()
                             }
                         })
@@ -517,7 +495,7 @@ export default {
     computed: {
         singleTask() {
             let id = this.taskHeadId
-            return this.inventoryreceiveList.filter(function (item) {
+            return this.requisitionList.filter(function (item) {
             return item['id'] == id
             })
         },

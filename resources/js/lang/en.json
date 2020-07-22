@@ -1,4 +1,7 @@
 {
+  "requisition_list" : "List of Requisition",
+  "requisition_no" : "Requisition No",
+  "requisition" : "Requisition",
   "delete" : "Delete",
   "edit" : "Edit",
   "grand_total" : "Grand Total",

@@ -1,4 +1,7 @@
 {
+  "requisition_list" : "需求清單",
+  "requisition_no" : "請求編號",
+  "requisition" : "徵用",
   "delete" : "刪除",
   "edit" : "編輯",
   "grand_total" : "累计",

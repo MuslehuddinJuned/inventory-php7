@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInvenrecallsTable extends Migration
+class CreateRecheadsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreateInvenrecallsTable extends Migration
      */
     public function up()
     {
-        Schema::create('invenrecalls', function (Blueprint $table) {
+        Schema::create('recheads', function (Blueprint $table) {
             $table->id();
-            $table->float('quantity')->nullable();
-            $table->float('price')->nullable();
+            $table->string('requisition_no')->nullable();
             $table->string('remarks')->nullable();
+            $table->integer('accept')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('inventory_id');
-            $table->unsignedBigInteger('inventoryreceive_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();
-            $table->foreign('inventoryreceive_id')->references('id')->on('inventoryreceives')->onDelete('cascade');
         });
     }
 
@@ -34,6 +32,6 @@ class CreateInvenrecallsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invenrecalls');
+        Schema::dropIfExists('recheads');
     }
 }
