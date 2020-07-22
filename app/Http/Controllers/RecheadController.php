@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Rechead;
 use Illuminate\Http\Request;
+use DB;
 
 class RecheadController extends Controller
 {
@@ -14,7 +15,15 @@ class RecheadController extends Controller
      */
     public function index()
     {
-        //
+        $Rechead = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, updated_at, store_name FROM (
+            SELECT id, requisition_no, remarks, accept, updated_at FROM recheads
+            )A LEFT JOIN (
+            SELECT inventory_id, rechead_id FROM recdetails
+            )B ON A.id = B.rechead_id LEFT JOIN(
+            SELECT id, store_name FROM inventories
+            )C ON B.inventory_id = C.id GROUP BY A.id ORDER BY updated_at DESC');
+
+        return compact('Rechead');
     }
 
     /**
@@ -52,7 +61,7 @@ class RecheadController extends Controller
      */
     public function show(Rechead $rechead)
     {
-        //
+        return 'er';
     }
 
     /**
@@ -75,7 +84,7 @@ class RecheadController extends Controller
      */
     public function update(Request $request, Rechead $rechead)
     {
-        //
+        $rechead->update($request->all());
     }
 
     /**
@@ -86,6 +95,6 @@ class RecheadController extends Controller
      */
     public function destroy(Rechead $rechead)
     {
-        //
+        $rechead->delete();
     }
 }

@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('inventoryreceive', 'InventoryreceiveController');
     Route::resource('invenrecall', 'InvenrecallController');
     Route::resource('inventoryissue', 'InventoryissueController');
-    Route::resource('requisition', 'RecheadController');
+    Route::resource('rechead', 'RecheadController');
     Route::resource('recdetails', 'RecdetailsController');
 });
 

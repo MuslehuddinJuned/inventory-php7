@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Recdetails;
 use Illuminate\Http\Request;
+use DB;
 
 class RecdetailsController extends Controller
 {
@@ -35,7 +36,13 @@ class RecdetailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Recdetails = $request->user()->recdetails()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'RecdetailsID' => $Recdetails->id
+            ]);
+        }
     }
 
     /**
@@ -44,9 +51,18 @@ class RecdetailsController extends Controller
      * @param  \App\Recdetails  $recdetails
      * @return \Illuminate\Http\Response
      */
-    public function show(Recdetails $recdetails)
+    public function show($id)
     {
-        //
+        $requisition = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, accept, A.inventory_id, rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
+            SELECT id, quantity, remarks, accept, inventory_id, rechead_id FROM recdetails WHERE rechead_id= ?
+            )A LEFT JOIN (
+            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            )B ON A.inventory_id = B.id LEFT JOIN (
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )C ON A.inventory_id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )D ON A.inventory_id = D.inventory_id', [$id]);
+        
+        return compact('requisition');
     }
 
     /**
@@ -67,9 +83,15 @@ class RecdetailsController extends Controller
      * @param  \App\Recdetails  $recdetails
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Recdetails $recdetails)
+    public function update(Request $request, $id)
     {
-        //
+        // $recdetails->update($request->all());
+
+        $Recdetails = Recdetails::find($id);
+        
+        $Recdetails->quantity = $request['quantity'];
+        $Recdetails->rechead_id = $request['rechead_id'];
+        $Recdetails->save();
     }
 
     /**
@@ -78,8 +100,9 @@ class RecdetailsController extends Controller
      * @param  \App\Recdetails  $recdetails
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Recdetails $recdetails)
+    public function destroy($id)
     {
-        //
+        $Recdetails = Recdetails::find($id);
+        $Recdetails->delete();
     }
 }

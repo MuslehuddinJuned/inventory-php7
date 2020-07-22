@@ -15,11 +15,8 @@ class CreateInventoryissuesTable extends Migration
     { //  ActualCreatedDate
         Schema::create('inventoryissues', function (Blueprint $table) {
             $table->id();
-            $table->string('quantity')->nullable();
-            $table->string('remarks')->nullable();
-            $table->string('issue_price')->nullable();
+            $table->string('rechead_id')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('inventory_id');
 
             $table->timestamps();
         });

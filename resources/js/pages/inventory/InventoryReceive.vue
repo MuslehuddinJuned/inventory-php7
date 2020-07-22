@@ -304,7 +304,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : null, 'storeReceive_id' : null, 'inventory_id' : null}]
+            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null

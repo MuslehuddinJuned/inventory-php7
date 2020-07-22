@@ -51,6 +51,9 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
+                    <template v-slot:cell(updated_at)="row">
+                        {{`${row.item.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                    </template>
                     </b-table>
                     
                     <div class="col-12 mx-auto p-0">
@@ -97,24 +100,10 @@
                                     <template v-slot:cell(quantity)="row">
                                         <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
                                     </template>
-                                    <template v-slot:cell(price)="row">
-                                        <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.price">
-                                    </template>
-                                    <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.price).toFixed(2) }}
-                                    </template>
                                     <template v-slot:cell(action)="row">
                                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
                                         <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
                                         <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
-                                    </template>
-                                    <template slot="bottom-row">
-                                        <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
                                     </template>
                                 </b-table>
                             </div>                              
@@ -142,23 +131,17 @@
                     <!-- Start view Details Modal -->
                     <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
                         <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-4">
-                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}<br>
-                                <span class="font-weight-bold">{{ $t('supplier')}}:</span> {{taskHead[0]['supplier_name']}}
+                            <div class="col-md-6">
+                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}
                             </div>
-                            <div class="col-md-4">                                
-                                <span class="font-weight-bold">{{ $t('invoice_no')}}:</span> {{taskHead[0]['challan_no']}}<br>
-                                <span class="font-weight-bold">{{ $t('invoice_date')}}:</span> {{taskHead[0]['challan_date']}}
-                            </div>
-                            <div class="col-md-4">
-                                <span class="font-weight-bold">{{ $t('receive_type')}}:</span> {{taskHead[0]['stock_type']}}<br>
-                                <span class="font-weight-bold">{{ $t('receive_id')}}:</span> {{taskHead[0]['storeReceive_id']}}
+                            <div class="col-md-6">                                
+                                <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{taskHead[0]['requisition_no']}}
                             </div>
                             <div class="col-md-12">
                                 <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3">
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
+                                <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
                                     </template>
@@ -166,10 +149,11 @@
                                         {{ row_material(row.item.inventory_id) }}
                                     </template>
                                     <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.price).toFixed(2) }}
+                                        {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
                                     </template>
                                     <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
+                                        <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
@@ -289,8 +273,8 @@ export default {
             this.taskDetails = []
         },
 
-        addRow() {
-            this.taskDetails.push({'quantity' : 0,'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null})
+        addRow() {            
+            this.taskDetails.push({'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
         },
 
         grand_total_value() {
@@ -299,10 +283,10 @@ export default {
 
         viewDetails(id) {
             this.taskHeadId = id
-            fetch(`api/invenrecall/${id}`)
+            fetch(`api/recdetails/${id}`)
             .then(res => res.json())
             .then(res => {
-                this.taskDetails = res['inventoryrec_d']
+                this.taskDetails = res['requisition']
                 this.taskHead = this.singleTask
             })
             .then(res =>{
@@ -317,10 +301,10 @@ export default {
         archive(check = 0) {
             if(this.requisitionList.length < 1){                
                 this.isBusy = true;
-                fetch(`api/inventoryreceive`)
+                fetch(`api/rechead`)
                 .then(res => res.json())
                 .then(res => {
-                    this.requisitionList = res['Inventoryreceive']
+                    this.requisitionList = res['Rechead']
                     this.totalRows = this.requisitionList.length
                     this.isBusy = false
                 })
@@ -337,7 +321,7 @@ export default {
             this.title = this.$t('UpdateItem')
             this.hideDetails = ''
             if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'quantity' : 0,'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+                this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
             }
             this.$refs['dataView'].hide()
             this.$refs['dataEdit'].show()
@@ -356,7 +340,7 @@ export default {
             this.buttonTitle = this.$t('saving')
 
             if(this.taskHeadId == null){
-                axios.post(`api/requisition`, this.taskHead[0])
+                axios.post(`api/rechead`, this.taskHead[0])
                 .then(({data}) =>{
                     this.taskHeadId = data.RecheadID
                     this.taskHead[0]['id'] = this.taskHeadId
@@ -366,7 +350,7 @@ export default {
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                     this.hideDetails = ''
-                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -378,15 +362,15 @@ export default {
                     alert(err.response.data.message)                      
                 })
             } else {
-                axios.patch(`api/inventoryreceive/${this.taskHeadId}`, this.taskHead[0])
+                axios.patch(`api/rechead/${this.taskHeadId}`, this.taskHead[0])
                 .then(res => {
                     for (let i = 0; i < this.taskDetails.length; i++) {
                         if(this.taskDetails[i]['id']){
-                            axios.patch(`api/invenrecall/${this.taskDetails[i]['id']}`, this.taskDetails[i])
+                            axios.patch(`api/recdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
                         } else{
-                            axios.post(`api/invenrecall`, this.taskDetails[i])
+                            axios.post(`api/recdetails`, this.taskDetails[i])
                             .then(({data})=>{
-                                this.taskDetails[i]['id'] = data.InventoryreceivesdetailsID
+                                this.taskDetails[i]['id'] = data.RecdetailsID
                             })
                         }
                         
@@ -404,8 +388,8 @@ export default {
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.$refs['dataView'].show()
                     this.$refs['dataEdit'].hide()
+                    this.viewDetails(this.taskHeadId)
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -423,20 +407,17 @@ export default {
                 position: 'center',
                 buttons: [
                     ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/inventoryreceive/${this.taskHeadId}`)                        
+                        axios.delete(`api/rechead/${this.taskHeadId}`)                        
                         .then(res => {
                             if(this.requisitionList.length > 0){
-                                let index = 0
-                                console.log('old=', this.requisitionList) 
+                                let index = 0 
                                 for (let i = 0; i < this.requisitionList.length; i++) {
                                     if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
                                         index = i
-                                        console.log('index=', index)
                                         break
                                     }   
                                 }
-                                this.requisitionList.splice(index, 1); 
-                                console.log('new=', this.requisitionList)                           
+                                this.requisitionList.splice(index, 1);                           
                                 this.totalRows = this.requisitionList.length;
                                 this.$refs['dataView'].hide()
                             }
@@ -461,7 +442,7 @@ export default {
                 buttons: [
                     ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
                         if(id){
-                            axios.delete(`api/invenrecall/${id}`)                        
+                            axios.delete(`api/recdetails/${id}`)                        
                             .then(res => {
                                 this.taskDetails.splice(index, 1)                                
                             })
@@ -512,11 +493,9 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'supplier_name', label : this.$t('supplier'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'challan_no', label : this.$t('invoice_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'challan_date', label : this.$t('invoice_date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'stock_type', label : this.$t('receive_type'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'storeReceive_id', label : this.$t('receive_id'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
@@ -528,8 +507,6 @@ export default {
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
             ]
         },
@@ -541,10 +518,23 @@ export default {
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
+        },
+
+        taskDetailsCheck(){
+            for (let i = 0; i < this.taskDetails.length; i++) {
+                if(this.taskDetails[i]['stock'] < this.taskDetails[i]['quantity']) {
+                    this.taskDetails[i]['_rowVariant'] = 'danger'
+                } else {
+                    this.taskDetails[i]['_rowVariant'] = ''
+                }            
+            }
+
+            return this.taskDetails
         },
 
         store_namelistview() {
@@ -565,8 +555,8 @@ export default {
         grand_total_cal() {
             let total = 0
             Object.entries(this.taskDetails).forEach(([key, val]) => {
-                if(!isNaN(parseFloat(val.price)) && !isNaN(parseFloat(val.quantity)))
-                total += parseFloat(val.price*val.quantity)
+                if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
+                total += parseFloat(val.unit_price*val.quantity)
             });
             return total.toFixed(2);
         },
