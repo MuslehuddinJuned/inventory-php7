@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Inventoryreceivesdetails;
+use App\Invenrecall;
 use Illuminate\Http\Request;
 use DB;
 
-class InventoryreceivesdetailsController extends Controller
+class InvenrecallController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -17,7 +17,7 @@ class InventoryreceivesdetailsController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -50,11 +50,11 @@ class InventoryreceivesdetailsController extends Controller
             'inventory_id'=> 'required'
         ]); 
 
-        $Inventoryreceivesdetails = $request->user()->inventoryreceivesdetails()->create($request->all());
+        $Invenrecall = $request->user()->invenrecall()->create($request->all());
 
         if(request()->expectsJson()){
             return response()->json([
-                'InventoryreceivesdetailsID' => $Inventoryreceivesdetails->id
+                'InventoryreceivesdetailsID' => $Invenrecall->id
             ]);
         }
     }
@@ -62,24 +62,23 @@ class InventoryreceivesdetailsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Inventoryreceivesdetails  $inventoryreceivesdetails
+     * @param  \App\Invenrecall  $invenrecall
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $inventoryrec_h= DB::SELECT('SELECT id, remarks, supplier_name, challan_no, challan_date, stock_type, storeReceive_id FROM inventoryreceives WHERE id = ?', [$id]);
-        $inventoryrec_d= DB::SELECT('SELECT id, quantity, price, remarks, user_id, inventory_id, inventoryreceive_id, created_at, updated_at FROM inventoryreceivesdetails WHERE inventoryreceive_id = ?', [$id]);
+        $inventoryrec_d= DB::SELECT('SELECT id, quantity, price, remarks, user_id, inventory_id, inventoryreceive_id, created_at, updated_at FROM invenrecalls WHERE inventoryreceive_id = ?', [$id]);
 
-        return compact('inventoryrec_h', 'inventoryrec_d');
+        return compact('inventoryrec_d');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Inventoryreceivesdetails  $inventoryreceivesdetails
+     * @param  \App\Invenrecall  $invenrecall
      * @return \Illuminate\Http\Response
      */
-    public function edit(Inventoryreceivesdetails $inventoryreceivesdetails)
+    public function edit(Invenrecall $invenrecall)
     {
         //
     }
@@ -88,22 +87,22 @@ class InventoryreceivesdetailsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Inventoryreceivesdetails  $inventoryreceivesdetails
+     * @param  \App\Invenrecall  $invenrecall
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Inventoryreceivesdetails $inventoryreceivesdetails)
-    {        
-        $inventoryreceivesdetails->update($request->all());
+    public function update(Request $request, Invenrecall $invenrecall)
+    {
+        $invenrecall->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Inventoryreceivesdetails  $inventoryreceivesdetails
+     * @param  \App\Invenrecall  $invenrecall
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Inventoryreceivesdetails $inventoryreceivesdetails)
+    public function destroy(Invenrecall $invenrecall)
     {
-        //
+        $invenrecall->delete();
     }
 }

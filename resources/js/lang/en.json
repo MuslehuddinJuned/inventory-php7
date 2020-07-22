@@ -1,5 +1,6 @@
 {
-  
+  "delete" : "Delete",
+  "edit" : "Edit",
   "grand_total" : "Grand Total",
   "invoice_date" : "Invoice Date",
   "receive_id" : "Receive ID",

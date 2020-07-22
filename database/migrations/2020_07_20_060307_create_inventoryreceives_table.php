@@ -22,6 +22,7 @@ class CreateInventoryreceivesTable extends Migration
             $table->string('stock_type')->nullable();
             $table->date('challan_date')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();
         });

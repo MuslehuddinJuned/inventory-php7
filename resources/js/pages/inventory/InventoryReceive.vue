@@ -105,7 +105,7 @@
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
                                     </template>
-                                    <template v-slot:cell(item)="row">
+                                    <template v-slot:cell(inventory_id)="row">
                                         <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
                                     </template>
                                     <template v-slot:cell(quantity)="row">
@@ -120,7 +120,7 @@
                                     <template v-slot:cell(action)="row">
                                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
                                         <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
-                                        <a @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                                        <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
                                     </template>
                                     <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
@@ -135,7 +135,7 @@
                         </div>
                         <div class="modal-footer">
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                         </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
@@ -155,19 +155,60 @@
 
                     <!-- Start view Details Modal -->
                     <b-modal ref="dataView" id="dataView" size="xl" :title="$t('ItemReceive')" no-close-on-backdrop ok-only>
-                        <div class="modal-body">
-
+                        <div class="modal-body row m-0 p-0 mb-2">
+                            <div class="col-md-4">
+                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}<br>
+                                <span class="font-weight-bold">{{ $t('supplier')}}:</span> {{taskHead[0]['supplier_name']}}
+                            </div>
+                            <div class="col-md-4">                                
+                                <span class="font-weight-bold">{{ $t('invoice_no')}}:</span> {{taskHead[0]['challan_no']}}<br>
+                                <span class="font-weight-bold">{{ $t('invoice_date')}}:</span> {{taskHead[0]['challan_date']}}
+                            </div>
+                            <div class="col-md-4">
+                                <span class="font-weight-bold">{{ $t('receive_type')}}:</span> {{taskHead[0]['stock_type']}}<br>
+                                <span class="font-weight-bold">{{ $t('receive_id')}}:</span> {{taskHead[0]['storeReceive_id']}}
+                            </div>
+                            <div class="col-md-12">
+                                <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                            </div>
+                            <div class="col-md-12 m-0 p-0 mt-3">
+                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
+                                    <template v-slot:cell(index)="row">
+                                        {{ row.index+1 }}
+                                    </template>
+                                    <template v-slot:cell(inventory_id)="row">
+                                        {{ row_material(row.item.inventory_id) }}
+                                    </template>
+                                    <template v-slot:cell(total_price)="row">
+                                        {{ (row.item.quantity * row.item.price).toFixed(2) }}
+                                    </template>
+                                    <template slot="bottom-row">
+                                        <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
+                                        <td class="text-white bg-info font-weight-bold text-center"></td>
+                                        <td class="text-white bg-info font-weight-bold text-center"></td>
+                                        <td class="text-white bg-info font-weight-bold text-center"></td>
+                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
+                                    </template>
+                                </b-table>
+                            </div>                              
                         </div>
                         <div class="modal-footer">
-                            <button @click="editDetails" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="archive('view')" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+                            <div class="row m-0 p-0 col-md-12">
+                                <div class="col-md-5">
+                                    <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                                </div>
+                                <div class="col-md-7">
+                                    <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                                    <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                                </div>
+                            </div>
                         </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('ItemReceive') }}</h3> 
+                                <h3 class="panel-title float-left">{{ title }}</h3> 
                             </div>
                             <div class="col-md-3">
-                                <button @click="archive('view')" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
+                                <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
                             </div>
                         </template>
                         <template v-slot:modal-footer="">
@@ -280,22 +321,23 @@ export default {
 
         viewDetails(id) {
             this.taskHeadId = id
-            fetch(`api/invrecesdetails/${id}`)
+            fetch(`api/invenrecall/${id}`)
             .then(res => res.json())
             .then(res => {
-                this.inventoryrec_h = res['inventoryrec_h']
-                this.inventoryrec_d = res['inventoryrec_d']
+                this.taskDetails = res['inventoryrec_d']
+                this.taskHead = this.singleTask
+            })
+            .then(res =>{
+                this.grand_total = this.grand_total_cal
             })
             .catch(err => {
-                alert(err.response.data.message);
+                alert(err.response.data.message)
             })
             this.$refs['dataView'].show()
         },
 
         archive(check = 0) {
-            if(check == 'view'){
-                this.$refs['dataView'].hide()
-            } else {
+            if(this.inventoryreceiveList.length < 1){                
                 this.isBusy = true;
                 fetch(`api/inventoryreceive`)
                 .then(res => res.json())
@@ -307,16 +349,28 @@ export default {
                 .catch(err => {
                     alert(err.response.data.message);
                 })
-                this.$refs['dataEdit'].hide()
             }
+            this.$refs['dataEdit'].hide()
+            this.$refs['dataView'].hide()
             
         },
 
         editDetails() {
-            // this.title = this.$t('UpdateItem')
-            // this.taskId = id
-            // this.Index = index
-            // this.task = this.singleTask
+            this.title = this.$t('UpdateItem')
+            this.hideDetails = ''
+            if (this.taskDetails.length == 0) {
+                this.taskDetails = [{'quantity' : 0,'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+            }
+            this.$refs['dataView'].hide()
+            this.$refs['dataEdit'].show()
+        },
+
+        row_material(id) {
+            for (let i = 0; i < this.inventoryList.length; i++) {
+                if (this.inventoryList[i]['id'] == id) {
+                    return this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']
+                }                
+            }
         },
 
         save() {
@@ -327,6 +381,10 @@ export default {
                 axios.post(`api/inventoryreceive`, this.taskHead[0])
                 .then(({data}) =>{
                     this.taskHeadId = data.InventoryReceiveId
+                    this.taskHead[0]['id'] = this.taskHeadId
+                    if(this.inventoryreceiveList.length > 0){
+                        this.inventoryreceiveList.unshift(this.taskHead[0])
+                    }
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                     this.hideDetails = ''
@@ -346,20 +404,30 @@ export default {
                 .then(res => {
                     for (let i = 0; i < this.taskDetails.length; i++) {
                         if(this.taskDetails[i]['id']){
-                            axios.patch(`api/invrecesdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
+                            axios.patch(`api/invenrecall/${this.taskDetails[i]['id']}`, this.taskDetails[i])
                         } else{
-                            axios.post(`api/invrecesdetails`, this.taskDetails[i])
+                            axios.post(`api/invenrecall`, this.taskDetails[i])
                             .then(({data})=>{
                                 this.taskDetails[i]['id'] = data.InventoryreceivesdetailsID
                             })
                         }
                         
                     }
+
+                    if(this.inventoryreceiveList.length > 0){
+                        for (let i = 0; i < this.inventoryreceiveList.length; i++) {
+                            if(this.inventoryreceiveList[i]['id'] == this.taskHead[0]['id']){
+                                this.inventoryreceiveList[i] = this.taskHead[0]
+                            }   
+                        }
+                    }
                 })
                 .then(res => {
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
+                    this.$refs['dataView'].show()
+                    this.$refs['dataEdit'].hide()
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -371,24 +439,60 @@ export default {
             }
         },
 
-        destroy(id, index) {
+        destroy() {
             this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
                 timeout: 20000,           
                 position: 'center',
                 buttons: [
                     ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/inventory/${id}`)
-                        
+                        axios.delete(`api/inventoryreceive/${this.taskHeadId}`)                        
                         .then(res => {
-                            this.inventoryreceiveList.splice(index, 1);                            
-                            this.totalRows = this.inventoryreceiveList.length;
-                            for (let i = 0; i < this.totalRows; i++) {
-                                this.inventoryreceiveList[i]['sn'] = i                
-                            } 
+                            if(this.inventoryreceiveList.length > 0){
+                                let index = 0
+                                console.log('old=', this.inventoryreceiveList) 
+                                for (let i = 0; i < this.inventoryreceiveList.length; i++) {
+                                    if(this.inventoryreceiveList[i]['id'] == this.taskHead[0]['id']){
+                                        index = i
+                                        console.log('index=', index)
+                                        break
+                                    }   
+                                }
+                                this.inventoryreceiveList.splice(index, 1); 
+                                console.log('new=', this.inventoryreceiveList)                           
+                                this.totalRows = this.inventoryreceiveList.length;
+                                this.$refs['dataView'].hide()
+                            }
                         })
                         .catch(err => {
                             alert(err.response.data.message);                       
                         });
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]            
+            });
+        },
+
+        destroy_d(id, index){
+            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                timeout: 20000,           
+                position: 'center',
+                buttons: [
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
+                        if(id){
+                            axios.delete(`api/invenrecall/${id}`)                        
+                            .then(res => {
+                                this.taskDetails.splice(index, 1)                                
+                            })
+                            .catch(err => {
+                                alert(err.response.data.message);                       
+                            });
+                        } else {
+                            this.taskDetails.splice(index, 1)
+                        }
 
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }, true],
@@ -411,12 +515,12 @@ export default {
     },
 
     computed: {
-        // singleTask() {
-        //     let id = this.taskId
-        //     return this.inventoryreceiveList.filter(function (item) {
-        //     return item['id'] == id
-        //     })
-        // },
+        singleTask() {
+            let id = this.taskHeadId
+            return this.inventoryreceiveList.filter(function (item) {
+            return item['id'] == id
+            })
+        },
 
         TypetoSearch() {
             const lang = this.$i18n.locale
@@ -429,6 +533,7 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
+                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'supplier_name', label : this.$t('supplier'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'challan_no', label : this.$t('invoice_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'challan_date', label : this.$t('invoice_date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -443,13 +548,25 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'item', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
             ]
+        },
 
+        taskDetailsfieldsView() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            this.buttonTitle = this.$t('save')
+            return [
+                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+            ]
         },
 
         store_namelistview() {

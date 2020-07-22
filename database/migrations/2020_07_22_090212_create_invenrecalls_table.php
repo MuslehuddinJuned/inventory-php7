@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInventoryreceivesdetailsTable extends Migration
+class CreateInvenrecallsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateInventoryreceivesdetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventoryreceivesdetails', function (Blueprint $table) {
+        Schema::create('invenrecalls', function (Blueprint $table) {
             $table->id();
             $table->float('quantity')->nullable();
             $table->float('price')->nullable();
@@ -33,6 +33,6 @@ class CreateInventoryreceivesdetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inventoryreceivesdetails');
+        Schema::dropIfExists('invenrecalls');
     }
 }

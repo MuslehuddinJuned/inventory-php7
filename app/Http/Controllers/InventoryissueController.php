@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Inventoryissue;
 use Illuminate\Http\Request;
+use DB;
 
 class InventoryissueController extends Controller
 {
@@ -24,7 +25,13 @@ class InventoryissueController extends Controller
      */
     public function index()
     {
-        $Inventoryissue = Inventoryissue::get();
+        $Inventoryissue = DB::SELECT('SELECT A.id, remarks, supplier_name, challan_no, challan_date, stock_type, storeReceive_id, store_name FROM (
+            SELECT id, remarks, supplier_name, challan_no, challan_date, stock_type, storeReceive_id FROM inventoryreceives
+            )A LEFT JOIN (
+            SELECT inventory_id, inventoryreceive_id FROM inventoryreceivesdetails
+            )B ON A.id = B.inventoryreceive_id LEFT JOIN(
+            SELECT id, store_name FROM inventories
+            )C ON B.inventory_id = C.id GROUP BY A.id');
         return compact ('Inventoryissue');
     }
 
