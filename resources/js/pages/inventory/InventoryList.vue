@@ -46,8 +46,11 @@
                     <template v-slot:table-busy>
                         <div class="text-center text-success my-2">
                             <b-spinner class="align-middle"></b-spinner>
-                            <strong>Loading...</strong>
+                            <strong>{{$t('loading')}}</strong>
                         </div>
+                    </template>
+                    <template v-slot:cell(item)="row">
+                        <a :href="src + row.item.item_image"><b-img :src="src + row.item.item_image" style="width: 56px" alt=""></b-img></a> {{row.item.item}}
                     </template>
                     <template v-slot:cell(action)="row">
                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->

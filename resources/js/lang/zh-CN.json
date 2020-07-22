@@ -1,5 +1,14 @@
 {
-  
+  "grand_total" : "累计",
+  "invoice_date" : "发票日期",
+  "receive_id" : "接收ID",
+  "receive_type" : "接收类型",
+  "remarks" : "备注",
+  "supplier" : "供应商",
+  "invoice_no" : "发票号码",
+  "loading" : "装货...",
+  "receive_item" : "接收物品",
+  "archive" : "档案",
   "image_size_warning" : "大小应小于256 KB",
   "image_format_warning" : "图片格式无效",
   "confirm" : "确认",

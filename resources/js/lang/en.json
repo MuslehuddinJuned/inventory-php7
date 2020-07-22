@@ -1,4 +1,15 @@
 {
+  
+  "grand_total" : "Grand Total",
+  "invoice_date" : "Invoice Date",
+  "receive_id" : "Receive ID",
+  "receive_type" : "Receive Type",
+  "remarks" : "Remarks",
+  "supplier" : "Supplier",
+  "invoice_no" : "Invoice No",
+  "loading" : "loading....",
+  "receive_item" : "Receive Items",
+  "archive" : "Archives",
   "image_size_warning" : "Size should be less than 256 KB",
   "image_format_warning" : "Invalid image format",
   "confirm" : "Confirm",

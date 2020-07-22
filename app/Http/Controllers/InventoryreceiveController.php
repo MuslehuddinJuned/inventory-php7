@@ -46,15 +46,11 @@ class InventoryreceiveController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code'
-        ]);
-
-        $InventoryReceive = $request->user()->inventories()->create($request->all());
+        $InventoryReceive = $request->user()->inventoryreceives()->create($request->all());
 
         if(request()->expectsJson()){
             return response()->json([
-                'InventoryReceive' => $InventoryReceive
+                'InventoryReceiveId' => $InventoryReceive->id
             ]);
         } 
     }
@@ -90,10 +86,6 @@ class InventoryreceiveController extends Controller
      */
     public function update(Request $request, Inventoryreceive $inventoryreceive)
     {
-        $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
-        ]); 
-
         $inventoryreceive->update($request->all());
     }
 

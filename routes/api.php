@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('settings/password', 'Settings\PasswordController@update');
     Route::resource('inventory', 'InventoryController');
     Route::resource('inventoryreceive', 'InventoryreceiveController');
+    Route::resource('invrecesdetails', 'InventoryreceivesdetailsController');
     Route::resource('inventoryissue', 'InventoryissueController');
 });
 

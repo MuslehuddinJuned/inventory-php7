@@ -117,4 +117,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function inventoryreceives(){
         return $this->hasMany(Inventoryreceive::class);
     }
+
+    public function inventoryreceivesdetails(){
+        return $this->hasMany(Inventoryreceivesdetails::class);
+    }
 }
