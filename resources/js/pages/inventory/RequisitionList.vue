@@ -203,7 +203,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('InventoryItem') }
+        return { title: this.$t('requisition_list') }
     },
 
     data() {

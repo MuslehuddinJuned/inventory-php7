@@ -1,5 +1,10 @@
 {
+  "stock_insifficient" : "庫存不足",
+  "reject" : "拒絕",
+  "accept" : "接受",
+  "pending" : "待定",
   "date" : "日期",
+  "stock" : "庫存",
   "requisition_list" : "需求清單",
   "requisition_no" : "請求編號",
   "requisition" : "徵用",

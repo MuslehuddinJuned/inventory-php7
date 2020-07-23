@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Inventoryissue;
+use App\Rechead;
+use App\Recdetails;
 use Illuminate\Http\Request;
 use DB;
 
@@ -25,13 +27,14 @@ class InventoryissueController extends Controller
      */
     public function index()
     {
-        $Inventoryissue = DB::SELECT('SELECT A.id, remarks, supplier_name, challan_no, challan_date, stock_type, storeReceive_id, store_name FROM (
-            SELECT id, remarks, supplier_name, challan_no, challan_date, stock_type, storeReceive_id FROM inventoryreceives
+        $Inventoryissue = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, updated_at, store_name FROM (
+            SELECT id, requisition_no, remarks, accept, updated_at FROM recheads WHERE accept IS NULL
             )A LEFT JOIN (
-            SELECT inventory_id, inventoryreceive_id FROM inventoryreceivesdetails
-            )B ON A.id = B.inventoryreceive_id LEFT JOIN(
+            SELECT inventory_id, rechead_id FROM recdetails
+            )B ON A.id = B.rechead_id LEFT JOIN(
             SELECT id, store_name FROM inventories
-            )C ON B.inventory_id = C.id GROUP BY A.id');
+            )C ON B.inventory_id = C.id GROUP BY A.id ORDER BY updated_at DESC');
+            
         return compact ('Inventoryissue');
     }
 
@@ -53,17 +56,24 @@ class InventoryissueController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code'
-        ]);
+        $request->val;
+        $request->id;
 
-        $InventoryIssue = $request->user()->inventoryissues()->create($request->all());
+        $Inventoryissue = new Inventoryissue;
+        $Inventoryissue->rechead_id = $request['id'];
+        $Inventoryissue->user_id = auth()->user()->id;
+        
+        $Rechead = Rechead::find($request->id);
+        $Rechead->accept = $request['val'];
 
-        if(request()->expectsJson()){
-            return response()->json([
-                'InventoryIssue' => $InventoryIssue
-            ]);
-        } 
+        $Recdetails = Recdetails::where('rechead_id', $request->id)->get();
+        for ($i=0; $i < count($Recdetails) ; $i++) { 
+            $Recdetails[$i]->accept = $request['val'];
+            $Recdetails[$i]->save();
+        }
+        
+        $Inventoryissue->save();
+        $Rechead->save();
     }
 
     /**
