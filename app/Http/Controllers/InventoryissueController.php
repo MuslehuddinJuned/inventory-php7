@@ -56,9 +56,6 @@ class InventoryissueController extends Controller
      */
     public function store(Request $request)
     {
-        $request->val;
-        $request->id;
-
         $Inventoryissue = new Inventoryissue;
         $Inventoryissue->rechead_id = $request['id'];
         $Inventoryissue->user_id = auth()->user()->id;
@@ -82,9 +79,18 @@ class InventoryissueController extends Controller
      * @param  \App\Inventoryissue  $inventoryissue
      * @return \Illuminate\Http\Response
      */
-    public function show(Inventoryissue $inventoryissue)
+    public function show($id)
     {
-        //
+        $Inventoryissue = DB::SELECT('SELECT A.id, requisition_no, remarks, (CASE WHEN accept=-1 THEN "Rejected" ELSE "Accepted" END)decision, updated_at, store_name FROM (
+            SELECT id, requisition_no, remarks, accept, updated_at FROM recheads WHERE accept IS  NOT NULL
+            )A LEFT JOIN (
+            SELECT inventory_id, rechead_id FROM recdetails
+            )B ON A.id = B.rechead_id LEFT JOIN(
+            SELECT id, store_name FROM inventories
+            )C ON B.inventory_id = C.id
+            GROUP BY A.id ORDER BY updated_at DESC');
+            
+        return compact ('Inventoryissue');
     }
 
     /**

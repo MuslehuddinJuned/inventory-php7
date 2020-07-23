@@ -6,7 +6,7 @@
         </div>
 
         <div class="links">
-            <a href="https://www.sustipe.com">{{ $t('product') }}</a>
+            <a href="https://www.sustipe.com">{{ $t('software_title') }}</a>
         </div>
     </div>
   </div>

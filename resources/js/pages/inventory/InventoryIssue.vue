@@ -114,7 +114,7 @@
                         <div class="modal-footer">
                             <div class="row m-0 p-0 col-md-12">
                                 <div class="col-md-5">
-                                    <button @click="editDetails(0)" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
+                                    <button @click="editDetails(-1)" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
                                 </div>
                                 <div class="col-md-7">
                                     <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>

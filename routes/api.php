@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('inventoryissue', 'InventoryissueController');
     Route::resource('rechead', 'RecheadController');
     Route::resource('recdetails', 'RecdetailsController');
+    Route::resource('productdetails', 'ProductdetailsController');
+    Route::resource('producthead', 'ProductheadController');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

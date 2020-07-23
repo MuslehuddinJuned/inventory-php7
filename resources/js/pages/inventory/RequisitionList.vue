@@ -51,8 +51,8 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
-                    <template v-slot:cell(updated_at)="row">
-                        {{`${row.item.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                    <template v-slot:cell(created_at)="row">
+                        {{`${row.item.created_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
                     </template>
                     </b-table>
                     
@@ -212,7 +212,7 @@ export default {
             requisitionList : [],
             title: '',
             disable: false,
-            taskHead : [{'requisition_no' : null,'remarks' : null}],
+            taskHead : [{'requisition_no' : null,'remarks' : null, 'accept' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -266,7 +266,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'requisition_no' : null,'remarks' : null}]
+            this.taskHead = [{'requisition_no' : null,'remarks' : null, 'accept' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -283,6 +283,9 @@ export default {
 
         viewDetails(id) {
             this.taskHeadId = id
+            if(this.requisitionList.length < 1){
+                this.grabRequsitionData()
+            }  
             fetch(`api/recdetails/${id}`)
             .then(res => res.json())
             .then(res => {
@@ -298,33 +301,41 @@ export default {
             this.$refs['dataView'].show()
         },
 
+        grabRequsitionData() {                            
+            this.isBusy = true;
+            fetch(`api/rechead`)
+            .then(res => res.json())
+            .then(res => {
+                this.requisitionList = res['Rechead']
+                this.totalRows = this.requisitionList.length
+                this.isBusy = false
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })            
+        },
+        
         archive(check = 0) {
-            if(this.requisitionList.length < 1){                
-                this.isBusy = true;
-                fetch(`api/rechead`)
-                .then(res => res.json())
-                .then(res => {
-                    this.requisitionList = res['Rechead']
-                    this.totalRows = this.requisitionList.length
-                    this.isBusy = false
-                })
-                .catch(err => {
-                    alert(err.response.data.message);
-                })
-            }
+            if(this.requisitionList.length < 1){
+                this.grabRequsitionData()
+            }            
             this.$refs['dataEdit'].hide()
             this.$refs['dataView'].hide()
             
         },
 
         editDetails() {
-            this.title = this.$t('UpdateItem')
-            this.hideDetails = ''
-            if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
-            }
-            this.$refs['dataView'].hide()
-            this.$refs['dataEdit'].show()
+            if(this.taskHead[0]['accept']){
+                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
+            } else {
+                this.title = this.$t('UpdateItem')
+                this.hideDetails = ''
+                if (this.taskDetails.length == 0) {
+                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                }
+                this.$refs['dataView'].hide()
+                this.$refs['dataEdit'].show()
+            }            
         },
 
         row_material(id) {
@@ -336,130 +347,142 @@ export default {
         },
 
         save() {
-            this.disable = !this.disable;
-            this.buttonTitle = this.$t('saving')
-
-            if(this.taskHeadId == null){
-                axios.post(`api/rechead`, this.taskHead[0])
-                .then(({data}) =>{
-                    this.taskHeadId = data.RecheadID
-                    this.taskHead[0]['id'] = this.taskHeadId
-                    if(this.requisitionList.length > 0){
-                        this.requisitionList.unshift(this.taskHead[0])
-                    }
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.hideDetails = ''
-                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    }
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    alert(err.response.data.message)                      
-                })
+            if(this.taskHead[0]['accept']){
+                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
             } else {
-                axios.patch(`api/rechead/${this.taskHeadId}`, this.taskHead[0])
-                .then(res => {
-                    for (let i = 0; i < this.taskDetails.length; i++) {
-                        if(this.taskDetails[i]['id']){
-                            axios.patch(`api/recdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
-                        } else{
-                            axios.post(`api/recdetails`, this.taskDetails[i])
-                            .then(({data})=>{
-                                this.taskDetails[i]['id'] = data.RecdetailsID
-                            })
-                        }
-                        
-                    }
+                this.disable = !this.disable;
+                this.buttonTitle = this.$t('saving')
 
-                    if(this.requisitionList.length > 0){
-                        for (let i = 0; i < this.requisitionList.length; i++) {
-                            if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
-                                this.requisitionList[i] = this.taskHead[0]
-                            }   
+                if(this.taskHeadId == null){
+                    axios.post(`api/rechead`, this.taskHead[0])
+                    .then(({data}) =>{
+                        this.taskHeadId = data.RecheadID
+                        this.taskHead[0]['id'] = this.taskHeadId
+                        if(this.requisitionList.length > 0){
+                            this.requisitionList.unshift(this.taskHead[0])
                         }
-                    }
-                })
-                .then(res => {
-                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.$refs['dataEdit'].hide()
-                    this.viewDetails(this.taskHeadId)
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                    }
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                });
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                        this.hideDetails = ''
+                        this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                    })
+                    .catch(err => {
+                        if(err.response.status == 422){
+                            this.errors = err.response.data.errors
+                            this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                        }
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                        alert(err.response.data.message)                      
+                    })
+                } else {
+                    axios.patch(`api/rechead/${this.taskHeadId}`, this.taskHead[0])
+                    .then(res => {
+                        for (let i = 0; i < this.taskDetails.length; i++) {
+                            if(this.taskDetails[i]['id']){
+                                axios.patch(`api/recdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
+                            } else{
+                                axios.post(`api/recdetails`, this.taskDetails[i])
+                                .then(({data})=>{
+                                    this.taskDetails[i]['id'] = data.RecdetailsID
+                                })
+                            }
+                            
+                        }
+
+                        if(this.requisitionList.length > 0){
+                            for (let i = 0; i < this.requisitionList.length; i++) {
+                                if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
+                                    this.requisitionList[i] = this.taskHead[0]
+                                }   
+                            }
+                        }
+                    })
+                    .then(res => {
+                        this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                        this.$refs['dataEdit'].hide()
+                        this.viewDetails(this.taskHeadId)
+                    })
+                    .catch(err => {
+                        if(err.response.status == 422){
+                            this.errors = err.response.data.errors
+                        }
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                    });
+                }
             }
         },
 
         destroy() {
-            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-                timeout: 20000,           
-                position: 'center',
-                buttons: [
-                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/rechead/${this.taskHeadId}`)                        
-                        .then(res => {
-                            if(this.requisitionList.length > 0){
-                                let index = 0 
-                                for (let i = 0; i < this.requisitionList.length; i++) {
-                                    if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
-                                        index = i
-                                        break
-                                    }   
-                                }
-                                this.requisitionList.splice(index, 1);                           
-                                this.totalRows = this.requisitionList.length;
-                                this.$refs['dataView'].hide()
-                            }
-                        })
-                        .catch(err => {
-                            alert(err.response.data.message);                       
-                        });
-
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }, true],
-                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }],
-                ]            
-            });
-        },
-
-        destroy_d(id, index){
-            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-                timeout: 20000,           
-                position: 'center',
-                buttons: [
-                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
-                        if(id){
-                            axios.delete(`api/recdetails/${id}`)                        
+            if(this.taskHead[0]['accept']){
+                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
+            } else {
+                this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                    timeout: 20000,           
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
+                            axios.delete(`api/rechead/${this.taskHeadId}`)                        
                             .then(res => {
-                                this.taskDetails.splice(index, 1)                                
+                                if(this.requisitionList.length > 0){
+                                    let index = 0 
+                                    for (let i = 0; i < this.requisitionList.length; i++) {
+                                        if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
+                                            index = i
+                                            break
+                                        }   
+                                    }
+                                    this.requisitionList.splice(index, 1);                           
+                                    this.totalRows = this.requisitionList.length;
+                                    this.$refs['dataView'].hide()
+                                }
                             })
                             .catch(err => {
                                 alert(err.response.data.message);                       
                             });
-                        } else {
-                            this.taskDetails.splice(index, 1)
-                        }
 
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }, true],
-                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }],
-                ]            
-            });
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }, true],
+                        ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }],
+                    ]            
+                });
+            }
+        },
+
+        destroy_d(id, index){
+            if(this.taskHead[0]['accept']){
+                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
+            } else {
+                this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                    timeout: 20000,           
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
+                            if(id){
+                                axios.delete(`api/recdetails/${id}`)                        
+                                .then(res => {
+                                    this.taskDetails.splice(index, 1)                                
+                                })
+                                .catch(err => {
+                                    alert(err.response.data.message);                       
+                                });
+                            } else {
+                                this.taskDetails.splice(index, 1)
+                            }
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }, true],
+                        ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }],
+                    ]            
+                });
+            }
         },
 
         showModal() {
@@ -495,7 +518,7 @@ export default {
                 { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'created_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 

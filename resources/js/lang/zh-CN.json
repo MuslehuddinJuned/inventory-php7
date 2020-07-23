@@ -1,4 +1,7 @@
 {
+  "product_list" : "產品清單",
+  "product" : "產品",
+  "already_accepted" : "這已經被接受",
   "stock_insifficient" : "庫存不足",
   "reject" : "拒絕",
   "accept" : "接受",
@@ -51,7 +54,7 @@
   "InventoryItem" : "库存项目",
   "Inventory" : "库存",
   "appName" : "Shun Ho BD",
-  "product" : "库存管理系统",
+  "software_title" : "库存管理系统",
   "ok": "确定",
   "cancel": "取消",
   "error_alert_title": "错误...",

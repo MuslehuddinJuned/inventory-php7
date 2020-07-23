@@ -18,6 +18,7 @@ export default [
   { path: '/inventoryissue', name: 'inventory.InventoryIssue', component: page('inventory/InventoryIssue.vue') },
   { path: '/requisition', name: 'inventory.RequisitionList', component: page('inventory/RequisitionList.vue') },
   { path: '/issuearchive', name: 'inventory.InvIssArchive', component: page('inventory/InvIssArchive.vue') },
+  { path: '/product', name: 'product.ProductList', component: page('product/ProductList.vue') },
 
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
