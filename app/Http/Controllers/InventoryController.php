@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Inventory;
 use Illuminate\Http\Request;
+use DB;
 
 class InventoryController extends Controller
 {
@@ -24,7 +25,13 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $Inventory = Inventory::get();
+        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_name, item, item_code, specification, unit, unit_price, item_image FROM(            
+            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            )A LEFT JOIN (
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )C ON A.id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )D ON A.id = D.inventory_id');
+
         return compact ('Inventory');
     }
 

@@ -165,6 +165,10 @@
                                 </div>
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3">
+                                <div class="mb-2 d-flex">
+                                    <div class="float-left py-auto"><h5 class="my-auto">Material List for Quantity </h5></div>
+                                    <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
+                                </div>
                                 <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
@@ -172,8 +176,11 @@
                                     <template v-slot:cell(inventory_id)="row">
                                         {{ row_material(row.item.inventory_id) }}
                                     </template>
+                                    <template v-slot:cell(quantity)="row">
+                                        {{ (row.item.quantity * product_qty).toFixed(2) }}
+                                    </template>
                                     <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
+                                        {{ (row.item.quantity * row.item.unit_price * product_qty).toFixed(2) }}
                                     </template>
                                     <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
@@ -242,6 +249,7 @@ export default {
             hideDetails : 'd-none',
             src : '/images/product/',
             save_image : null,
+            product_qty : 1,
 
             transProps: {
                 // Transition name
@@ -318,6 +326,7 @@ export default {
         },
 
         viewDetails(id) {
+            this.product_qty = 1
             this.taskHeadId = id
             fetch(`api/productdetails/${id}`)
             .then(res => res.json())
@@ -410,10 +419,8 @@ export default {
                     this.taskHead[0]['product_image'] = data.fileName
                     for (let i = 0; i < this.taskDetails.length; i++) {
                         if(this.taskDetails[i]['id']){
-                            console.log('up=', this.taskDetails[i])
                             axios.patch(`api/productdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
                         } else if(this.taskDetails[i]['inventory_id']){
-                            console.log('add=', this.taskDetails[i])
                             axios.post(`api/productdetails`, this.taskDetails[i])
                             .then(({data})=>{
                                 this.taskDetails[i]['id'] = data.ProductdetailsID
@@ -529,7 +536,6 @@ export default {
 
         singleTask() {
             let id = this.taskHeadId
-            console.log('singleTask')
             return this.productList.filter(function (item) {
             return item['id'] == id
             })
