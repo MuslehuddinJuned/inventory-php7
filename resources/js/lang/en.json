@@ -1,4 +1,7 @@
 { 
+    "browse" : "Browse",
+    "material_list_for_uantity" : "Material List for Quantity",
+    "image" : "Image",
     "category" : "Category",
     "buyer" : "Buyer", 
     "style" : "Style",

@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="fileBrowser col-md-12 p-0 m-0">
                                     <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
-                                        <button class="mdb btn btn-outline-success mx-auto">Browse</button>
+                                        <button class="mdb btn btn-outline-success mx-auto">{{$t('browse')}}</button>
                                         <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
                                     </div>
                                 </div>
@@ -119,7 +119,7 @@
                                         <model-select :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.inventory_id"></model-select>
                                     </template>
                                     <template v-slot:cell(quantity)="row">
-                                        <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
+                                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
                                     </template>
                                     <template v-slot:cell(action)="row">
                                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
@@ -166,18 +166,20 @@
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3">
                                 <div class="mb-2 d-flex">
-                                    <div class="float-left py-auto"><h5 class="my-auto">Material List for Quantity </h5></div>
+                                    <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_uantity')}} </h5></div>
                                     <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
+                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
                                     </template>
                                     <template v-slot:cell(inventory_id)="row">
                                         {{ row_material(row.item.inventory_id) }}
                                     </template>
+                                    
                                     <template v-slot:cell(quantity)="row">
-                                        {{ (row.item.quantity * product_qty).toFixed(2) }}
+                                        <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
+                                        <span v-else>{{ (row.item.quantity * product_qty)}}</span>
                                     </template>
                                     <template v-slot:cell(total_price)="row">
                                         {{ (row.item.quantity * row.item.unit_price * product_qty).toFixed(2) }}
@@ -188,7 +190,7 @@
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
+                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total*product_qty}}</td>
                                     </template>
                                 </b-table>
                             </div>                              
@@ -319,10 +321,6 @@ export default {
 
         addRow() {            
             this.taskDetails.push({'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null})
-        },
-
-        grand_total_value() {
-            this.grand_total = this.grand_total_cal
         },
 
         viewDetails(id) {
@@ -554,9 +552,9 @@ export default {
             return [
                 { key: 'product_category', label : this.$t('category'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'product_style', label : this.$t('product_style'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_code', label : this.$t('product_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_image', label : this.$t('product_image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'product_style', label : this.$t('style'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_code', label : this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
             ]
         },
 
@@ -586,18 +584,6 @@ export default {
             ]
         },
 
-        taskDetailsCheck(){
-            for (let i = 0; i < this.taskDetails.length; i++) {
-                if(this.taskDetails[i]['stock'] < this.taskDetails[i]['quantity']) {
-                    this.taskDetails[i]['_rowVariant'] = 'danger'
-                } else {
-                    this.taskDetails[i]['_rowVariant'] = ''
-                }            
-            }
-
-            return this.taskDetails
-        },
-
         categorylistview() {
             return uniq(this.productList.map(({ product_category }) => product_category))
         },
@@ -617,6 +603,7 @@ export default {
                 if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
                 total += parseFloat(val.unit_price*val.quantity)
             });
+            console.log(total)
             return total.toFixed(2);
         },
 

@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="fileBrowser col-md-12 p-0 m-0">
                                     <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
-                                        <button class="mdb btn btn-outline-success mx-auto">Browse</button>
+                                        <button class="mdb btn btn-outline-success mx-auto">{{$t('browse')}}</button>
                                         <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
                                     </div>
                                 </div>
