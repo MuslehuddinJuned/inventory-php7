@@ -101,6 +101,7 @@ class RecdetailsController extends Controller
         
         $Recdetails->quantity = $request['quantity'];
         $Recdetails->rechead_id = $request['rechead_id'];
+        $Recdetails->inventory_id = $request['inventory_id'];
         $Recdetails->save();
     }
 

@@ -25,7 +25,9 @@ class ProductheadController extends Controller
      */
     public function index()
     {
-        //
+        $productHead = Producthead::where('deleted_by', '0')->get();
+
+        return compact('productHead');
     }
 
     /**
@@ -46,7 +48,36 @@ class ProductheadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'product_category'=> 'required'
+        ]);
+
+        if($request->product_image){
+            $exploded = explode(',', $request->product_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/product/'.$fileName;
+    
+            // store new image
+            file_put_contents($path, $decoded);
+            $productHead = $request->user()->producthead()->create($request->except('product_image') + [
+                'product_image' => $fileName
+            ]);
+        } else {
+            $productHead = $request->user()->producthead()->create($request->except('product_image'));
+        }
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'productHead' => $productHead
+            ]);
+        } 
     }
 
     /**
@@ -80,7 +111,50 @@ class ProductheadController extends Controller
      */
     public function update(Request $request, Producthead $producthead)
     {
-        //
+        $this->validate($request, [
+            'product_category'=> 'required'
+        ]);
+
+        if($request->product_image){
+            $exploded = explode(',', $request->product_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/product/'.$fileName;
+    
+            // store new image
+            file_put_contents($path, $decoded);
+
+            // delete previous image
+            $Producthead = Producthead::find($producthead->id);
+
+            if($Producthead->product_image != 'noimage.jpg'){
+                //Delete Image
+                $path = public_path().'/images/product/'.$producthead->product_image;
+                @unlink($path);
+            }
+
+            //save data
+            $producthead->update($request->except('product_image') + [
+                'product_image' => $fileName
+            ]);
+        } else {
+            $producthead->update($request->except('product_image'));
+
+            $image = Producthead::select('product_image')->where('id', $request->id)->get();
+            $fileName = $image[0]['product_image'];
+        }
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'fileName' => $fileName
+            ]);
+        }        
     }
 
     /**
@@ -91,6 +165,15 @@ class ProductheadController extends Controller
      */
     public function destroy(Producthead $producthead)
     {
-        //
+        // delete previous image
+        $Producthead = Producthead::find($producthead->id);
+
+        if($Producthead->product_image != 'noimage.jpg'){
+            //Delete Image
+            $path = public_path().'/images/product/'.$producthead->product_image;
+            @unlink($path);
+        }
+
+        $Producthead->delete();
     }
 }

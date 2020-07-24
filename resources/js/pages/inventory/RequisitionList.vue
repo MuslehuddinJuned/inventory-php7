@@ -381,7 +381,7 @@ export default {
                         for (let i = 0; i < this.taskDetails.length; i++) {
                             if(this.taskDetails[i]['id']){
                                 axios.patch(`api/recdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
-                            } else{
+                            } else if(this.taskDetails[i]['inventory_id']){
                                 axios.post(`api/recdetails`, this.taskDetails[i])
                                 .then(({data})=>{
                                     this.taskDetails[i]['id'] = data.RecdetailsID

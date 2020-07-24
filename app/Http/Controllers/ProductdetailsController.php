@@ -46,7 +46,13 @@ class ProductdetailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Productdetails = $request->user()->productdetails()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'ProductdetailsID' => $Productdetails->id
+            ]);
+        }
     }
 
     /**
@@ -55,9 +61,17 @@ class ProductdetailsController extends Controller
      * @param  \App\Productdetails  $productdetails
      * @return \Illuminate\Http\Response
      */
-    public function show(Productdetails $productdetails)
+    public function show($id)
     {
-        //
+        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
+            SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?)A LEFT JOIN (
+            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            )B ON A.inventory_id = B.id LEFT JOIN (
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )C ON A.inventory_id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )D ON A.inventory_id = D.inventory_id', [$id]);
+
+        return compact('productDetails');
     }
 
     /**
@@ -78,9 +92,17 @@ class ProductdetailsController extends Controller
      * @param  \App\Productdetails  $productdetails
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Productdetails $productdetails)
+    public function update(Request $request,  $id)
     {
-        //
+        // $productdetails->update($request->all());
+
+        $Productdetails = Productdetails::find($id);
+        
+        $Productdetails->quantity = $request['quantity'];
+        $Productdetails->producthead_id = $request['producthead_id'];
+        $Productdetails->remarks = $request['remarks'];
+        $Productdetails->inventory_id = $request['inventory_id'];
+        $Productdetails->save();
     }
 
     /**
@@ -89,8 +111,9 @@ class ProductdetailsController extends Controller
      * @param  \App\Productdetails  $productdetails
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Productdetails $productdetails)
+    public function destroy($id)
     {
-        //
+        $Productdetails = Productdetails::find($id);
+        $Productdetails->delete();
     }
 }

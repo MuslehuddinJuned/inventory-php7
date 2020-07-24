@@ -47,7 +47,9 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code'
+            'item_code'=> 'required|unique:inventories,item_code',
+            'store_name'=> 'required',
+            'unit'=> 'required'
         ]);
 
 
@@ -69,7 +71,7 @@ class InventoryController extends Controller
                 'item_image' => $fileName
             ]);
         } else {
-            $InventoryList = $request->user()->inventories()->create($request->all());
+            $InventoryList = $request->user()->inventories()->create($request->except('item_image'));
         }
 
         if(request()->expectsJson()){
@@ -111,7 +113,9 @@ class InventoryController extends Controller
     public function update(Request $request, Inventory $inventory)
     {
         $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id
+            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id,
+            'store_name'=> 'required',
+            'unit'=> 'required'
         ]); 
 
         if($request->item_image){
@@ -144,7 +148,10 @@ class InventoryController extends Controller
             ]);
 
         } else {
-            $inventory->update($request->all());
+            $inventory->update($request->except('item_image'));
+
+            $image = Inventory::select('item_image')->where('id', $request->id)->get();
+            $fileName = $image[0]['item_image'];
         }
 
         if(request()->expectsJson()){

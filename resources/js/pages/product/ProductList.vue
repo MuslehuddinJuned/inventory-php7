@@ -33,7 +33,7 @@
                         </b-form-group>                        
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                    :items="requisitionList"
+                    :items="productList"
                     :fields="fields"
                     :current-page="currentPage"
                     :per-page="perPage"
@@ -51,8 +51,8 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
-                    <template v-slot:cell(created_at)="row">
-                        {{`${row.item.created_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                    <template v-slot:cell(product_image)="row">
+                        <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="width: 56px" alt=""></b-img></a>
                     </template>
                     </b-table>
                     
@@ -74,20 +74,41 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop ok-only>
                         
                         <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-6">
-                                <label class="col-form-label">{{ $t('store_name')}}</label>
-                                <b-form-select v-model="taskHead[0]['store_name']" :options="store_namelistview" class="form-control"></b-form-select>
+                            <div class="row col-md-9 m-0 p-0">
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('category')}}</label>
+                                    <input list="CategoryList" class="form-control text-nowrap" v-model="taskHead[0]['product_category']">
+                                    <datalist id="CategoryList">
+                                        <option v-for="category in categorylistview" :key="category.category">{{ category }}</option>
+                                    </datalist>
+                                    <span v-if="errors.product_category" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                    <label class="col-form-label">{{ $t('buyer')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['buyer']">
+                                    <label class="col-form-label">{{ $t('style')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('code')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
+                                    <label class="col-form-label">{{ $t('specification')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['specification']">
+                                    <label class="col-form-label">{{ $t('remarks')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="col-form-label">{{ $t('requisition_no')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="col-form-label">{{ $t('remarks')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
+                            <div class="col-md-3">
+                                <div class="form-group m-auto col-md-12 text-center float-center">
+                                    <img id="blah" style="width: 70%;" :src="src + imageName" alt="product image" />
+                                </div>
+                                <div class="fileBrowser col-md-12 p-0 m-0">
+                                    <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
+                                        <button class="mdb btn btn-outline-success mx-auto">Browse</button>
+                                        <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
                                 <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
@@ -95,7 +116,7 @@
                                         {{ row.index+1 }}
                                     </template>
                                     <template v-slot:cell(inventory_id)="row">
-                                        <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
+                                        <model-select :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.inventory_id"></model-select>
                                     </template>
                                     <template v-slot:cell(quantity)="row">
                                         <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
@@ -110,15 +131,10 @@
                         </div>
                         <div class="modal-footer">
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
+                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                         </div>
                         <template v-slot:modal-header="">
-                            <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
-                            </div>
-                            <div class="col-md-3">
-                                <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
-                            </div>
+                                <h3 class="panel-title float-left">{{ title }}</h3> 
                         </template>
                         <template v-slot:modal-footer="">
                             <b-button class="d-none">
@@ -129,16 +145,24 @@
                     <!-- End Edit Details Modal -->
 
                     <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop ok-only>
                         <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-6">
-                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}
+                            <div class="row col-md-9 m-0 p-0">
+                                <div class="col-md-6">
+                                    <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br>
+                                    <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{taskHead[0]['buyer']}}<br>
+                                    <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
+                                    <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
+                                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                                </div>
                             </div>
-                            <div class="col-md-6">                                
-                                <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{taskHead[0]['requisition_no']}}
-                            </div>
-                            <div class="col-md-12">
-                                <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                            <div class="col-md-3">
+                                <div class="form-group m-auto col-md-12 text-center float-center">
+                                   <a :href="'images/product/' + taskHead[0]['product_image']"> <img id="blah" style="width: 70%;" :src="'images/product/' + taskHead[0]['product_image']" alt="product image" /></a>
+                                </div>
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3">
                                 <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
@@ -168,18 +192,13 @@
                                     <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                                 </div>
                                 <div class="col-md-7">
-                                    <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                                    <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
                                     <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
                                 </div>
                             </div>
                         </div>
                         <template v-slot:modal-header="">
-                            <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
-                            </div>
-                            <div class="col-md-3">
-                                <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
-                            </div>
+                                <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
                         </template>
                         <template v-slot:modal-footer="">
                             <b-button class="d-none">
@@ -199,6 +218,7 @@
 
 <script>
 import uniq from 'lodash/uniq';
+import { ModelSelect } from 'vue-search-select';
 export default {
     middleware: 'auth',
 
@@ -209,16 +229,19 @@ export default {
     data() {
         return{
             inventoryList : [],
-            requisitionList : [],
+            productList : [],
+            errors : [],
             title: '',
             disable: false,
-            taskHead : [{'requisition_no' : null,'remarks' : null, 'accept' : null}],
+            taskHead : [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
             grand_total : 0,
             buttonTitle : this.$t('save'),
             hideDetails : 'd-none',
+            src : '/images/product/',
+            save_image : null,
 
             transProps: {
                 // Transition name
@@ -235,17 +258,28 @@ export default {
     },
 
     mounted() {
-        fetch(`api/inventory`)
-            .then( res => res.json())
-            .then(res => {  
-                this.inventoryList = res['Inventory'];
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
+        this.isBusy = true;
+        fetch(`api/producthead`)
+        .then(res => res.json())
+        .then(res => {
+            this.productList = res['productHead']
+            this.totalRows = this.productList.length
+            this.isBusy = false
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        }) 
 
-        this.title = this.$t('receive_item')
-        this.showModal()
+        fetch(`api/inventory`)
+        .then( res => res.json())
+        .then(res => {  
+            this.inventoryList = res['Inventory'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
+
+        
         
     },
 
@@ -265,16 +299,18 @@ export default {
         },
 
         addDetails(){
+            this.save_image = null
             this.hideDetails = 'd-none'
-            this.taskHead = [{'requisition_no' : null,'remarks' : null, 'accept' : null}]
+            this.taskHead = [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}]
             this.taskHeadId = null
-            this.title = this.$t('receive_item')
+            this.title = this.$t('product_new')
+            this.src = '/images/product/'
             this.grand_total = null
             this.taskDetails = []
         },
 
         addRow() {            
-            this.taskDetails.push({'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
+            this.taskDetails.push({'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null})
         },
 
         grand_total_value() {
@@ -283,13 +319,10 @@ export default {
 
         viewDetails(id) {
             this.taskHeadId = id
-            if(this.requisitionList.length < 1){
-                this.grabRequsitionData()
-            }  
-            fetch(`api/recdetails/${id}`)
+            fetch(`api/productdetails/${id}`)
             .then(res => res.json())
             .then(res => {
-                this.taskDetails = res['requisition']
+                this.taskDetails = res['productDetails']
                 this.taskHead = this.singleTask
             })
             .then(res =>{
@@ -301,41 +334,15 @@ export default {
             this.$refs['dataView'].show()
         },
 
-        grabRequsitionData() {                            
-            this.isBusy = true;
-            fetch(`api/rechead`)
-            .then(res => res.json())
-            .then(res => {
-                this.requisitionList = res['Rechead']
-                this.totalRows = this.requisitionList.length
-                this.isBusy = false
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })            
-        },
-        
-        archive(check = 0) {
-            if(this.requisitionList.length < 1){
-                this.grabRequsitionData()
-            }            
-            this.$refs['dataEdit'].hide()
-            this.$refs['dataView'].hide()
-            
-        },
-
         editDetails() {
-            if(this.taskHead[0]['accept']){
-                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-            } else {
-                this.title = this.$t('UpdateItem')
-                this.hideDetails = ''
-                if (this.taskDetails.length == 0) {
-                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
-                }
-                this.$refs['dataView'].hide()
-                this.$refs['dataEdit'].show()
-            }            
+            this.$refs['dataView'].hide()
+            this.save_image = null
+            this.title = this.$t('UpdateItem')
+            this.hideDetails = ''
+            if (this.taskDetails.length == 0) {
+                this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
+            }
+            this.$refs['dataEdit'].show()         
         },
 
         row_material(id) {
@@ -346,143 +353,158 @@ export default {
             }
         },
 
-        save() {
-            if(this.taskHead[0]['accept']){
-                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-            } else {
-                this.disable = !this.disable;
-                this.buttonTitle = this.$t('saving')
-
-                if(this.taskHeadId == null){
-                    axios.post(`api/rechead`, this.taskHead[0])
-                    .then(({data}) =>{
-                        this.taskHeadId = data.RecheadID
-                        this.taskHead[0]['id'] = this.taskHeadId
-                        if(this.requisitionList.length > 0){
-                            this.requisitionList.unshift(this.taskHead[0])
-                        }
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                        this.hideDetails = ''
-                        this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
-                    })
-                    .catch(err => {
-                        if(err.response.status == 422){
-                            this.errors = err.response.data.errors
-                            this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                        }
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                        alert(err.response.data.message)                      
-                    })
-                } else {
-                    axios.patch(`api/rechead/${this.taskHeadId}`, this.taskHead[0])
-                    .then(res => {
-                        for (let i = 0; i < this.taskDetails.length; i++) {
-                            if(this.taskDetails[i]['id']){
-                                axios.patch(`api/recdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
-                            } else{
-                                axios.post(`api/recdetails`, this.taskDetails[i])
-                                .then(({data})=>{
-                                    this.taskDetails[i]['id'] = data.RecdetailsID
-                                })
-                            }
-                            
-                        }
-
-                        if(this.requisitionList.length > 0){
-                            for (let i = 0; i < this.requisitionList.length; i++) {
-                                if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
-                                    this.requisitionList[i] = this.taskHead[0]
-                                }   
-                            }
-                        }
-                    })
-                    .then(res => {
-                        this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                        this.$refs['dataEdit'].hide()
-                        this.viewDetails(this.taskHeadId)
-                    })
-                    .catch(err => {
-                        if(err.response.status == 422){
-                            this.errors = err.response.data.errors
-                        }
-                        this.disable = !this.disable
-                        this.buttonTitle = this.$t('save')
-                    });
+        handleFileUpload(e) {
+            let file = e.target.files[0];
+            var fileReader = new FileReader();
+            
+            if(file['size'] <= 262144 &&  file['type'].split('/')[0]=='image' ){          //256 KB ~~ 262144 Byte
+                fileReader.onload = (e) => {
+                    this.src = '';
+                    this.taskHead[0]['product_image'] = e.target.result;
+                    this.save_image = e.target.result;
                 }
+            } else {
+                let warningMessages;
+                file['size'] > 262144 ? warningMessages = this.$t('image_size_warning'): warningMessages = this.$t('image_format_warning');
+                this.$toast.warning(warningMessages, this.$t('error_alert_title'), {
+                    timeout: 10000,          
+                    position: 'center',
+                })
+            }
+
+            fileReader.readAsDataURL(e.target.files[0]);
+        },
+
+        save() {
+            this.disable = !this.disable;
+            this.buttonTitle = this.$t('saving')
+            this.taskHead[0]['product_image'] = this.save_image
+            let options = { headers: {'enctype': 'multipart/form-data'} };
+
+            if(this.taskHeadId == null){
+                axios.post(`api/producthead`, this.taskHead[0], options)
+                .then(({data}) =>{
+                    this.errors = ''
+                    this.taskHead[0] = data.productHead                   
+                    this.taskHeadId = this.taskHead[0]['id']
+                    this.productList.unshift(this.taskHead[0])
+                    
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                    this.hideDetails = ''
+                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                    }
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                    alert(err.response.data.message)                      
+                })
+            } else {
+                axios.patch(`api/producthead/${this.taskHeadId}`, this.taskHead[0], options)
+                .then(({data}) => {
+                    this.src = '/images/product/'
+                    this.taskHead[0]['product_image'] = data.fileName
+                    for (let i = 0; i < this.taskDetails.length; i++) {
+                        if(this.taskDetails[i]['id']){
+                            console.log('up=', this.taskDetails[i])
+                            axios.patch(`api/productdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
+                        } else if(this.taskDetails[i]['inventory_id']){
+                            console.log('add=', this.taskDetails[i])
+                            axios.post(`api/productdetails`, this.taskDetails[i])
+                            .then(({data})=>{
+                                this.taskDetails[i]['id'] = data.ProductdetailsID
+                            })
+                        }                        
+                    }                    
+                    for (let i = 0; i < this.productList.length; i++) {
+                        if(this.productList[i]['id'] == this.taskHead[0]['id']){
+                            this.productList[i] = this.taskHead[0]
+                            break
+                        }   
+                    }
+                    
+                })
+                .then(res => {
+                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                    this.disable = !this.disable
+                    this.errors = ''
+                    this.buttonTitle = this.$t('save')
+                    this.$refs['dataEdit'].hide()
+                    this.viewDetails(this.taskHeadId)
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                    }
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                });
             }
         },
 
         destroy() {
-            if(this.taskHead[0]['accept']){
-                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-            } else {
-                this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-                    timeout: 20000,           
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                            axios.delete(`api/rechead/${this.taskHeadId}`)                        
-                            .then(res => {
-                                if(this.requisitionList.length > 0){
-                                    let index = 0 
-                                    for (let i = 0; i < this.requisitionList.length; i++) {
-                                        if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
-                                            index = i
-                                            break
-                                        }   
-                                    }
-                                    this.requisitionList.splice(index, 1);                           
-                                    this.totalRows = this.requisitionList.length;
-                                    this.$refs['dataView'].hide()
+            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                timeout: 20000,           
+                position: 'center',
+                buttons: [
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
+                        axios.delete(`api/producthead/${this.taskHeadId}`)                        
+                        .then(res => {
+                            if(this.productList.length > 0){
+                                let index = 0 
+                                for (let i = 0; i < this.productList.length; i++) {
+                                    if(this.productList[i]['id'] == this.taskHead[0]['id']){
+                                        index = i
+                                        break
+                                    }   
                                 }
+                                this.productList.splice(index, 1);                           
+                                this.totalRows = this.productList.length;
+                                this.$refs['dataView'].hide()
+                            }
+                        })
+                        .catch(err => {
+                            alert(err.response.data.message);                       
+                        });
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]            
+            });
+        },
+
+        destroy_d(id, index){
+            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                timeout: 20000,           
+                position: 'center',
+                buttons: [
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
+                        if(id){
+                            axios.delete(`api/productdetails/${id}`)                        
+                            .then(res => {
+                                this.taskDetails.splice(index, 1)                                
                             })
                             .catch(err => {
                                 alert(err.response.data.message);                       
                             });
+                        } else {
+                            this.taskDetails.splice(index, 1)
+                        }
 
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }, true],
-                        ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }],
-                    ]            
-                });
-            }
-        },
-
-        destroy_d(id, index){
-            if(this.taskHead[0]['accept']){
-                this.$toast.error(this.$t('already_accepted'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-            } else {
-                this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-                    timeout: 20000,           
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
-                            if(id){
-                                axios.delete(`api/recdetails/${id}`)                        
-                                .then(res => {
-                                    this.taskDetails.splice(index, 1)                                
-                                })
-                                .catch(err => {
-                                    alert(err.response.data.message);                       
-                                });
-                            } else {
-                                this.taskDetails.splice(index, 1)
-                            }
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }, true],
-                        ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }],
-                    ]            
-                });
-            }
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]            
+            });
         },
 
         showModal() {
@@ -497,9 +519,18 @@ export default {
     },
 
     computed: {
+        imageName() {
+            if(this.taskHead[0]['product_image'] == null || this.taskHead[0]['product_image'] == 'noimage.jpg') {
+                // this.taskHead[0]['product_image'] = null
+                return 'noimage.jpg'
+            }
+            return this.taskHead[0]['product_image']
+        },
+
         singleTask() {
             let id = this.taskHeadId
-            return this.requisitionList.filter(function (item) {
+            console.log('singleTask')
+            return this.productList.filter(function (item) {
             return item['id'] == id
             })
         },
@@ -515,10 +546,11 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'created_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_category', label : this.$t('category'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'product_style', label : this.$t('product_style'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_code', label : this.$t('product_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_image', label : this.$t('product_image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
             ]
         },
 
@@ -560,16 +592,14 @@ export default {
             return this.taskDetails
         },
 
-        store_namelistview() {
-            return uniq(this.inventoryList.map(({ store_name }) => store_name))
+        categorylistview() {
+            return uniq(this.productList.map(({ product_category }) => product_category))
         },
 
         itemlistview(){
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
-                if(this.inventoryList[i]['store_name'] == this.taskHead[0]['store_name']){
-                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']})
-                }                
+                array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['store_name'] + ' | ' + this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']})
             }
 
             return array
@@ -589,7 +619,9 @@ export default {
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'
             ]
         },
-    }
+    },
+
+    components: { ModelSelect }
 }
 </script>
 

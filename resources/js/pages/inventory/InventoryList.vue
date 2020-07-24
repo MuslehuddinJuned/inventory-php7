@@ -86,10 +86,11 @@
                                 <datalist id="StoreList">
                                     <option v-for="store_name in store_namelistview" :key="store_name.store_name">{{ store_name }}</option>
                                 </datalist>
+                                <span v-if="errors.store_name" class="error text-danger"> {{$t('required_field')}} <br></span>
                                 
                                 <label class="col-form-label">{{ $t('item_code')}}</label>
                                 <input type="text" class="form-control" v-model="task[0]['item_code']">
-                                <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
 
                                 <label class="col-form-label">{{ $t('item')}}</label>
                                 <input type="text" class="form-control" v-model="task[0]['item']">
@@ -102,6 +103,7 @@
                                 <datalist id="UnitList">
                                     <option v-for="unit in unitlistview" :key="unit.unit">{{ unit }}</option>
                                 </datalist>
+                                <span v-if="errors.unit" class="error text-danger"> {{$t('required_field')}} <br></span>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group m-auto col-md-12 text-center float-center">
@@ -163,6 +165,7 @@ export default {
             buttonTitle : this.$t('save'),
 
             src : '/images/item/',
+            save_image : null,
 
             transProps: {
                 // Transition name
@@ -210,7 +213,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : null}]
+            this.task = [{'store_name' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
         },
 
         viewDetails() {
@@ -225,6 +228,7 @@ export default {
                 fileReader.onload = (e) => {
                     this.src = '';
                     this.task[0]['item_image'] = e.target.result;
+                    this.save_image = e.target.result;
                 }
             } else {
                 let warningMessages;
@@ -240,6 +244,7 @@ export default {
 
         editDetails(id, index) {
             this.src = '/images/item/'
+            this.save_image = null
             this.title = this.$t('UpdateItem')
             this.taskId = id
             this.Index = index
@@ -247,8 +252,9 @@ export default {
         },
 
         save() {
-            this.disable = !this.disable;
+            this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
+            this.task[0]['item_image'] = this.save_image
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
             if(this.taskId == null){

@@ -15,6 +15,16 @@ class CreateProductheadsTable extends Migration
     {
         Schema::create('productheads', function (Blueprint $table) {
             $table->id();
+            $table->string('product_category')->nullable();
+            $table->string('buyer')->nullable();
+            $table->string('product_style')->nullable();
+            $table->string('product_code')->nullable();
+            $table->string('specification')->nullable();
+            $table->string('product_image')->default('noimage.jpg');
+            $table->string('remarks')->nullable();
+            
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
             $table->timestamps();
         });
     }
