@@ -1,6 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
+      <img class="img-responsive mr-3" src="/favicon.ico" width="30px" alt="SUSTipe">
       <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
         {{ $t('appName') }}
       </router-link>
@@ -73,11 +74,11 @@
                 {{ $t('login') }}
               </router-link>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link :to="{ name: 'register' }" class="nav-link" active-class="active">
                 {{ $t('register') }}
               </router-link>
-            </li>
+            </li> -->
           </template>
         </ul>
       </div>
