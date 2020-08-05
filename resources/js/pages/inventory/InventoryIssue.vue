@@ -78,7 +78,7 @@
                     </div>
 
                     <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop>
                         <div v-for="task in singleTask" :key="task.id" class="modal-body row m-0 p-0 mb-2">
                             <div class="col-md-6">
                                 <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}
@@ -111,7 +111,7 @@
                                 </b-table>
                             </div>                              
                         </div>
-                        <div class="modal-footer">
+                        <template v-slot:modal-footer="">
                             <div class="row m-0 p-0 col-md-12">
                                 <div class="col-md-5">
                                     <button @click="editDetails(-1)" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
@@ -121,11 +121,6 @@
                                     <button @click="editDetails(1)" class="mdb btn btn-outline-default float-right">{{ $t('accept') }}</button>
                                 </div>
                             </div>
-                        </div>
-                        <template v-slot:modal-footer="">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
                         </template>
                     </b-modal>
                     <!-- End view Details Modal -->

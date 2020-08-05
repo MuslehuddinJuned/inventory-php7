@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="col-md-4">
@@ -133,10 +133,6 @@
                                 </b-table>
                             </div>                              
                         </div>
-                        <div class="modal-footer">
-                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
-                        </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
                                 <h3 class="panel-title float-left">{{ title }}</h3> 
@@ -146,15 +142,14 @@
                             </div>
                         </template>
                         <template v-slot:modal-footer="">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
+                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                         </template>
                     </b-modal>                    
                     <!-- End Edit Details Modal -->
 
                     <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('ItemReceive')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('ItemReceive')" no-close-on-backdrop>
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="col-md-4">
                                 <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}<br>
@@ -192,17 +187,6 @@
                                 </b-table>
                             </div>                              
                         </div>
-                        <div class="modal-footer">
-                            <div class="row m-0 p-0 col-md-12">
-                                <div class="col-md-5">
-                                    <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
-                                </div>
-                                <div class="col-md-7">
-                                    <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                                    <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
-                                </div>
-                            </div>
-                        </div>
                         <template v-slot:modal-header="">
                             <div class="col-md-9">
                                 <h3 class="panel-title float-left">{{ $t('ItemReceive') }}</h3> 
@@ -212,9 +196,15 @@
                             </div>
                         </template>
                         <template v-slot:modal-footer="">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
+                            <div class="row m-0 p-0 col-md-12">
+                                <div class="col-md-5">
+                                    <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                                </div>
+                                <div class="col-md-7">
+                                    <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                                    <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                                </div>
+                            </div>
                         </template>
                     </b-modal>
                     <!-- End view Details Modal -->
