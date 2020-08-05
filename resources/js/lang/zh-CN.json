@@ -1,4 +1,9 @@
 {
+  "in" : "在",
+  "out" : "出",
+  "closing" : "闭幕",
+  "opening" : "开场",
+  "balance_sheet" : "资产负债表",
   "browse" : "瀏覽",
   "material_list_for_uantity" : "材料清單",
   "image" : "圖片",

@@ -6,7 +6,9 @@
         </div>
 
         <div class="links">
-            <a href="https://www.sustipe.com">{{ $t('software_title') }}</a>
+          <router-link :to="{ name: 'login' }">
+            {{ $t('software_title') }}
+          </router-link>
         </div>
     </div>
   </div>
@@ -39,7 +41,6 @@ export default {
 
 <style lang="scss" scoped>
 html, body {
-    background-color: #fff;
     color: #636b6f;
     font-family: 'Nunito', sans-serif;
     font-weight: 200;
@@ -78,7 +79,7 @@ html, body {
 .links > a {
     color: #636b6f;
     padding: 0 25px;
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: .1rem;
     text-decoration: none;

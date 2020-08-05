@@ -1,4 +1,9 @@
 { 
+    "in" : "In",
+    "out" : "Out",
+    "closing" : "Closing",
+    "opening" : "Opening",
+    "balance_sheet" : "Balance Sheet",
     "browse" : "Browse",
     "material_list_for_uantity" : "Material List for Quantity",
     "image" : "Image",

@@ -1,7 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container">
-      <img class="img-responsive mr-3" src="/favicon.ico" width="30px" alt="SUSTipe">
+      <img class="img-responsive mr-2" src="/favicon.ico" width="30px" alt="SUSTipe">
       <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
         {{ $t('appName') }}
       </router-link>
@@ -31,6 +31,10 @@
               <router-link :to="{ name: 'inventory.RequisitionList' }" class="dropdown-item pl-3">
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
+              </router-link>
+              <router-link :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
+                <fa icon="balance-scale-left" fixed-width/>
+                {{ $t('balance_sheet') }}
               </router-link>
             </div>
           </li>

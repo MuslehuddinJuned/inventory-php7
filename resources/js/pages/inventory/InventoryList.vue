@@ -80,7 +80,7 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0">
                             <div class="col-md-8">
@@ -120,16 +120,10 @@
                                 </div>
                             </div>
                                                             
-                        </div>
-                        <div class="modal-footer mt-2">
+                        </div>                        
+                        <template v-slot:modal-footer="">
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                             <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
-                        </div>
-                        
-                        <template v-slot:modal-footer="" class="d-none">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
                         </template>
                     </b-modal>
                     
