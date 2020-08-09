@@ -53,7 +53,9 @@
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
+                    @row-clicked="(item) => viewDetails(item.id)"
                     class="table-transition"
+                    style="cursor : pointer"
                     >
                     <template v-slot:table-busy>
                         <div class="text-center text-success my-2">
@@ -98,10 +100,60 @@
                         ></b-pagination>
                     </div>                    
                 </div>
-
-                
             </div>
         </div>  
+        <!-- Start view Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop ok-only>
+            <div class="modal-body row m-0 p-0 mb-2">
+                <div class="row col-md-9 m-0 p-0">
+                    <div class="col-md-6">
+                        <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{inOutDetails[0]['store_name']}}<br>
+                        <span class="font-weight-bold">{{ $t('item_code')}}:</span> {{inOutDetails[0]['item_code']}}<br>
+                        <span class="font-weight-bold">{{ $t('item')}}:</span> {{inOutDetails[0]['item']}}
+                    </div>
+                    <div class="col-md-6">
+                        <span class="font-weight-bold">{{ $t('specification')}}:</span> {{inOutDetails[0]['specification']}}<br>
+                        <span class="font-weight-bold">{{ $t('unit')}}:</span> {{inOutDetails[0]['unit']}}<br>
+                        <span class="font-weight-bold">{{ $t('unit_price')}}:</span> {{inOutDetails[0]['unit_price']}}
+                    </div>
+                    <div class="input-group col-md-8">
+                        <input v-model="searchDateStart" class="form-control input-group-prepend" type="date">
+                        <div>
+                            <div class="input-group-text">to</div>
+                        </div>
+                        <input v-model="searchDateEnd" class="form-control input-group-append" type="date">
+                        <div>
+                        <button @click="searchDateDetails" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-auto col-md-12 text-center float-center">
+                        <a :href="'images/item/' + inOutDetails[0]['item_image']"> <img id="blah" style="width: 70%;" :src="'images/item/' + inOutDetails[0]['item_image']" alt="product image" /></a>
+                    </div>
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3">
+                    <b-table show-empty small striped hover stacked="md" :busy="isBusy" :items="inOutDetailsfiltered" :fields="inOutDetailsFields">
+                        <template v-slot:table-busy>
+                            <div class="text-center text-success my-2">
+                                <b-spinner class="align-middle"></b-spinner>
+                                <strong>{{$t('loading')}}</strong>
+                            </div>
+                        </template>
+                        <template v-slot:cell(index)="row">
+                            {{ row.index+1 }}
+                        </template>
+                        <template v-slot:cell(inout_date)="row">
+                            {{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                        </template>
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-footer="">
+                <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+            </template>
+        </b-modal>
+        <!-- End view Details Modal -->
     </div>
 </template>
 
@@ -117,9 +169,12 @@ export default {
         return{
             inventoryList : [],
             inventoryListfiltered : [],
+            inOutDetails : [{'store_name' : '', 'item_code' : '', 'item' : '', 'specification' : '', 'unit' : '', 'unit_price' : ''}],
+            inOutDetailsfiltered : [],
             searchDateStart : null,
             searchDateEnd : null,
             stockType : 'all',
+            taskId : null,
 
             transProps: {
                 // Transition name
@@ -158,6 +213,28 @@ export default {
                 mnth = ("0" + (date.getMonth() + 1)).slice(-2),
                 day = ("0" + date.getDate()).slice(-2)
             return [year, mnth, day].join("-");
+        },
+
+        viewDetails(id) {
+            this.isBusy = true
+            this.taskId = id
+            fetch(`api/inventory/${id}`)
+            .then(res => res.json())
+            .then(res => {
+                this.inOutDetails = res['inOutDetails']
+                this.inOutDetailsfiltered = this.inOutDetailsSearch
+            })
+            .then(res =>{
+                this.isBusy = false;
+            })
+            .catch(err => {
+                alert(err.response.data.message)
+            })
+            this.$refs['dataView'].show()
+        },
+
+        searchDateDetails() {
+            this.inOutDetailsfiltered = this.inOutDetailsSearch
         },
 
         fetchData(date_1, date_2) {
@@ -220,6 +297,15 @@ export default {
             
         },
 
+        inOutDetailsSearch() {
+            let start_date = this.searchDateStart
+            let end_date = new Date(this.searchDateEnd)
+            end_date = this.convertDate(end_date.setDate(end_date.getDate() + 1))
+            return this.inOutDetails.filter(function (item) {
+                return (item['inout_date'] >= start_date && item['inout_date'] < end_date)
+            })
+        },
+
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
@@ -240,6 +326,18 @@ export default {
                 { key: 'issueing_qty', label : this.$t('out'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'closing', label : this.$t('closing'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+            ]
+        },
+
+        inOutDetailsFields() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            this.buttonTitle = this.$t('save')
+            return [
+                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'inout_date', label : this.$t('date'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'received_qty', label : this.$t('in'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'issued_qty', label : this.$t('out'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 

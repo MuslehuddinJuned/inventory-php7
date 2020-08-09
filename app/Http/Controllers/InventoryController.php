@@ -94,9 +94,28 @@ class InventoryController extends Controller
      * @param  \App\Inventory  $inventory
      * @return \Illuminate\Http\Response
      */
-    public function show(Inventory $inventory)
+    public function show($id)
     {
-        //
+        $inOutDetails = DB::SELECT('SELECT A.id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
+            SELECT id, store_name, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
+            )A LEFT JOIN (
+
+            SELECT inventory_id, created_at inout_date, received_qty, 0 issued_qty FROM(
+            SELECT inventory_id, inventoryreceive_id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
+            )A LEFT JOIN (SELECT id, created_at FROM inventoryreceives WHERE deleted_by = 0
+            )B ON A.inventoryreceive_id = B.id WHERE inventory_id = ?
+                    
+            UNION ALL 
+                        
+            SELECT inventory_id, created_at inout_date, 0 received_qty, issued_qty FROM(
+            SELECT (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) issued_qty, inventory_id, rechead_id FROM recdetails WHERE accept = 1
+            )A LEFT JOIN (
+            SELECT rechead_id, created_at FROM `inventoryissues`
+            )B ON A.rechead_id = B.rechead_id WHERE inventory_id = ?
+            )B ON A.id = B.inventory_id ORDER BY inout_date DESC', [$id, $id, $id]);
+
+        return compact('inOutDetails');
+        
     }
 
     public function balance($y1,$m1,$d1,$y2,$m2,$d2)
