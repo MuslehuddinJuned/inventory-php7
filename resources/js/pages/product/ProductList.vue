@@ -74,7 +74,7 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="row col-md-9 m-0 p-0">
@@ -129,23 +129,18 @@
                                 </b-table>
                             </div>                              
                         </div>
-                        <div class="modal-footer">
-                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
-                        </div>
                         <template v-slot:modal-header="">
                                 <h3 class="panel-title float-left">{{ title }}</h3> 
                         </template>
                         <template v-slot:modal-footer="">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
+                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                         </template>
                     </b-modal>                    
                     <!-- End Edit Details Modal -->
 
                     <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop ok-only>
+                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop>
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="row col-md-9 m-0 p-0">
                                 <div class="col-md-6">
@@ -166,7 +161,7 @@
                             </div>
                             <div class="col-md-12 m-0 p-0 mt-3">
                                 <div class="mb-2 d-flex">
-                                    <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_uantity')}} </h5></div>
+                                    <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
                                     <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
                                 <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
@@ -195,7 +190,10 @@
                                 </b-table>
                             </div>                              
                         </div>
-                        <div class="modal-footer">
+                        <template v-slot:modal-header="">
+                                <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
+                        </template>
+                        <template v-slot:modal-footer="">
                             <div class="row m-0 p-0 col-md-12">
                                 <div class="col-md-5">
                                     <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
@@ -205,14 +203,6 @@
                                     <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
                                 </div>
                             </div>
-                        </div>
-                        <template v-slot:modal-header="">
-                                <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
-                        </template>
-                        <template v-slot:modal-footer="">
-                            <b-button class="d-none">
-                                Close
-                            </b-button>
                         </template>
                     </b-modal>
                     <!-- End view Details Modal -->
