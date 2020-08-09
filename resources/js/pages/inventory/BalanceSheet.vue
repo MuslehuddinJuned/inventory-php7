@@ -116,7 +116,7 @@
                         <span class="font-weight-bold">{{ $t('unit')}}:</span> {{inOutDetails[0]['unit']}}<br>
                         <span class="font-weight-bold">{{ $t('unit_price')}}:</span> {{inOutDetails[0]['unit_price']}}
                     </div>
-                    <div class="input-group col-md-8">
+                    <div class="input-group col-md-8 mt-2">
                         <input v-model="searchDateStart" class="form-control input-group-prepend" type="date">
                         <div>
                             <div class="input-group-text">to</div>

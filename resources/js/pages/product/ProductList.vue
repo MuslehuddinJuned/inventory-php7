@@ -185,6 +185,7 @@
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
+                                        <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center">{{grand_total*product_qty}}</td>
                                     </template>
                                 </b-table>
@@ -566,6 +567,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'store_name', label : this.$t('store_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -581,7 +583,7 @@ export default {
         itemlistview(){
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
-                array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['store_name'] + ' | ' + this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']})
+                array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['store_name'] + ' | ' + this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['unit']})
             }
 
             return array
@@ -593,7 +595,6 @@ export default {
                 if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
                 total += parseFloat(val.unit_price*val.quantity)
             });
-            console.log(total)
             return total.toFixed(2);
         },
 

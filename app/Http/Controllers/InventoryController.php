@@ -53,8 +53,9 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
+        // 'item_code'=> 'required|unique:inventories,item_code'
         $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code',
+            'item_code'=> 'required',
             'store_name'=> 'required',
             'unit'=> 'required'
         ]);
@@ -160,8 +161,9 @@ class InventoryController extends Controller
      */
     public function update(Request $request, Inventory $inventory)
     {
+        // 'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id,
         $this->validate($request, [
-            'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id,
+            'item_code'=> 'required',
             'store_name'=> 'required',
             'unit'=> 'required'
         ]); 

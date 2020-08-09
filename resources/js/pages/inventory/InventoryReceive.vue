@@ -81,7 +81,7 @@
                                 <input type="text" class="form-control" v-model="taskHead[0]['supplier_name']">
                             </div>
                             <div class="col-md-4">
-                                <label class="col-form-label">{{ $t('invoice_no')}}</label>
+                                <label class="col-form-label">{{ $t('invoice_no') + ' (PO)'}}</label>
                                 <input type="text" class="form-control" v-model="taskHead[0]['challan_no']">
                                 <label class="col-form-label">{{ $t('invoice_date')}}</label>
                                 <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
@@ -90,6 +90,7 @@
                                 <label class="col-form-label">{{ $t('receive_type')}}</label>
                                 <select class="form-control" v-model="taskHead[0]['stock_type']">
                                     <option>Purchase</option>
+                                    <option>Production</option>
                                     <option>Return</option>
                                     <option>Adjust</option>
                                 </select>
@@ -156,7 +157,7 @@
                                 <span class="font-weight-bold">{{ $t('supplier')}}:</span> {{taskHead[0]['supplier_name']}}
                             </div>
                             <div class="col-md-4">                                
-                                <span class="font-weight-bold">{{ $t('invoice_no')}}:</span> {{taskHead[0]['challan_no']}}<br>
+                                <span class="font-weight-bold">{{ $t('invoice_no') + ' (PO)'}}:</span> {{taskHead[0]['challan_no']}}<br>
                                 <span class="font-weight-bold">{{ $t('invoice_date')}}:</span> {{taskHead[0]['challan_date']}}
                             </div>
                             <div class="col-md-4">
@@ -522,7 +523,7 @@ export default {
             return [
                 { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'supplier_name', label : this.$t('supplier'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'challan_no', label : this.$t('invoice_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'challan_no', label : this.$t('invoice_no')+ ' (PO)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'challan_date', label : this.$t('invoice_date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock_type', label : this.$t('receive_type'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'storeReceive_id', label : this.$t('receive_id'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
