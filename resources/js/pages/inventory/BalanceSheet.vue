@@ -248,7 +248,7 @@ export default {
             d2 = ("0" + date_2.getDate()).slice(-2)
 
             this.searchDateStart = this.convertDate(date_1)
-            this.searchDateEnd = this.convertDate(date_2.setDate(date_2.getDate() - 1))
+            this.searchDateEnd = this.convertDate(date_2)
 
             this.isBusy = true
             fetch(`api/inventorybalance/${y1}/${m1}/${d1}/${y2}/${m2}/${d2}`)
@@ -267,7 +267,6 @@ export default {
         searchDate() {
             let date_1 = new Date(this.searchDateStart)
             let date_2 = new Date(this.searchDateEnd)
-            date_2.setDate(date_2.getDate() + 1)
 
             this.fetchData(date_1, date_2)
         },
