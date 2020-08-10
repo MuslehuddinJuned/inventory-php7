@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recdetails extends Model
 {
-    protected $fillable = ['quantity', 'remarks', 'inventory_id', 'rechead_id'];
+    protected $fillable = ['quantity', 'remarks', 'accept', 'inventory_id', 'rechead_id'];
     public function user(){
         return $this->belongsTo(User::class);
     }

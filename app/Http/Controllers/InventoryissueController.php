@@ -57,15 +57,15 @@ class InventoryissueController extends Controller
     public function store(Request $request)
     {
         $Inventoryissue = new Inventoryissue;
-        $Inventoryissue->rechead_id = $request['id'];
+        $Inventoryissue->rechead_id = $request['rechead_id'];
         $Inventoryissue->user_id = auth()->user()->id;
         
-        $Rechead = Rechead::find($request->id);
-        $Rechead->accept = $request['val'];
+        $Rechead = Rechead::find($request->rechead_id);
+        $Rechead->accept = $request['accept'];
 
-        $Recdetails = Recdetails::where('rechead_id', $request->id)->get();
+        $Recdetails = Recdetails::where('rechead_id', $request->rechead_id)->get();
         for ($i=0; $i < count($Recdetails) ; $i++) { 
-            $Recdetails[$i]->accept = $request['val'];
+            $Recdetails[$i]->accept = $request['accept'];
             $Recdetails[$i]->save();
         }
         

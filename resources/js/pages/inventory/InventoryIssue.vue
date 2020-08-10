@@ -209,7 +209,7 @@ export default {
             if(this.stockOverFlow == true && val == 1){
                 this.$toast.error(this.$t('stock_insifficient'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
             } else{
-                axios.post(`api/inventoryissue/`, {'val' : val, 'id' : this.taskHeadId
+                axios.post(`/api/inventoryissue`, {'accept' : val, 'rechead_id' : this.taskHeadId
                 })
                 .then(res => {
                     let index = 0 
