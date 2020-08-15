@@ -25,12 +25,14 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_name, item, item_code, specification, unit, unit_price, item_image FROM(            
-            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
+        $Inventory = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, updated_at, store_name, store_id FROM (
+            SELECT id, requisition_no, remarks, accept, updated_at FROM recheads WHERE accept IS NULL
             )A LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
-            )C ON A.id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
-            )D ON A.id = D.inventory_id');
+            SELECT inventory_id, rechead_id FROM recdetails
+            )B ON A.id = B.rechead_id LEFT JOIN(
+            SELECT id, store_id FROM inventories
+            )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores
+			)D ON C.store_id = D.id GROUP BY A.id ORDER BY updated_at DESC');
 
         return compact ('Inventory');
     }
@@ -56,7 +58,6 @@ class InventoryController extends Controller
         // 'item_code'=> 'required|unique:inventories,item_code'
         $this->validate($request, [
             'item_code'=> 'required',
-            'store_name'=> 'required',
             'unit'=> 'required'
         ]);
 
@@ -97,9 +98,10 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
-        $inOutDetails = DB::SELECT('SELECT A.id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
-            SELECT id, store_name, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
-            )A LEFT JOIN (
+        $inOutDetails = DB::SELECT('SELECT A.id, store_id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
+            SELECT id, store_id, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
+            )A LEFT JOIN ( SELECT id, name store_name FROM stores
+			)B ON A.store_id = B.id LEFT JOIN (
 
             SELECT inventory_id, created_at inout_date, received_qty, 0 issued_qty FROM(
             SELECT inventory_id, inventoryreceive_id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
@@ -164,7 +166,6 @@ class InventoryController extends Controller
         // 'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id,
         $this->validate($request, [
             'item_code'=> 'required',
-            'store_name'=> 'required',
             'unit'=> 'required'
         ]); 
 

@@ -20,7 +20,7 @@
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>
-              <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
+              <!-- <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-plus"></b-icon>
                 {{ $t('ItemReceive') }}
               </router-link>
@@ -35,10 +35,10 @@
               <router-link :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
                 <fa icon="balance-scale-left" fixed-width/>
                 {{ $t('balance_sheet') }}
-              </router-link>
+              </router-link> -->
             </div>
           </li>
-          <li v-if="user" class="nav-item dropdown">
+          <!-- <li v-if="user" class="nav-item dropdown">
             <a id="product" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="box-seam"></b-icon> {{ $t('product') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
               <router-link :to="{ name: 'product.ProductList' }" class="dropdown-item pl-3">                
@@ -46,7 +46,7 @@
                 {{ $t('product_list') }}
               </router-link>
             </div>
-          </li>
+          </li> -->
         </ul>
 
         <ul class="navbar-nav ml-auto">
