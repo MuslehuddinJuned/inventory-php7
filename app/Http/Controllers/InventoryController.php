@@ -25,14 +25,13 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $Inventory = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, updated_at, store_name, store_id FROM (
-            SELECT id, requisition_no, remarks, accept, updated_at FROM recheads WHERE accept IS NULL
+        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_id, store_name, cann_per_sheet, item, item_code, specification, unit, unit_price, item_image FROM(            
+            SELECT id, store_id, item, item_code, specification, cann_per_sheet,  unit, unit_price, item_image FROM inventories
             )A LEFT JOIN (
-            SELECT inventory_id, rechead_id FROM recdetails
-            )B ON A.id = B.rechead_id LEFT JOIN(
-            SELECT id, store_id FROM inventories
-            )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores
-			)D ON C.store_id = D.id GROUP BY A.id ORDER BY updated_at DESC');
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
+			)D ON A.store_id = D.id');
 
         return compact ('Inventory');
     }

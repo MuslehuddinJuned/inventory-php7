@@ -68,7 +68,9 @@ class InvenrecallController extends Controller
      */
     public function show($id)
     {
-        $inventoryrec_d= DB::SELECT('SELECT id, quantity, price, remarks, user_id, inventory_id, inventoryreceive_id, created_at, updated_at FROM invenrecalls WHERE inventoryreceive_id = ?', [$id]);
+        $inventoryrec_d= DB::SELECT('SELECT A.id, quantity, price, remarks, user_id, inventory_id, inventoryreceive_id, store_id, item, item_code, specification, unit, cann_per_sheet, unit_price, item_image, created_at, updated_at FROM(SELECT id, quantity, price, remarks, user_id, inventory_id, inventoryreceive_id, created_at, updated_at FROM invenrecalls WHERE inventoryreceive_id = ?
+            )A LEFT JOIN (SELECT id, store_id, item, item_code, specification, unit, cann_per_sheet, unit_price, item_image FROM inventories
+            )B ON A.inventory_id = B.id', [$id]);
 
         return compact('inventoryrec_d');
     }
