@@ -65,11 +65,14 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
+                    <template v-slot:cell(stock_cann)="row">
+                        {{(row.item.stock * row.item.cann_per_sheet).toFixed(0)}}
+                    </template>
                     <template v-slot:cell(total_price)="row">
                         {{(row.item.stock * row.item.unit_price).toFixed(2)}}
                     </template>
-                    <template v-slot:cell(item)="row">
-                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="width: 56px" alt=""></b-img></a> {{row.item.item}}
+                    <template v-slot:cell(item_image)="row">
+                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="width: 56px" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(action)="row">
                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
@@ -102,7 +105,7 @@
                             <div class="col-md-8">
                                 <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
                                 <div>
-                                    <select class="form-control" id="store" v-model="store" disabled>
+                                    <select class="form-control bg-transparent" id="store" v-model="store" disabled>
                                         <option value="2">{{ $t('injection_raw_materials') }}</option>
                                         <option value="3">{{ $t('cutting_raw_materials') }}</option>
                                         <option value="4">{{ $t('polish_raw_materials') }}</option>
@@ -115,15 +118,21 @@
                                     </select>
                                 </div>
                                 
-                                <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
+                                <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
+                                <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('code')}}</label>
                                 <input type="text" class="form-control" v-model="task[0]['item_code']">
                                 <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
 
-                                <label class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
+                                <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
+                                <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('name')}}</label>
                                 <input type="text" class="form-control" v-model="task[0]['item']">
                                 
-                                <label class="col-form-label">{{ $t('size')}}</label>
+                                <label v-if="store == 3" class="col-form-label">{{ $t('size')}}</label>
+                                <label v-else class="col-form-label">{{ $t('specification')}}</label>
                                 <input type="text" class="form-control" v-model="task[0]['specification']">
+
+                                <label v-if="store == 3" class="col-form-label">{{ $t('cann_per_sheet')}}</label>
+                                <input type="number" class="form-control" v-model="task[0]['cann_per_sheet']">
                                 
                                 <label class="col-form-label">{{ $t('unit')}}</label>
                                 <input list="UnitList" class="form-control" v-model="task[0]['unit']">
@@ -179,7 +188,7 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
+            task : [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
             taskId : null,
             Index : null,
             buttonTitle : this.$t('save'),
@@ -235,7 +244,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null,'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
+            this.task = [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
         },
 
         store_change() {
@@ -337,11 +346,12 @@ export default {
                         axios.delete(`api/inventory/${id}`)
                         
                         .then(res => {
-                            this.inventoryList.splice(index, 1);                            
-                            this.totalRows = this.inventoryList.length;
-                            for (let i = 0; i < this.totalRows; i++) {
-                                this.inventoryList[i]['sn'] = i                
+                            this.inventoryListAll.splice(index, 1);
+                            for (let i = 0; i < this.inventoryListAll.length; i++) {
+                                this.inventoryListAll[i]['sn'] = i                
                             } 
+                            this.inventoryList = this.inventoryListByDept                            
+                            this.totalRows = this.inventoryList.length;
                         })
                         .catch(err => {
                             alert(err.response.data.message);                       
@@ -401,6 +411,7 @@ export default {
             this.buttonTitle = this.$t('save')
             if(this.store == 3){
                 return [
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -411,13 +422,14 @@ export default {
                 ]
             } else {
                 return [
-                    { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             }

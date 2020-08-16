@@ -1,4 +1,6 @@
 { 
+    "cann_per_sheet" : "cann/sheet",
+    "material" : "Material",
     "stock_cann" : "Stock Cann",
     "stock_sheet" : "Stock Sheet",
     "size" : "Size",
