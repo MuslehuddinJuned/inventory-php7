@@ -217,14 +217,13 @@ export default {
             .then( res => res.json())
             .then(res => {  
                 this.inventoryListAll = res['Inventory'];
-                this.isBusy = false;
-
-                for (let i = 0; i < this.inventoryListAll.length; i++) {
-                    this.inventoryListAll[i]['sn'] = i                
-                }
+                this.isBusy = false;                
                 
                 this.inventoryList = this.inventoryListByDept;
-                this.totalRows = this.inventoryListByDept.length;
+                this.totalRows = this.inventoryList.length;
+                for (let i = 0; i < this.totalRows; i++) {
+                    this.inventoryList[i]['sn'] = i                
+                }
             })
             .catch(err => {
                 alert(err.response.data.message);
@@ -250,6 +249,9 @@ export default {
         store_change() {
             this.inventoryList = this.inventoryListByDept;
             this.totalRows = this.inventoryListByDept.length;
+            for (let i = 0; i < this.totalRows; i++) {
+                this.inventoryList[i]['sn'] = i                
+            }
         },
 
         viewDetails() {
@@ -346,12 +348,18 @@ export default {
                         axios.delete(`api/inventory/${id}`)
                         
                         .then(res => {
-                            this.inventoryListAll.splice(index, 1);
+                            this.inventoryList.splice(index, 1);
+                            this.totalRows = this.inventoryList.length
+
+                            for (let i = 0; i < this.totalRows; i++) {
+                                this.inventoryList[i]['sn'] = i                
+                            }
                             for (let i = 0; i < this.inventoryListAll.length; i++) {
-                                this.inventoryListAll[i]['sn'] = i                
-                            } 
-                            this.inventoryList = this.inventoryListByDept                            
-                            this.totalRows = this.inventoryList.length;
+                                if(this.inventoryListAll[i]['id'] == id){
+                                    this.inventoryListAll.splice(i, 1);
+                                    break
+                                }               
+                            }
                         })
                         .catch(err => {
                             alert(err.response.data.message);                       

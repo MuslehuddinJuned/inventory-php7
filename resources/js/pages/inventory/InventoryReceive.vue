@@ -456,6 +456,7 @@ export default {
                     .then(res => res.json())
                     .then(res => {
                         this.taskDetails = res['inventoryrec_d']
+                        this.taskHead[0]['store_name'] = this.taskDetails[0]['store_name']
                     })
 
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
@@ -492,6 +493,13 @@ export default {
                                 }
                                 this.inventoryreceiveList.splice(index, 1); 
                                 this.totalRows = this.inventoryreceiveList.length;
+
+                                for (let i = 0; i < this.inventoryreceiveListAll.length; i++) {
+                                    if(this.inventoryreceiveListAll[i]['id'] == this.taskHeadId){
+                                        this.inventoryreceiveListAll.splice(i, 1);
+                                        break
+                                    }               
+                                }
                                 this.$refs['dataView'].hide()
                             }
                         })
@@ -572,7 +580,6 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'supplier_name', label : this.$t('supplier'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'challan_no', label : this.$t('invoice_no')+ ' (PO)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'challan_date', label : this.$t('invoice_date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
