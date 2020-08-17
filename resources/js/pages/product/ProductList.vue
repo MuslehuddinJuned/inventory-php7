@@ -164,31 +164,34 @@
                                     <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
                                     <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
-                                    <template v-slot:cell(index)="row">
-                                        {{ row.index+1 }}
-                                    </template>
-                                    <template v-slot:cell(inventory_id)="row">
-                                        {{ row_material(row.item.inventory_id) }}
-                                    </template>
-                                    
-                                    <template v-slot:cell(quantity)="row">
-                                        <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
-                                        <span v-else>{{ (row.item.quantity * product_qty)}}</span>
-                                    </template>
-                                    <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.unit_price * product_qty).toFixed(2) }}
-                                    </template>
-                                    <template slot="bottom-row">
-                                        <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total*product_qty}}</td>
-                                    </template>
-                                </b-table>
+                                <div v-for="(store, index) in storeList" :key="index">
+                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{store}}</h4>
+                                    <b-table show-empty small striped hover stacked="md" :items="taskDetailsByStore(store)" :fields="taskDetailsfieldsView">
+                                        <template v-slot:cell(index)="row">
+                                            {{ row.index+1 }}
+                                        </template>
+                                        <template v-slot:cell(inventory_id)="row">
+                                            {{ row_material(row.item.inventory_id) }}
+                                        </template>
+                                        
+                                        <template v-slot:cell(quantity)="row">
+                                            <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
+                                            <span v-else>{{ (row.item.quantity * product_qty)}}</span>
+                                        </template>
+                                        <template v-slot:cell(total_price)="row">
+                                            {{ (row.item.quantity * row.item.unit_price * product_qty).toFixed(2) }}
+                                        </template>
+                                        <!-- <template slot="bottom-row">
+                                            <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
+                                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                                            <td class="text-white bg-info font-weight-bold text-center">{{grand_total*product_qty}}</td>
+                                        </template> -->
+                                    </b-table>
+                                </div>
                             </div>                              
                         </div>
                         <template v-slot:modal-header="">
@@ -341,6 +344,17 @@ export default {
                 this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
             }
             this.$refs['dataEdit'].show()         
+        },
+
+        taskDetailsByStore(store) {
+            let array =[]
+            for (let i = 0; i < this.taskDetails.length; i++) {
+                if (this.taskDetails[i]['store_name'] == store) {                    
+                    array[i] = this.taskDetails[i]                
+                }
+            }
+
+            return array
         },
 
         row_material(id) {
@@ -571,8 +585,8 @@ export default {
                 { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
@@ -580,12 +594,15 @@ export default {
             return uniq(this.productList.map(({ product_category }) => product_category))
         },
 
+        storeList() {
+            return uniq(this.taskDetails.map(({ store_name }) => store_name))
+        },
+
         itemlistview(){
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
                 array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['store_name'] + ' | ' + this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['unit']})
             }
-
             return array
         },
 

@@ -63,13 +63,15 @@ class ProductdetailsController extends Controller
      */
     public function show($id)
     {
-        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
-            SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?)A LEFT JOIN (
-            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
-            )B ON A.inventory_id = B.id LEFT JOIN (
+        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
+            SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?
+            )A LEFT JOIN (
+            SELECT id, store_id, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            )B ON A.inventory_id = B.id LEFT JOIN(SELECT id, name store_name FROM stores
+			)C ON B.store_id = C.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
-            )C ON A.inventory_id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
-            )D ON A.inventory_id = D.inventory_id ORDER BY store_name', [$id]);
+            )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )E ON A.inventory_id = E.inventory_id ORDER BY store_name', [$id]);
 
         return compact('productDetails');
     }

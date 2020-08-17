@@ -20,6 +20,7 @@ export default [
   { path: '/issuearchive', name: 'inventory.InvIssArchive', component: page('inventory/InvIssArchive.vue') },
   { path: '/balancesheet', name: 'inventory.BalanceSheet', component: page('inventory/BalanceSheet.vue') },
   { path: '/product', name: 'product.ProductList', component: page('product/ProductList.vue') },
+  { path: '/requisitionbyproduct', name: 'product.RequisitionList', component: page('product/RequisitionList.vue') },
 
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
