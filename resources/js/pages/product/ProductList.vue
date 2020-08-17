@@ -74,8 +74,7 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
-                        
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>                        
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="row col-md-9 m-0 p-0">
                                 <div class="col-md-6">
@@ -98,6 +97,22 @@
                                     <label class="col-form-label">{{ $t('remarks')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
                                 </div>
+                                <div class="col-md-12">
+                                    <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
+                                    <div>
+                                        <select @change="store_change" class="form-control" id="store" v-model="store">
+                                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                                            <option value="5">{{ $t('polish_chemicals') }}</option>
+                                            <option value="6">{{ $t('washing_chemicals') }}</option>
+                                            <option value="7">{{ $t('stray_chemicals') }}</option>
+                                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                                            <option value="9">{{ $t('packaging_materials') }}</option>
+                                            <option value="10">{{ $t('stationery_items') }}</option>
+                                        </select>
+                                    </div> 
+                                </div> 
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group m-auto col-md-12 text-center float-center">
@@ -166,7 +181,7 @@
                                 </div>
                                 <div v-for="(store, index) in storeList" :key="index">
                                     <h4 class="text-center col-12 bg-info text-light mt-3">{{store}}</h4>
-                                    <b-table show-empty small striped hover stacked="md" :items="taskDetailsByStore(store)" :fields="taskDetailsfieldsView">
+                                    <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store)" :fields="taskDetailsfieldsView">
                                         <template v-slot:cell(index)="row">
                                             {{ row.index+1 }}
                                         </template>
@@ -233,10 +248,13 @@ export default {
         return{
             inventoryList : [],
             productList : [],
+            // taskDetailsByStore : [],
+            store : 3,
             errors : [],
             title: '',
             disable: false,
             taskHead : [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}],
+            taskDetailsAll : [],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -323,7 +341,7 @@ export default {
             fetch(`api/productdetails/${id}`)
             .then(res => res.json())
             .then(res => {
-                this.taskDetails = res['productDetails']
+                this.taskDetailsAll = res['productDetails']
                 this.taskHead = this.singleTask
             })
             .then(res =>{
@@ -340,27 +358,44 @@ export default {
             this.save_image = null
             this.title = this.$t('UpdateItem')
             this.hideDetails = ''
+            this.taskDetails = this.taskDetailsByStore
             if (this.taskDetails.length == 0) {
                 this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
             }
             this.$refs['dataEdit'].show()         
         },
 
-        taskDetailsByStore(store) {
+        materialsByStore(store) {
             let array =[]
-            for (let i = 0; i < this.taskDetails.length; i++) {
-                if (this.taskDetails[i]['store_name'] == store) {                    
-                    array[i] = this.taskDetails[i]                
+            for (let i = 0; i < this.taskDetailsAll.length; i++) {
+                if (this.taskDetailsAll[i]['store_name'] == store) {                    
+                    array[i] = this.taskDetailsAll[i]                
                 }
             }
-
             return array
+        },
+
+        store_change() {
+            this.taskDetails = this.taskDetailsByStore
+            if (this.taskDetails.length == 0) {
+                this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
+            }
+            // this.taskDetailsByStore = [];
+            // for (let i = 0; i < this.taskDetails.length; i++) {
+            //     if (this.taskDetails[i]['store_id'] == store_id) {                    
+            //         this.taskDetailsByStore[i] = this.taskDetails[i]                
+            //     }
+            // }
+            // this.totalRows = this.inventoryListByDept.length;
+            // for (let i = 0; i < this.totalRows; i++) {
+            //     this.inventoryList[i]['sn'] = i                
+            // }
         },
 
         row_material(id) {
             for (let i = 0; i < this.inventoryList.length; i++) {
                 if (this.inventoryList[i]['id'] == id) {
-                    return this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']
+                    return this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['unit']
                 }                
             }
         },
@@ -544,6 +579,13 @@ export default {
             })
         },
 
+        taskDetailsByStore() {
+            let id = this.store
+            return this.taskDetailsAll.filter(function (item) {
+            return item['store_id'] == id
+            })
+        },
+
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
@@ -595,24 +637,26 @@ export default {
         },
 
         storeList() {
-            return uniq(this.taskDetails.map(({ store_name }) => store_name))
+            return uniq(this.taskDetailsAll.map(({ store_name }) => store_name))
         },
 
         itemlistview(){
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
-                array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['store_name'] + ' | ' + this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['unit']})
+                if (this.inventoryList[i]['store_id'] == this.store) {                    
+                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['unit']})
+                }
             }
             return array
         },
 
         grand_total_cal() {
-            let total = 0
-            Object.entries(this.taskDetails).forEach(([key, val]) => {
-                if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
-                total += parseFloat(val.unit_price*val.quantity)
-            });
-            return total.toFixed(2);
+            // let total = 0
+            // Object.entries(this.taskDetails).forEach(([key, val]) => {
+            //     if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
+            //     total += parseFloat(val.unit_price*val.quantity)
+            // });
+            // return total.toFixed(2);
         },
 
         loading(){
