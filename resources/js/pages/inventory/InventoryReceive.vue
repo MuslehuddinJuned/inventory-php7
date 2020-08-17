@@ -117,7 +117,8 @@
                             <div class="col-md-4">
                                 <label class="col-form-label">{{ $t('receive_type')}}</label>
                                 <select class="form-control" v-model="taskHead[0]['stock_type']">
-                                    <option>Purchase</option>
+                                    <option>China Purchase</option>
+                                    <option>BD Purchase</option>
                                     <option>Production</option>
                                     <option>Return</option>
                                     <option>Adjust</option>

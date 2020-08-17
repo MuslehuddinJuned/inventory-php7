@@ -68,6 +68,9 @@
                     <template v-slot:cell(stock_cann)="row">
                         {{(row.item.stock * row.item.cann_per_sheet).toFixed(0)}}
                     </template>
+                    <template v-slot:cell(total_weight)="row">
+                        {{(row.item.stock * row.item.weight).toFixed(2)}}
+                    </template>
                     <template v-slot:cell(total_price)="row">
                         {{(row.item.stock * row.item.unit_price).toFixed(2)}}
                     </template>
@@ -99,47 +102,66 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0">
-                            <div class="col-md-8">
-                                <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
-                                <div>
-                                    <select class="form-control bg-transparent" id="store" v-model="store" disabled>
-                                        <option value="2">{{ $t('injection_raw_materials') }}</option>
-                                        <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                                        <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                        <option value="5">{{ $t('polish_chemicals') }}</option>
-                                        <option value="6">{{ $t('washing_chemicals') }}</option>
-                                        <option value="7">{{ $t('stray_chemicals') }}</option>
-                                        <option value="8">{{ $t('printing_chemicals') }}</option>
-                                        <option value="9">{{ $t('packaging_materials') }}</option>
-                                        <option value="10">{{ $t('stationery_items') }}</option>
-                                    </select>
+                            <div class="col-md-8 row m-0 p-0">
+                                <div class="col-md-12">
+                                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
+                                    <div>
+                                        <select class="form-control bg-transparent" id="store" v-model="store" disabled>
+                                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                                            <option value="5">{{ $t('polish_chemicals') }}</option>
+                                            <option value="6">{{ $t('washing_chemicals') }}</option>
+                                            <option value="7">{{ $t('stray_chemicals') }}</option>
+                                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                                            <option value="9">{{ $t('packaging_materials') }}</option>
+                                            <option value="10">{{ $t('stationery_items') }}</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                
-                                <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
-                                <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('code')}}</label>
-                                <input type="text" class="form-control" v-model="task[0]['item_code']">
-                                <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
-
-                                <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
-                                <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('name')}}</label>
-                                <input type="text" class="form-control" v-model="task[0]['item']">
-                                
-                                <label v-if="store == 3" class="col-form-label">{{ $t('size')}}</label>
-                                <label v-else class="col-form-label">{{ $t('specification')}}</label>
-                                <input type="text" class="form-control" v-model="task[0]['specification']">
-
-                                <label v-if="store == 3" class="col-form-label">{{ $t('cann_per_sheet')}}</label>
-                                <input type="number" class="form-control" v-model="task[0]['cann_per_sheet']">
-                                
-                                <label class="col-form-label">{{ $t('unit')}}</label>
-                                <input list="UnitList" class="form-control" v-model="task[0]['unit']">
-                                <datalist id="UnitList">
-                                    <option v-for="unit in unitlistview" :key="unit.unit">{{ unit }}</option>
-                                </datalist>
-                                <span v-if="errors.unit" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                <div class="col-md-6">
+                                    <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
+                                    <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('code')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['item_code']">
+                                    <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label v-if="store == 3" class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
+                                    <label v-else class="col-form-label">{{ $t('material') + ' ' + $t('name')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['item']">
+                                </div>
+                                <div v-if="store == 3" class="col-md-6">
+                                    <label class="col-form-label">{{ $t('grade')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['grade']">
+                                </div>
+                                <div v-if="store == 3" class="col-md-6">
+                                    <label class="col-form-label">{{ $t('accounts_code')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['accounts_code']">
+                                </div>
+                                <div v-if="store == 3" class="col-md-6">
+                                    <label class="col-form-label">{{ $t('cann_per_sheet')}}</label>
+                                    <input type="number" class="form-control" v-model="task[0]['cann_per_sheet']">
+                                </div>
+                                <div v-if="store == 3" class="col-md-6">
+                                    <label class="col-form-label">{{ $t('weight')}} (kg)</label>
+                                    <input type="number" class="form-control" v-model="task[0]['weight']">
+                                </div>
+                                <div class="col-md-6">
+                                    <label v-if="store == 3" class="col-form-label">{{ $t('size')}}</label>
+                                    <label v-else class="col-form-label">{{ $t('specification')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['specification']">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('unit')}}</label>
+                                    <input list="UnitList" class="form-control" v-model="task[0]['unit']">
+                                    <datalist id="UnitList">
+                                        <option v-for="unit in unitlistview" :key="unit.unit">{{ unit }}</option>
+                                    </datalist>
+                                    <span v-if="errors.unit" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group m-auto col-md-12 text-center float-center">
@@ -188,7 +210,7 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
+            task : [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'grade' : null, 'accounts_code' : null, 'weight' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
             taskId : null,
             Index : null,
             buttonTitle : this.$t('save'),
@@ -243,7 +265,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
+            this.task = [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'grade' : null, 'accounts_code' : null, 'weight' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
         },
 
         store_change() {
@@ -422,9 +444,13 @@ export default {
                     { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'grade', label : this.$t('grade'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('stock_sheet'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]

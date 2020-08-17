@@ -1,4 +1,8 @@
 { 
+    "total_weight" : "Total Weight",
+    "weight" : "Weight",
+    "accounts_code" : "Accounts Code",
+    "grade" : "Grade",
     "cann_per_sheet" : "cann/sheet",
     "material" : "Material",
     "stock_cann" : "Stock Cann",

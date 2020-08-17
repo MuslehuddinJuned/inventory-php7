@@ -1,4 +1,8 @@
 {
+    "total_weight" : "总重量",
+    "weight" : "重量",
+    "accounts_code" : "帳號代碼",
+    "grade" : "年級",
     "cann_per_sheet" : "個/件",
     "material" : "材料",
     "stock_cann" : "坎恩的股票",
