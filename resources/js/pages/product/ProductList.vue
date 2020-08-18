@@ -180,19 +180,35 @@
                                     <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
                                     <div><input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
-                                <div v-for="(store, index) in storeList" :key="index">
-                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{store}}</h4>
-                                    <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store)" :fields="taskDetailsfieldsView">
+                                <div v-for="(store_name, index) in storeList" :key="index">
+                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{store_name}}</h4>
+                                    <b-table v-if="store_name == 'Cutting Raw Materials'" show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsViewCutting">
                                         <template v-slot:cell(index)="row">
                                             {{ row.index+1 }}
                                         </template>
-                                        <template v-slot:cell(inventory_id)="row">
-                                            {{ row_material(row.item.inventory_id) }}
+                                        <template v-slot:cell(quantity)="row">
+                                            <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
+                                            <span v-else>{{ (row.item.quantity * product_qty)}}</span>
                                         </template>
+                                        <template v-slot:cell(total_weight)="row">
+                                            {{(row.item.quantity * row.item.weight * product_qty).toFixed(2)}}
+                                        </template>
+                                    </b-table>
+                                    <b-table v-else show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
+                                        <template v-slot:cell(index)="row">
+                                            {{ row.index+1 }}
+                                        </template>
+                                        <!-- <template v-slot:cell(inventory_id)="row">
+                                            {{ row_material(row.item.inventory_id) }}
+                                        </template> -->
                                         
                                         <template v-slot:cell(quantity)="row">
                                             <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
                                             <span v-else>{{ (row.item.quantity * product_qty)}}</span>
+                                        </template>
+                                        
+                                        <template v-slot:cell(total_weight)="row">
+                                            {{(row.item.quantity * row.item.weight * product_qty).toFixed(2)}}
                                         </template>
                                         <template v-slot:cell(total_price)="row">
                                             {{ (row.item.quantity * row.item.unit_price * product_qty).toFixed(2) }}
@@ -369,7 +385,7 @@ export default {
         materialsByStore(store) {
             let array =[]
             for (let i = 0; i < this.taskDetailsAll.length; i++) {
-                if (this.taskDetailsAll[i]['store_name'] == store) {                    
+                if (this.taskDetailsAll[i]['store_name'] == store) {                
                     array[i] = this.taskDetailsAll[i]                
                 }
             }
@@ -381,16 +397,6 @@ export default {
             if (this.taskDetails.length == 0) {
                 this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'producthead_id' : this.taskHeadId, 'inventory_id' : null}]
             }
-            // this.taskDetailsByStore = [];
-            // for (let i = 0; i < this.taskDetails.length; i++) {
-            //     if (this.taskDetails[i]['store_id'] == store_id) {                    
-            //         this.taskDetailsByStore[i] = this.taskDetails[i]                
-            //     }
-            // }
-            // this.totalRows = this.inventoryListByDept.length;
-            // for (let i = 0; i < this.totalRows; i++) {
-            //     this.inventoryList[i]['sn'] = i                
-            // }
         },
 
         row_material(id) {
@@ -622,12 +628,37 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
+
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 // { key: 'store_name', label : this.$t('store_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item_code', label : this.$t('item_code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+            ]            
+        },
+
+        taskDetailsfieldsViewCutting() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            this.buttonTitle = this.$t('save')
+
+            return [
+                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                // { key: 'store_name', label : this.$t('store_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item_code', label : this.$t('item_code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'weight', label : this.$t('weight') + '(kg)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_weight', label : this.$t('total_weight') + '(kg)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]

@@ -63,10 +63,10 @@ class ProductdetailsController extends Controller
      */
     public function show($id)
     {
-        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
+        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_id, weight, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
             SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?
             )A LEFT JOIN (
-            SELECT id, store_id, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            SELECT id, store_id, weight, item, item_code, specification, unit, unit_price, item_image FROM inventories
             )B ON A.inventory_id = B.id LEFT JOIN(SELECT id, name store_name FROM stores
 			)C ON B.store_id = C.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
