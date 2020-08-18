@@ -92,6 +92,7 @@
                                 <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('code')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
+                                    <span v-if="errors.product_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
                                     <label class="col-form-label">{{ $t('specification')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['specification']">
                                     <label class="col-form-label">{{ $t('remarks')}}</label>
@@ -177,7 +178,7 @@
                             <div class="col-md-12 m-0 p-0 mt-3">
                                 <div class="mb-2 d-flex">
                                     <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
-                                    <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
+                                    <div><input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
                                 <div v-for="(store, index) in storeList" :key="index">
                                     <h4 class="text-center col-12 bg-info text-light mt-3">{{store}}</h4>
@@ -623,7 +624,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'store_name', label : this.$t('store_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'store_name', label : this.$t('store_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},

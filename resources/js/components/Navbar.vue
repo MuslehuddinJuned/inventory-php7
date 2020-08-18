@@ -45,10 +45,10 @@
                 <fa icon="utensils" fixed-width/>
                 {{ $t('product_list') }}
               </router-link>
-              <router-link :to="{ name: 'product.RequisitionList' }" class="dropdown-item pl-3">
+              <!-- <router-link :to="{ name: 'product.RequisitionList' }" class="dropdown-item pl-3">
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
-              </router-link>
+              </router-link> -->
             </div>
           </li>
         </ul>

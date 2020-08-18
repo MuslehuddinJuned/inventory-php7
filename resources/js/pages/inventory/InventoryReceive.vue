@@ -138,6 +138,9 @@
                                     <template v-slot:cell(inventory_id)="row">
                                         <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
                                     </template>
+                                    <template v-slot:cell(master_sheet)="row">
+                                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.master_sheet">
+                                    </template>
                                     <template v-slot:cell(quantity)="row">
                                         <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
                                     </template>
@@ -338,7 +341,7 @@ export default {
         },
 
         addRow() {
-            this.taskDetails.push({'quantity' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null})
+            this.taskDetails.push({'quantity' : 0, 'master_sheet' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null})
         },
 
         grand_total_value() {
@@ -387,7 +390,7 @@ export default {
             this.title = this.$t('UpdateItem')
             this.hideDetails = ''
             if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'quantity' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+                this.taskDetails = [{'quantity' : 0, 'master_sheet' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
             }
             this.$refs['dataView'].hide()
             this.$refs['dataEdit'].show()
@@ -417,7 +420,7 @@ export default {
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                     this.hideDetails = ''
-                    this.taskDetails = [{'quantity' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
+                    this.taskDetails = [{'quantity' : 0, 'master_sheet' : 0, 'price' : 0,'remarks' : null, 'inventoryreceive_id' : this.taskHeadId, 'inventory_id' : null}]
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -597,6 +600,7 @@ export default {
                 return [
                     { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                     { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('stock_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -627,6 +631,7 @@ export default {
                     { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('stock_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},

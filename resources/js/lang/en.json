@@ -1,4 +1,5 @@
 { 
+    "stock_master_sheet" : "Master Sheet",
     "total_weight" : "Total Weight",
     "weight" : "Weight",
     "accounts_code" : "Accounts Code",
