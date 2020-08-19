@@ -105,9 +105,8 @@
                                             <option value="2">{{ $t('injection_raw_materials') }}</option>
                                             <option value="3">{{ $t('cutting_raw_materials') }}</option>
                                             <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                            <option value="5">{{ $t('polish_chemicals') }}</option>
-                                            <option value="6">{{ $t('washing_chemicals') }}</option>
-                                            <option value="7">{{ $t('stray_chemicals') }}</option>
+                                            <option value="5">{{ $t('wash_chemicals') }}</option>
+                                            <option value="7">{{ $t('spray_chemicals') }}</option>
                                             <option value="8">{{ $t('printing_chemicals') }}</option>
                                             <option value="9">{{ $t('packaging_materials') }}</option>
                                             <option value="10">{{ $t('stationery_items') }}</option>
@@ -178,7 +177,7 @@
                             <div class="col-md-12 m-0 p-0 mt-3">
                                 <div class="mb-2 d-flex">
                                     <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
-                                    <div><input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="ml-2 form-control" v-model="product_qty"></div>
+                                    <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div>
                                 <div v-for="(store_name, index) in storeList" :key="index">
                                     <h4 class="text-center col-12 bg-info text-light mt-3">{{store_name}}</h4>
