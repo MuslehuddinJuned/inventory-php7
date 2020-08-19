@@ -1,7 +1,11 @@
 { 
+    "description" : "Description",
+    "material_name" : "Material Name",
+    "material_number" : "Material No",
     "stock_master_sheet" : "Master Sheet",
     "total_weight" : "Total Weight",
     "weight" : "Weight",
+    "unit_weight" : "Unit Weight",
     "accounts_code" : "Accounts Code",
     "grade" : "Grade",
     "cann_per_sheet" : "cann/sheet",

@@ -63,15 +63,10 @@ class ProductdetailsController extends Controller
      */
     public function show($id)
     {
-        $productDetails = DB::SELECT('SELECT A.id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, remarks, A.inventory_id, producthead_id, store_id, weight, store_name, item, item_code, specification, unit, unit_price, item_image FROM(        
-            SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?
-            )A LEFT JOIN (
-            SELECT id, store_id, weight, item, item_code, specification, unit, unit_price, item_image FROM inventories
-            )B ON A.inventory_id = B.id LEFT JOIN(SELECT id, name store_name FROM stores
-			)C ON B.store_id = C.id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
-            )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
-            )E ON A.inventory_id = E.inventory_id ORDER BY store_name', [$id]);
+        $productDetails = DB::SELECT('SELECT A.id, quantity, material_number, material_name, description, material_name_ch, description_ch, unit_weight, unit, remarks, producthead_id, inventory_id, store_id, store_name FROM(        
+            SELECT id, quantity, material_number, material_name, description, material_name_ch, description_ch, unit_weight, unit, remarks, producthead_id, inventory_id, store_id FROM productdetails WHERE producthead_id = ?
+            )A LEFT JOIN (SELECT id, name store_name FROM stores
+			)B ON A.store_id = B.id ORDER BY store_name', [$id]);
 
         return compact('productDetails');
     }
@@ -101,9 +96,14 @@ class ProductdetailsController extends Controller
         $Productdetails = Productdetails::find($id);
         
         $Productdetails->quantity = $request['quantity'];
-        $Productdetails->producthead_id = $request['producthead_id'];
-        $Productdetails->remarks = $request['remarks'];
-        $Productdetails->inventory_id = $request['inventory_id'];
+        $Productdetails->material_number = $request['material_number'];
+        $Productdetails->material_name = $request['material_name'];
+        $Productdetails->description = $request['description'];
+        $Productdetails->material_name_ch = $request['material_name_ch'];
+        $Productdetails->description_ch = $request['description_ch'];
+        $Productdetails->unit_weight = $request['unit_weight'];
+        $Productdetails->unit = $request['unit'];
+        $Productdetails->store_id = $request['store_id'];
         $Productdetails->save();
     }
 
