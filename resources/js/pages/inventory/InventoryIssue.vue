@@ -12,6 +12,21 @@
                          </button>
                     </div>
                 </div> 
+                <div class="card-header row m-0">
+                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
+                    <div>
+                        <select @change="store_change" class="form-control" id="store" v-model="store">
+                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                            <option value="5">{{ $t('wash_chemicals') }}</option>
+                            <option value="7">{{ $t('spray_chemicals') }}</option>
+                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                            <option value="9">{{ $t('packaging_materials') }}</option>
+                            <option value="10">{{ $t('stationery_items') }}</option>
+                        </select>
+                    </div>
+                </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center">
                         <b-form-group class="mb-0 mr-auto">
@@ -100,14 +115,14 @@
                                     <template v-slot:cell(total_price)="row">
                                         {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
                                     </template>
-                                    <template slot="bottom-row">
+                                    <!-- <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
-                                    </template>
+                                    </template> -->
                                 </b-table>
                             </div>                              
                         </div>
@@ -146,6 +161,7 @@ export default {
         return{
             inventoryissueList : [],
             disable: false,
+            store: 3,
             taskHead : [],
             taskHeadId : null,
             taskDetails : [],
@@ -172,7 +188,8 @@ export default {
         fetch(`api/inventoryissue`)
         .then(res => res.json())
         .then(res => {
-            this.inventoryissueList = res['Inventoryissue'];
+            this.inventoryissueListAll = res['Inventoryissue'];
+            this.inventoryissueList = this.inventoryissueListByDept
             this.totalRows = this.inventoryissueList.length;
             this.isBusy = false;
         })
@@ -188,7 +205,13 @@ export default {
             this.currentPage = 1
         },
 
+        store_change() {
+            this.inventoryissueList = this.inventoryissueListByDept
+            this.totalRows = this.inventoryissueList.length
+        },
+
         viewDetails(id) {
+            this.stockOverFlow = false
             this.taskHeadId = id
             fetch(`api/recdetails/${id}`)
             .then(res => res.json())
@@ -197,7 +220,8 @@ export default {
                 this.taskHead = this.singleTask
             })
             .then(res =>{
-                this.grand_total = this.grand_total_cal
+                
+                // this.grand_total = this.grand_total_cal
             })
             .catch(err => {
                 alert(err.response.data.message)
@@ -259,12 +283,19 @@ export default {
             return this.$t('TypetoSearch')
         },
 
+        inventoryissueListByDept() {
+            let id = this.store
+            return this.inventoryissueListAll.filter(function (item) {
+                return item['store_id'] == id
+            })
+        },
+
         fields() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -275,14 +306,31 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
-            return [
-                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-            ]
+            if(this.store == 3){
+                return [
+                    { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('size'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                ]
+            } else {
+                return [
+                    { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                ]
+            }
         },
 
         taskDetailsCheck(){
