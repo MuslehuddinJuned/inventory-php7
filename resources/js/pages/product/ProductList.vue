@@ -4,7 +4,7 @@
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('product_list') }}</h3> 
-                    <div class="ml-auto">
+                    <div v-if="buyer" class="ml-auto">
                         <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div> 
@@ -93,19 +93,21 @@
                                         <option v-for="buyer in buyerlistview" :key="buyer.buyer">{{ buyer }}</option>
                                     </datalist>
                                     <span v-if="errors.buyer" class="error text-danger"> {{$t('required_field')}} <br></span>
-                                    <label class="col-form-label">{{ $t('style')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
-                                    <label class="col-form-label">{{ $t('code')}}</label>
+                                    
+                                    <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
                                     <span v-if="errors.product_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
+                                    
+                                    <label class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
+                                    <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('specification')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['specification']">
+                                    
                                     <label class="col-form-label">{{ $t('remarks')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
-                                </div>
-                                <div class="col-md-6">
+                                    
                                     <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
                                     <div>
                                         <select @change="store_change" class="form-control" id="store" v-model="store">
@@ -118,8 +120,8 @@
                                             <option value="9">{{ $t('packaging_materials') }}</option>
                                             <option value="10">{{ $t('stationery_items') }}</option>
                                         </select>
-                                    </div> 
-                                </div> 
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group m-auto col-md-12 text-center float-center">
@@ -185,7 +187,7 @@
                             <div class="row col-md-9 m-0 p-0">
                                 <div class="col-md-6">
                                     <!-- <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br> -->
-                                    <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{taskHead[0]['buyer']}}<br>
+                                    <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{buyer}}<br>
                                     <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
                                     <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
                                 </div>
@@ -294,19 +296,7 @@ export default {
     },
 
     mounted() {
-        this.isBusy = true;
-        fetch(`api/producthead`)
-        .then(res => res.json())
-        .then(res => {
-            this.productListAll = res['productHead']
-            this.productList = this.productListByBuyer
-            this.totalRows = this.productList.length
-            this.isBusy = false
-        })
-        .catch(err => {
-            alert(err.response.data.message);
-        }) 
-
+        this.fetchData()
         fetch(`api/inventory`)
         .then( res => res.json())
         .then(res => {  
@@ -332,6 +322,21 @@ export default {
             this.totalRows = this.productList.length
         },
 
+        fetchData() {
+            this.isBusy = true;
+            fetch(`api/producthead`)
+            .then(res => res.json())
+            .then(res => {
+                this.productListAll = res['productHead']
+                this.productList = this.productListByBuyer
+                this.totalRows = this.productList.length
+                this.isBusy = false
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            }) 
+        },
+
         convertDate(str) {
             var date = new Date(str),
                 year = date.getFullYear(),
@@ -343,7 +348,7 @@ export default {
         addDetails(){
             this.save_image = null
             this.hideDetails = 'd-none'
-            this.taskHead = [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}]
+            this.taskHead = [{'product_category' : null, 'buyer' : this.buyer, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}]
             this.taskHeadId = null
             this.title = this.$t('product_new')
             this.src = '/images/product/'
@@ -451,6 +456,7 @@ export default {
             this.disable = !this.disable;
             this.buttonTitle = this.$t('saving')
             this.taskHead[0]['product_image'] = this.save_image
+            this.taskHead[0]['buyer'] = this.buyer
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
             if(this.taskHeadId == null){
@@ -460,7 +466,7 @@ export default {
                     this.taskHead[0] = data.productHead                   
                     this.taskHeadId = this.taskHead[0]['id']
                     this.productList.unshift(this.taskHead[0])
-                    
+                    this.fetchData()
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                     this.hideDetails = ''
@@ -503,6 +509,7 @@ export default {
                     
                 })
                 .then(res => {
+                    this.fetchData()
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.errors = ''
@@ -518,6 +525,8 @@ export default {
                     this.buttonTitle = this.$t('save')
                 });
             }
+
+            
         },
 
         destroy() {
@@ -536,8 +545,7 @@ export default {
                                         break
                                     }   
                                 }
-                                this.productList.splice(index, 1);                           
-                                this.totalRows = this.productList.length;
+                                this.fetchData()
                                 this.$refs['dataView'].hide()
                             }
                         })
