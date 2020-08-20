@@ -52,7 +52,7 @@
                         </div>
                     </template>
                     <template v-slot:cell(product_image)="row">
-                        <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="width: 56px" alt=""></b-img></a>
+                        <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     </b-table>
                     
@@ -198,7 +198,7 @@
                                     <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                                 </div> -->
                                 <div v-for="(store_name, index) in storeList" :key="index">
-                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{store_name}}</h4>
+                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{$t(`${store_name_ch(store_name)}`)}}</h4>
                                     <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
                                         <template v-slot:cell(index)="row">
                                             {{ row.index+1 }}
@@ -336,6 +336,20 @@ export default {
             this.taskDetails = []
         },
 
+        store_name_ch(store_name) {
+            let store = {'Cutting Raw Materials' : 'cutting_raw_materials', 
+                            'Stationery Items' : 'stationery_items',
+                            'Packaging Materials' : 'packaging_materials',
+                            'Printing Chemicals' : 'printing_chemicals',
+                            'Spray Chemicals' : 'spray_chemicals',
+                            'Wash Chemicals' : 'wash_chemicals',
+                            'Polish Chemicals' : 'polish_chemicals',
+                            'Polish Raw Materials' : 'polish_raw_materials',
+                            'Injection Raw Materials' : 'injection_raw_materials'
+                        }
+            return store[store_name]
+        },
+
         addRow() {            
             this.taskDetails.push({'quantity' : null, 'material_number' : null, 'material_name' : null, 'description' : null, 'material_name_ch' : null, 'description_ch' : null, 'unit_weight' : null, 'unit' : null, 'remarks' : null, 'inventory_id' : null, 'store_id' : this.store, 'remarks' : null, 'producthead_id' : this.taskHeadId})
         },
@@ -452,7 +466,11 @@ export default {
                     this.src = '/images/product/'
                     this.taskHead[0]['product_image'] = data.fileName
                     for (let i = 0; i < this.taskDetails.length; i++) {
-                        if(this.taskDetails[i]['id']){
+                        if (!this.taskDetails[i]['material_name']) this.taskDetails[i]['material_name'] = this.taskDetails[i]['material_name_ch']
+                        if (!this.taskDetails[i]['material_name_ch']) this.taskDetails[i]['material_name_ch'] = this.taskDetails[i]['material_name']
+                        if (!this.taskDetails[i]['description']) this.taskDetails[i]['description'] = this.taskDetails[i]['description_ch']
+                        if (!this.taskDetails[i]['description_ch']) this.taskDetails[i]['description_ch'] = this.taskDetails[i]['description']
+                        if(this.taskDetails[i]['id']){                            
                             axios.patch(`api/productdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
                         } else {
                             axios.post(`api/productdetails`, this.taskDetails[i])
@@ -597,7 +615,7 @@ export default {
                 { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'product_style', label : this.$t('style'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_code', label : this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center p-0', thClass: 'border-top border-dark font-weight-bold' },
             ]
         },
 
