@@ -32,10 +32,10 @@
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
               </router-link>
-              <!-- <router-link :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
+              <router-link :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
                 <fa icon="balance-scale-left" fixed-width/>
                 {{ $t('balance_sheet') }}
-              </router-link> -->
+              </router-link>
             </div>
           </li>
           <li v-if="user" class="nav-item dropdown">

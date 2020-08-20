@@ -13,6 +13,21 @@
                         <button @click="searchDate" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
                     </div>
                 </div> 
+                <div class="card-header row m-0">
+                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
+                    <div>
+                        <select @change="store_change" class="form-control" id="store" v-model="store">
+                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                            <option value="5">{{ $t('wash_chemicals') }}</option>
+                            <option value="7">{{ $t('spray_chemicals') }}</option>
+                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                            <option value="9">{{ $t('packaging_materials') }}</option>
+                            <option value="10">{{ $t('stationery_items') }}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center">
                         <b-form-group class="mb-0 mr-auto">
@@ -66,8 +81,8 @@
                     <template v-slot:cell(total_price)="row">
                         {{(row.item.closing * row.item.unit_price).toFixed(2)}}
                     </template>
-                    <template v-slot:cell(item)="row">
-                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="width: 56px" alt=""></b-img></a> {{row.item.item}}
+                    <template v-slot:cell(item_image)="row">
+                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="max-width: 150px; height: 50px;" alt=""></b-img></a>
                     </template>
                     <template slot="bottom-row">
                         <td class="text-white bg-info font-weight-bold text-center">Total</td>
@@ -175,6 +190,7 @@ export default {
             searchDateEnd : null,
             stockType : 'all',
             taskId : null,
+            store: 3,
 
             transProps: {
                 // Transition name
@@ -237,6 +253,11 @@ export default {
             this.inOutDetailsfiltered = this.inOutDetailsSearch
         },
 
+        store_change() {
+            this.inventoryListfiltered = this.balance;
+            this.totalRows = this.inventoryListfiltered.length;
+        },
+
         fetchData(date_1, date_2) {
             let y1=null, m1=null, d1=null, y2=null, m2=null, d2=null
 
@@ -255,6 +276,7 @@ export default {
             .then( res => res.json())
             .then(res => {  
                 this.inventoryList = res['balance'];
+                console.log(this.inventoryList)
                 this.inventoryListfiltered = this.balance;
                 this.totalRows = this.inventoryListfiltered.length;
                 this.isBusy = false;
@@ -281,16 +303,18 @@ export default {
 
     computed: {
         balance() {
-            let check = this.searchDate
+            let check = this.store
             if (this.stockType == 'all') {
-                return this.inventoryList
+                return this.inventoryList.filter(function (item) {
+                    return (item['store_id'] == check)
+                })
             } else if (this.stockType == 'notZero') {
                 return this.inventoryList.filter(function (item) {
-                    return item['closing'] > 0
+                    return (item['closing'] > 0 && item['store_id'] == check)
                 })
             } else {
                 return this.inventoryList.filter(function (item) {
-                    return item['closing'] == 0
+                    return (item['closing'] == 0 && item['store_id'] == check)
                 })
             }
             
@@ -315,7 +339,7 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             return [
-                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'item_image', label : this.$t('item_image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
