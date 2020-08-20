@@ -88,7 +88,7 @@
                                         <option v-for="category in categorylistview" :key="category.category">{{ category }}</option>
                                     </datalist> -->
                                     <label class="col-form-label">{{ $t('buyer')}}</label>
-                                    <input list="BuyerList" class="form-control text-nowrap" v-model="taskHead[0]['buyer']">
+                                    <input list="BuyerList" class="form-control text-nowrap" v-model="buyer">
                                     <datalist id="BuyerList">
                                         <option v-for="buyer in buyerlistview" :key="buyer.buyer">{{ buyer }}</option>
                                     </datalist>
@@ -175,7 +175,7 @@
                                 <h3 class="panel-title float-left">{{ title }}</h3> 
                         </template>
                         <template v-slot:modal-footer="">
-                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                            <button @click.prevent="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                             <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                         </template>
                     </b-modal>                    
@@ -389,7 +389,6 @@ export default {
             .catch(err => {
                 alert(err.response.data.message)
             })
-            console.log(this.taskDetailsAll)
             this.$refs['dataView'].show()
         },
 
