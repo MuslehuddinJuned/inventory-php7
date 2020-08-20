@@ -8,7 +8,11 @@
                         <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div> 
-                <div class="card-body m-0 p-0">
+                <div class="card-header">
+                    <label for="buyer" class="mr-4"><h5 class="font-weight-bold">{{ $t('buyer') }}</h5></label>
+                    <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
+                </div>
+                <div v-if="productList.length > 0" class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
@@ -32,7 +36,7 @@
                             ></b-form-select>
                         </b-form-group>                        
                     </div>
-                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
+                    <b-table id="table-transition" primary-key="id" :busy="isBusy" small striped hover stacked="md"
                     :items="productList"
                     :fields="fields"
                     :current-page="currentPage"
@@ -78,27 +82,30 @@
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="row col-md-9 m-0 p-0">
                                 <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('category')}}</label>
+                                    <!-- <label class="col-form-label">{{ $t('category')}}</label>
                                     <input list="CategoryList" class="form-control text-nowrap" v-model="taskHead[0]['product_category']">
                                     <datalist id="CategoryList">
                                         <option v-for="category in categorylistview" :key="category.category">{{ category }}</option>
-                                    </datalist>
-                                    <span v-if="errors.product_category" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                    </datalist> -->
                                     <label class="col-form-label">{{ $t('buyer')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['buyer']">
+                                    <input list="BuyerList" class="form-control text-nowrap" v-model="taskHead[0]['buyer']">
+                                    <datalist id="BuyerList">
+                                        <option v-for="buyer in buyerlistview" :key="buyer.buyer">{{ buyer }}</option>
+                                    </datalist>
+                                    <span v-if="errors.buyer" class="error text-danger"> {{$t('required_field')}} <br></span>
                                     <label class="col-form-label">{{ $t('style')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
-                                </div>
-                                <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('code')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
                                     <span v-if="errors.product_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
+                                </div>
+                                <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('specification')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['specification']">
                                     <label class="col-form-label">{{ $t('remarks')}}</label>
                                     <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
                                     <div>
                                         <select @change="store_change" class="form-control" id="store" v-model="store">
@@ -177,12 +184,12 @@
                         <div class="modal-body row m-0 p-0 mb-2">
                             <div class="row col-md-9 m-0 p-0">
                                 <div class="col-md-6">
-                                    <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br>
+                                    <!-- <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br> -->
                                     <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{taskHead[0]['buyer']}}<br>
+                                    <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
                                     <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
                                 </div>
                                 <div class="col-md-6">
-                                    <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
                                     <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
                                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
                                 </div>
@@ -253,8 +260,10 @@ export default {
         return{
             inventoryList : [],
             productList : [],
+            productListAll : [],
             // taskDetailsByStore : [],
             store : 3,
+            buyer : null,
             errors : [],
             title: '',
             disable: false,
@@ -289,7 +298,8 @@ export default {
         fetch(`api/producthead`)
         .then(res => res.json())
         .then(res => {
-            this.productList = res['productHead']
+            this.productListAll = res['productHead']
+            this.productList = this.productListByBuyer
             this.totalRows = this.productList.length
             this.isBusy = false
         })
@@ -315,6 +325,11 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+
+        change_buyer() {
+            this.productList = this.productListByBuyer
+            this.totalRows = this.productList.length
         },
 
         convertDate(str) {
@@ -611,10 +626,10 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'product_category', label : this.$t('category'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'product_style', label : this.$t('style'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_code', label : this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'product_category', label : this.$t('category'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                // { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_style', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
             ]
         },
@@ -668,9 +683,19 @@ export default {
             ]
         },
 
-        categorylistview() {
-            return uniq(this.productList.map(({ product_category }) => product_category))
+        buyerlistview() {
+            return uniq(this.productListAll.map(({ buyer }) => buyer))
         },
+
+        productListByBuyer() {
+            let buyer = this.buyer
+            return this.productListAll.filter(function (item) {
+            return item['buyer'] == buyer
+            })
+        },
+        // categorylistview() {
+        //     return uniq(this.productList.map(({ product_category }) => product_category))
+        // },
 
         storeList() {
             return uniq(this.taskDetailsAll.map(({ store_name }) => store_name))

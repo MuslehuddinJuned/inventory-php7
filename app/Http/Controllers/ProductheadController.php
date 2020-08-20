@@ -49,7 +49,7 @@ class ProductheadController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'product_category'=> 'required',
+            'buyer'=> 'required',
             'product_code'=> 'required|unique:productheads,product_code'
         ]);
 
@@ -114,7 +114,7 @@ class ProductheadController extends Controller
     public function update(Request $request, Producthead $producthead)
     {
         $this->validate($request, [
-            'product_category'=> 'required',
+            'buyer'=> 'required',
             'product_code'=> 'required|unique:productheads,product_code,'.$producthead->id,
         ]);
 
