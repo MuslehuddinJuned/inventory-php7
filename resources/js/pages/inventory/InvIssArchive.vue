@@ -297,18 +297,20 @@ export default {
                     { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
         },
 
-        // grand_total_cal() {
-        //     let total = 0
-        //     Object.entries(this.taskDetails).forEach(([key, val]) => {
-        //         if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
-        //         total += parseFloat(val.unit_price*val.quantity)
-        //     });
-        //     return total.toFixed(2);
-        // },
+        grand_total_cal() {
+            let total = 0
+            Object.entries(this.taskDetails).forEach(([key, val]) => {
+                if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
+                total += parseFloat(val.unit_price*val.quantity)
+            });
+            return total.toFixed(2);
+        },
 
         loading(){
             return[ 

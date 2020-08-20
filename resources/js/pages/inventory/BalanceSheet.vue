@@ -276,7 +276,6 @@ export default {
             .then( res => res.json())
             .then(res => {  
                 this.inventoryList = res['balance'];
-                console.log(this.inventoryList)
                 this.inventoryListfiltered = this.balance;
                 this.totalRows = this.inventoryListfiltered.length;
                 this.isBusy = false;
