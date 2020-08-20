@@ -11,6 +11,7 @@
     "cann_per_sheet" : "cann/sheet",
     "material" : "Material",
     "stock_cann" : "Stock Cann",
+    "requisition_sheet" : "Requisition Sheet",
     "stock_sheet" : "Stock Sheet",
     "size" : "Size",
     "stationery_items" : "Stationery Items",

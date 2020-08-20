@@ -11,6 +11,7 @@
     "cann_per_sheet" : "個/件",
     "material" : "材料",
     "stock_cann" : "坎恩的股票",
+    "requisition_sheet" : "板材必填",
     "stock_sheet" : "板材庫存",
     "size" : "尺碼",
     "stationery_items" : "文具用品",

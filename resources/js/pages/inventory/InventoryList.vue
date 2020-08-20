@@ -80,7 +80,7 @@
                         {{(row.item.stock * row.item.unit_price).toFixed(2)}}
                     </template>
                     <template v-slot:cell(item_image)="row">
-                        <a :href="'/images/item/' + row.item.item_image" class="m-0 p-0"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt="" class="m-0 p-0"></b-img></a>
+                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(action)="row">
                         <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
@@ -446,7 +446,7 @@ export default {
             if(this.store == 3){
                 return [
                     { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center p-0', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'grade', label : this.$t('grade'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
