@@ -5,6 +5,21 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('requisition') + ' ' + $t('archive')}}</h3>
                 </div> 
+                <div class="card-header row m-0">
+                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
+                    <div>
+                        <select @change="store_change" class="form-control" id="store" v-model="store">
+                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                            <option value="5">{{ $t('wash_chemicals') }}</option>
+                            <option value="7">{{ $t('spray_chemicals') }}</option>
+                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                            <option value="9">{{ $t('packaging_materials') }}</option>
+                            <option value="10">{{ $t('stationery_items') }}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center">
                         <b-form-group class="mb-0 mr-auto">
@@ -91,19 +106,16 @@
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
                                     </template>
-                                    <template v-slot:cell(inventory_id)="row">
-                                        {{ row.item.item_code + ' | ' + row.item.item + ' | ' + row.item.unit}}
-                                    </template>
                                     <template v-slot:cell(total_price)="row">
                                         {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
                                     </template>
-                                    <template slot="bottom-row">
+                                    <!-- <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
                                         <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
-                                    </template>
+                                    </template> -->
                                 </b-table>
                             </div>                              
                         </div>
@@ -136,6 +148,7 @@ export default {
         return{
             inventoryissueList : [],
             disable: false,
+            store: 3,
             taskHead : [],
             taskHeadId : null,
             taskDetails : [],
@@ -161,8 +174,9 @@ export default {
         this.isBusy = true;
         fetch(`api/inventoryissue/1`)
         .then(res => res.json())
-        .then(res => {
-            this.inventoryissueList = res['Inventoryissue'];
+        .then(res => {            
+            this.inventoryissueListAll = res['Inventoryissue'];
+            this.inventoryissueList = this.inventoryissueListByDept
             this.totalRows = this.inventoryissueList.length;
             this.isBusy = false;
         })
@@ -176,6 +190,11 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+
+        store_change() {
+            this.inventoryissueList = this.inventoryissueListByDept
+            this.totalRows = this.inventoryissueList.length
         },
 
         viewDetails(id) {
@@ -193,36 +212,7 @@ export default {
                 alert(err.response.data.message)
             })
             this.$refs['dataView'].show()
-        },
-
-        editDetails(val) {
-            if(this.stockOverFlow == true && val == 1){
-                this.$toast.error(this.$t('stock_insifficient'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-            } else{
-                axios.post(`api/inventoryissue/`, {'val' : val, 'id' : this.taskHeadId
-                })
-                .then(res => {
-                    let index = 0 
-                    for (let i = 0; i < this.inventoryissueList.length; i++) {
-                        if(this.inventoryissueList[i]['id'] == this.taskHeadId){
-                            index = i
-                            break
-                        }   
-                    }
-                    this.inventoryissueList.splice(index, 1);                           
-                    this.totalRows = this.inventoryissueList.length;
-
-                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.$refs['dataView'].hide()
-                })
-                .catch(err => {
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                });
-            }            
-        },        
+        },       
 
         showModal() {
             this.$refs['dataView'].show()
@@ -249,12 +239,19 @@ export default {
             return this.$t('TypetoSearch')
         },
 
+        inventoryissueListByDept() {
+            let id = this.store
+            return this.inventoryissueListAll.filter(function (item) {
+                return item['store_id'] == id
+            })
+        },
+
         fields() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -278,23 +275,40 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
-            return [
-                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit_price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-            ]
+            if(this.store == 3)
+                return [
+                    { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('size'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                ]
+
+            else 
+
+                return [
+                    { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                ]
         },
 
-        grand_total_cal() {
-            let total = 0
-            Object.entries(this.taskDetails).forEach(([key, val]) => {
-                if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
-                total += parseFloat(val.unit_price*val.quantity)
-            });
-            return total.toFixed(2);
-        },
+        // grand_total_cal() {
+        //     let total = 0
+        //     Object.entries(this.taskDetails).forEach(([key, val]) => {
+        //         if(!isNaN(parseFloat(val.unit_price)) && !isNaN(parseFloat(val.quantity)))
+        //         total += parseFloat(val.unit_price*val.quantity)
+        //     });
+        //     return total.toFixed(2);
+        // },
 
         loading(){
             return[ 
