@@ -15,6 +15,11 @@ class CreateWipissuesTable extends Migration
     {
         Schema::create('wipissues', function (Blueprint $table) {
             $table->id();
+            $table->float('issue_qty')->nullable();
+            $table->string('remarks')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('product_id');
+
             $table->timestamps();
         });
     }
