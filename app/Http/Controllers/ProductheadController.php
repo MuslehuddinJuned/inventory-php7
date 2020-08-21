@@ -49,7 +49,8 @@ class ProductheadController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'product_category'=> 'required'
+            'buyer'=> 'required',
+            'product_code'=> 'required|unique:productheads,product_code'
         ]);
 
         if($request->product_image){
@@ -63,6 +64,7 @@ class ProductheadController extends Controller
     
             $fileName = str_random().'.'.$extesion;
             $path = public_path().'/images/product/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$fileName;
     
             // store new image
             file_put_contents($path, $decoded);
@@ -112,7 +114,8 @@ class ProductheadController extends Controller
     public function update(Request $request, Producthead $producthead)
     {
         $this->validate($request, [
-            'product_category'=> 'required'
+            'buyer'=> 'required',
+            'product_code'=> 'required|unique:productheads,product_code,'.$producthead->id,
         ]);
 
         if($request->product_image){
@@ -126,6 +129,7 @@ class ProductheadController extends Controller
     
             $fileName = str_random().'.'.$extesion;
             $path = public_path().'/images/product/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$fileName;
     
             // store new image
             file_put_contents($path, $decoded);
@@ -136,6 +140,7 @@ class ProductheadController extends Controller
             if($Producthead->product_image != 'noimage.jpg'){
                 //Delete Image
                 $path = public_path().'/images/product/'.$producthead->product_image;
+                // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$producthead->product_image;
                 @unlink($path);
             }
 
@@ -171,6 +176,7 @@ class ProductheadController extends Controller
         if($Producthead->product_image != 'noimage.jpg'){
             //Delete Image
             $path = public_path().'/images/product/'.$producthead->product_image;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$producthead->product_image;
             @unlink($path);
         }
 

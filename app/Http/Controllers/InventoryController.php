@@ -25,12 +25,14 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_name, item, item_code, specification, unit, unit_price, item_image FROM(            
-            SELECT id, store_name, item, item_code, specification, unit, unit_price, item_image FROM inventories
+        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_master_sheet IS NULL THEN 0 ELSE receive_master_sheet END) - (CASE WHEN issue_master_sheet IS NULL THEN 0 ELSE issue_master_sheet END))stock_master_sheet,
+            ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_id, store_name, cann_per_sheet, grade, accounts_code, weight, item, item_code, specification, unit, unit_price, item_image FROM(            
+            SELECT id, store_id, item, item_code, specification, cann_per_sheet, grade, accounts_code, weight, unit, unit_price, item_image FROM inventories
             )A LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
-            )C ON A.id = C.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
-            )D ON A.id = D.inventory_id');
+            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
+			)D ON A.store_id = D.id');
 
         return compact ('Inventory');
     }
@@ -56,7 +58,6 @@ class InventoryController extends Controller
         // 'item_code'=> 'required|unique:inventories,item_code'
         $this->validate($request, [
             'item_code'=> 'required',
-            'store_name'=> 'required',
             'unit'=> 'required'
         ]);
 
@@ -72,6 +73,7 @@ class InventoryController extends Controller
     
             $fileName = str_random().'.'.$extesion;
             $path = public_path().'/images/item/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$fileName;
     
             // store new image
             file_put_contents($path, $decoded);
@@ -97,9 +99,10 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
-        $inOutDetails = DB::SELECT('SELECT A.id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
-            SELECT id, store_name, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
-            )A LEFT JOIN (
+        $inOutDetails = DB::SELECT('SELECT A.id, store_id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
+            SELECT id, store_id, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
+            )A LEFT JOIN ( SELECT id, name store_name FROM stores
+			)B ON A.store_id = B.id LEFT JOIN (
 
             SELECT inventory_id, created_at inout_date, received_qty, 0 issued_qty FROM(
             SELECT inventory_id, inventoryreceive_id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
@@ -113,7 +116,7 @@ class InventoryController extends Controller
             )A LEFT JOIN (
             SELECT rechead_id, created_at FROM `inventoryissues`
             )B ON A.rechead_id = B.rechead_id WHERE inventory_id = ?
-            )B ON A.id = B.inventory_id ORDER BY inout_date DESC', [$id, $id, $id]);
+            )C ON A.id = C.inventory_id ORDER BY inout_date DESC', [$id, $id, $id]);
 
         return compact('inOutDetails');
         
@@ -124,19 +127,20 @@ class InventoryController extends Controller
         $date_1 = $y1.'-'.$m1.'-'.$d1;
         $date_2 = $y2.'-'.$m2.'-'.$d2;
 
-        $balance = DB::SELECT('SELECT id, store_name, item, item_image, item_code, specification, unit, unit_price, (
+        $balance = DB::SELECT('SELECT A.id, store_id, store_name, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price, (
             CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END) opening, (CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END)receiving_qty, (CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)issueing_qty, (
             CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END + CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END - CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)closing FROM(
-            SELECT id, store_name, item, item_image, item_code, specification, unit, unit_price FROM inventories
-            )A LEFT JOIN (
+            SELECT id, store_id, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price FROM inventories
+            )A LEFT JOIN ( SELECT id, name store_name FROM stores
+			)B ON A.store_id = B.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)received_qty FROM invenrecalls WHERE created_at < ? GROUP BY inventory_id
-            )B ON A.id = B.inventory_id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receiving_qty FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id
-            )C ON A.id = C.inventory_id LEFT JOIN (
-            SELECT SUM(quantity)issued_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id
             )D ON A.id = D.inventory_id LEFT JOIN (
+            SELECT inventory_id, SUM(quantity)receiving_qty FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id
+            )E ON A.id = E.inventory_id LEFT JOIN (
+            SELECT SUM(quantity)issued_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id
+            )F ON A.id = F.inventory_id LEFT JOIN (
             SELECT SUM(quantity)issueing_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at BETWEEN ? and ? GROUP BY inventory_id
-            )E ON A.id = E.inventory_id', [$date_1, $date_1, $date_2, $date_1, $date_1, $date_2]);
+            )G ON A.id = G.inventory_id', [$date_1, $date_1, $date_2, $date_1, $date_1, $date_2]);
 
         return compact('balance');
     }
@@ -164,7 +168,6 @@ class InventoryController extends Controller
         // 'item_code'=> 'required|unique:inventories,item_code,'.$inventory->id,
         $this->validate($request, [
             'item_code'=> 'required',
-            'store_name'=> 'required',
             'unit'=> 'required'
         ]); 
 
@@ -179,6 +182,7 @@ class InventoryController extends Controller
     
             $fileName = str_random().'.'.$extesion;
             $path = public_path().'/images/item/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$fileName;
 
             // store new image
             file_put_contents($path, $decoded);
@@ -189,6 +193,7 @@ class InventoryController extends Controller
             if($Inventory->item_image != 'noimage.jpg'){
                 //Delete Image
                 $path = public_path().'/images/item/'.$Inventory->item_image;
+                // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$Inventory->item_image;
                 @unlink($path);
             }
 
@@ -227,6 +232,7 @@ class InventoryController extends Controller
         if($Inventory->item_image != 'noimage.jpg'){
             //Delete Image
             $path = public_path().'/images/item/'.$Inventory->item_image;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$Inventory->item_image;
             @unlink($path);
         }
 
