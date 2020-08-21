@@ -141,7 +141,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('pending') + ' ' + this.$t('requisition') }
+        return { title: this.$t('requisition') + ' ' + this.$t('archive') }
     },
 
     data() {

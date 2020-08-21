@@ -1,4 +1,6 @@
 { 
+    "hide" : "Hide",
+    "show" : "Show",
     "description" : "Description",
     "material_name" : "Material Name",
     "material_number" : "Material No",

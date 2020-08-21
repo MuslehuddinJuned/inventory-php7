@@ -69,9 +69,17 @@ class InventoryreceiveController extends Controller
      * @param  \App\Inventoryreceive  $inventoryreceive
      * @return \Illuminate\Http\Response
      */
-    public function show(Inventoryreceive $inventoryreceive)
+    public function show( $dummy)
     {
-        //
+        // For Inventory ETD
+        $etd = DB::SELECT('SELECT store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, 
+            weight, unit_price, item_image, B.id, quantity, master_sheet, price, etd, remarks FROM(
+            SELECT id, store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM inventories
+            )A INNER JOIN ( SELECT id, quantity, master_sheet, price, etd, remarks, inventory_id FROM invenrecalls
+            )B ON A.id = B.inventory_id');
+
+        return compact('etd');
+
     }
 
     /**

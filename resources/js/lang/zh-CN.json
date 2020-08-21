@@ -1,4 +1,6 @@
 {
+    "hide" : "隐藏",
+    "show" : "表演",
     "description" : "描述",
     "material_name" : "名称",
     "material_number" : "料件编号",

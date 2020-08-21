@@ -20,6 +20,10 @@
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>
+              <router-link :to="{ name: 'inventory.InventoryListEtd' }" class="dropdown-item pl-3">                
+                <b-icon icon="cart-check"></b-icon>
+                {{ $t('InventoryItem') + ' (ETD)' }}
+              </router-link>
               <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-plus"></b-icon>
                 {{ $t('ItemReceive') }}

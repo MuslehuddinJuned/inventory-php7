@@ -177,7 +177,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('InventoryItem') }
+        return { title: this.$t('balance_sheet') }
     },
 
     data() {

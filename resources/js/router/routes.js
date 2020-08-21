@@ -14,6 +14,7 @@ export default [
 
 
   { path: '/inventory', name: 'inventory.InventoryList', component: page('inventory/InventoryList.vue') },
+  { path: '/inventoryetd', name: 'inventory.InventoryListEtd', component: page('inventory/InventoryListEtd.vue') },
   { path: '/inventoryreceive', name: 'inventory.InventoryReceive', component: page('inventory/InventoryReceive.vue') },
   { path: '/inventoryissue', name: 'inventory.InventoryIssue', component: page('inventory/InventoryIssue.vue') },
   { path: '/requisition', name: 'inventory.RequisitionList', component: page('inventory/RequisitionList.vue') },

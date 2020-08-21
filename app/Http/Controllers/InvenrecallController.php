@@ -97,11 +97,13 @@ class InvenrecallController extends Controller
      */
     public function update(Request $request, Invenrecall $invenrecall)
     {
-        $Inventory = Inventory::find($request['inventory_id']);
-        $Inventory->unit_price = $request['price'];
-        $Inventory->save();
-
         $invenrecall->update($request->all());
+        
+        if($request['price']){
+            $Inventory = Inventory::find($request['inventory_id']);
+            $Inventory->unit_price = $request['price'];
+            $Inventory->save();
+        }
     }
 
     /**

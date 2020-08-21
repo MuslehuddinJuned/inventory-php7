@@ -208,6 +208,7 @@ export default {
     data() {
         return{
             inventoryList : [],
+            inventoryListAll : [],
             errors : [],
             store : 3,
             Id : '',
