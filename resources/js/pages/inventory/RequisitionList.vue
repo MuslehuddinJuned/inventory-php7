@@ -123,6 +123,9 @@
                                     <template v-slot:cell(inventory_id)="row">
                                         <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
                                     </template>                                    
+                                    <template v-slot:cell(issue_etd)="row">
+                                        <input type="date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.issue_etd">
+                                    </template>                                    
                                     <template v-slot:cell(master_sheet)="row">
                                         <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.master_sheet">
                                     </template>
@@ -172,6 +175,9 @@
                                     <template v-slot:cell(index)="row">
                                         {{ row.index+1 }}
                                     </template>                                    
+                                    <template v-slot:cell(issue_etd)="row">
+                                        {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
+                                    </template>                                   
                                     <template v-slot:cell(stock_cann)="row">
                                         {{ (row.item.quantity * row.item.cann_per_sheet).toFixed(0) }}
                                     </template>
@@ -231,6 +237,7 @@ export default {
             requisitionList : [],
             title: '',
             store: 3,
+            today: new Date(),
             storeDisabled: false,
             disable: false,
             taskHead : [{'requisition_no' : null,'remarks' : null, 'accept' : null}],
@@ -256,6 +263,7 @@ export default {
     },
 
     mounted() {
+        this.today = this.convertDate(this.today)
         fetch(`api/inventory`)
             .then( res => res.json())
             .then(res => {  
@@ -295,7 +303,7 @@ export default {
         },
 
         addRow() {            
-            this.taskDetails.push({'quantity' : 0, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
+            this.taskDetails.push({'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
         },
 
         grand_total_value() {
@@ -359,7 +367,7 @@ export default {
                 this.title = this.$t('UpdateItem')
                 this.hideDetails = ''
                 if (this.taskDetails.length == 0) {
-                    this.taskDetails = [{'quantity' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                    this.taskDetails = [{'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                 }
                 this.$refs['dataView'].hide()
                 this.$refs['dataEdit'].show()
@@ -393,7 +401,7 @@ export default {
                         this.disable = !this.disable
                         this.buttonTitle = this.$t('save')
                         this.hideDetails = ''
-                        this.taskDetails = [{'quantity' : 0, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                        this.taskDetails = [{'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                     })
                     .catch(err => {
                         if(err.response.status == 422){
@@ -415,8 +423,7 @@ export default {
                                 .then(({data})=>{
                                     this.taskDetails[i]['id'] = data.RecdetailsID
                                 })
-                            }
-                            
+                            }                            
                         }
 
                         if(this.requisitionList.length > 0){
@@ -570,6 +577,7 @@ export default {
                     { key: 'inventory_id', label : this.$t('item'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('stock_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
@@ -582,6 +590,7 @@ export default {
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
@@ -602,6 +611,7 @@ export default {
                     { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
             } else {
@@ -615,6 +625,7 @@ export default {
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
             }
