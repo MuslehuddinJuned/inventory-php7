@@ -144,17 +144,17 @@ class InventoryController extends Controller
 
         $balance = DB::SELECT('SELECT A.id, store_id, store_name, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price, (
             CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END) opening, (CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END)receiving_qty, (CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)issueing_qty, (
-            CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END + CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END - CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)closing, D.receive_etd FROM(
+            CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END + CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END - CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)closing FROM(
             SELECT id, store_id, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price FROM inventories
             )A LEFT JOIN ( SELECT id, name store_name FROM stores
 			)B ON A.store_id = B.id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)received_qty, receive_etd FROM invenrecalls WHERE created_at < ? GROUP BY inventory_id, receive_etd
+            SELECT inventory_id, SUM(quantity)received_qty FROM invenrecalls WHERE created_at < ? GROUP BY inventory_id
             )D ON A.id = D.inventory_id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receiving_qty, receive_etd FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id, receive_etd
+            SELECT inventory_id, SUM(quantity)receiving_qty FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id
             )E ON A.id = E.inventory_id LEFT JOIN (
-            SELECT SUM(quantity)issued_qty, inventory_id, issue_etd FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id, issue_etd
+            SELECT SUM(quantity)issued_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id
             )F ON A.id = F.inventory_id LEFT JOIN (
-            SELECT SUM(quantity)issueing_qty, inventory_id, issue_etd FROM recdetails WHERE accept = 1 AND created_at BETWEEN ? and ? GROUP BY inventory_id, issue_etd
+            SELECT SUM(quantity)issueing_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at BETWEEN ? and ? GROUP BY inventory_id
             )G ON A.id = G.inventory_id', [$date_1, $date_1, $date_2, $date_1, $date_1, $date_2]);
 
         return compact('balance');

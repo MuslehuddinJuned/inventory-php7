@@ -1,6 +1,6 @@
 <template>
-    <div class="container justify-content-center">
-       <div class="col-md-12">
+    <div class="justify-content-center">
+       <div class="col-md-12" :class="noprint">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('balance_sheet') + ': ' + $t('Inventory')}}</h3> 
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="card-body m-0 p-0">
-                    <div class="card-header d-flex align-items-center">
+                    <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -98,7 +98,7 @@
                     </template>
                     </b-table>
                     
-                    <div class="col-12 mx-auto p-0">
+                    <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
@@ -161,6 +161,9 @@
                         <template v-slot:cell(inout_date)="row">
                             {{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
                         </template>
+                        <template v-slot:cell(etd)="row">
+                            {{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                        </template>
                     </b-table>
                 </div>                              
             </div>
@@ -191,6 +194,7 @@ export default {
             stockType : 'all',
             taskId : null,
             store: 3,
+            noprint: '',
 
             transProps: {
                 // Transition name
@@ -232,6 +236,7 @@ export default {
         },
 
         viewDetails(id) {
+            this.noprint = 'noprint'
             this.isBusy = true
             this.taskId = id
             fetch(`api/inventory/${id}`)
@@ -358,6 +363,7 @@ export default {
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'inout_date', label : this.$t('date'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'received_qty', label : this.$t('in'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'issued_qty', label : this.$t('out'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]

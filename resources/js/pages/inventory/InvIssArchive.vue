@@ -1,6 +1,6 @@
 <template>
     <div class="container justify-content-center">
-       <div class="col-md-12">
+       <div class="col-md-12" :class="noprint">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('requisition') + ' ' + $t('archive')}}</h3>
@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="card-body m-0 p-0">
-                    <div class="card-header d-flex align-items-center">
+                    <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -68,7 +68,7 @@
                     </template>
                     </b-table>
                     
-                    <div class="col-12 mx-auto p-0">
+                    <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
@@ -84,57 +84,53 @@
                         last-number
                         ></b-pagination>
                     </div>
-
-                    <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
-                        <div v-for="task in singleTask" :key="task.id" class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-6">
-                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}
-                            </div>
-                            <div class="col-md-6">                                
-                                <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}
-                            </div>
-                            <div class="col-md-6">
-                                <span v-if="task.decision == 'Accepted'" class="font-weight-bold text-success">{{ $t('accept') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
-                                <span v-if="task.decision == 'Rejected'" class="font-weight-bold text-danger">{{ $t('reject') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
-                            </div>
-                            <div class="col-md-6">                                
-                                <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{task.remarks}}
-                            </div>
-                            <div class="col-md-12 m-0 p-0 mt-3">
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
-                                    <template v-slot:cell(index)="row">
-                                        {{ row.index+1 }}
-                                    </template>
-                                    <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
-                                    </template>
-                                    <template v-slot:cell(issue_etd)="row">
-                                        {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
-                                    </template>
-                                    <!-- <template slot="bottom-row">
-                                        <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
-                                    </template> -->
-                                </b-table>
-                            </div>                              
-                        </div>
-                        <template v-slot:modal-footer="">
-                            <div class="col-md-7">
-                                <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                            </div>
-                        </template>
-                    </b-modal>
-                    <!-- End view Details Modal -->
-                    
                 </div>
-
-                
             </div>
-        </div>  
+        </div>
+        <!-- Start view Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
+            <div v-for="task in singleTask" :key="task.id" class="modal-body row m-0 p-0 mb-2">
+                <div class="col-md-6">
+                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}
+                </div>
+                <div class="col-md-6">                                
+                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}
+                </div>
+                <div class="col-md-6">
+                    <span v-if="task.decision == 'Accepted'" class="font-weight-bold text-success">{{ $t('accept') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
+                    <span v-if="task.decision == 'Rejected'" class="font-weight-bold text-danger">{{ $t('reject') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
+                </div>
+                <div class="col-md-6">                                
+                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{task.remarks}}
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3">
+                    <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
+                        <template v-slot:cell(index)="row">
+                            {{ row.index+1 }}
+                        </template>
+                        <template v-slot:cell(total_price)="row">
+                            {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
+                        </template>
+                        <template v-slot:cell(issue_etd)="row">
+                            {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
+                        </template>
+                        <!-- <template slot="bottom-row">
+                            <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
+                        </template> -->
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-footer="">
+                <div class="col-md-7">
+                    <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                </div>
+            </template>
+        </b-modal>
+        <!-- End view Details Modal -->  
     </div>
 </template>
 
@@ -152,6 +148,7 @@ export default {
             inventoryissueList : [],
             disable: false,
             store: 3,
+            noprint : '',
             taskHead : [],
             taskHeadId : null,
             taskDetails : [],
@@ -201,6 +198,7 @@ export default {
         },
 
         viewDetails(id) {
+            this.noprint = 'noprint'
             this.taskHeadId = id
             fetch(`api/recdetails/${id}`)
             .then(res => res.json())
@@ -222,6 +220,7 @@ export default {
         },
 
         hideModal() {
+            this.noprint = ''
             this.$refs['dataView'].hide()
         },
 

@@ -1,6 +1,6 @@
 <template>
     <div class="container justify-content-center">
-       <div class="col-md-12">
+       <div class="col-md-12" :class="noprint">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('product_list') }}</h3> 
@@ -13,7 +13,7 @@
                     <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
                 </div>
                 <div v-if="productList.length > 0" class="card-body m-0 p-0">
-                    <div class="card-header d-flex align-items-center">
+                    <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -60,7 +60,7 @@
                     </template>
                     </b-table>
                     
-                    <div class="col-12 mx-auto p-0">
+                    <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
@@ -76,175 +76,171 @@
                         last-number
                         ></b-pagination>
                     </div>
-
-                    <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>                        
-                        <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="row col-md-9 m-0 p-0">
-                                <div class="col-md-6">
-                                    <!-- <label class="col-form-label">{{ $t('category')}}</label>
-                                    <input list="CategoryList" class="form-control text-nowrap" v-model="taskHead[0]['product_category']">
-                                    <datalist id="CategoryList">
-                                        <option v-for="category in categorylistview" :key="category.category">{{ category }}</option>
-                                    </datalist> -->
-                                    <label class="col-form-label">{{ $t('buyer')}}</label>
-                                    <input list="BuyerList" class="form-control text-nowrap" v-model="buyer">
-                                    <datalist id="BuyerList">
-                                        <option v-for="buyer in buyerlistview" :key="buyer.buyer">{{ buyer }}</option>
-                                    </datalist>
-                                    <span v-if="errors.buyer" class="error text-danger"> {{$t('required_field')}} <br></span>
-                                    
-                                    <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
-                                    <span v-if="errors.product_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
-                                    
-                                    <label class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('specification')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['specification']">
-                                    
-                                    <label class="col-form-label">{{ $t('remarks')}}</label>
-                                    <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
-                                    
-                                    <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
-                                    <div>
-                                        <select @change="store_change" class="form-control" id="store" v-model="store">
-                                            <option value="2">{{ $t('injection_raw_materials') }}</option>
-                                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                                            <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                            <option value="5">{{ $t('wash_chemicals') }}</option>
-                                            <option value="7">{{ $t('spray_chemicals') }}</option>
-                                            <option value="8">{{ $t('printing_chemicals') }}</option>
-                                            <option value="9">{{ $t('packaging_materials') }}</option>
-                                            <option value="10">{{ $t('stationery_items') }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group m-auto col-md-12 text-center float-center">
-                                    <img id="blah" style="width: 70%;" :src="src + imageName" alt="product image" />
-                                </div>
-                                <div class="fileBrowser col-md-12 p-0 m-0">
-                                    <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
-                                        <button class="mdb btn btn-outline-success mx-auto">{{$t('browse')}}</button>
-                                        <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
-                                    <template v-slot:cell(index)="row">
-                                        {{ row.index+1 }}
-                                    </template>
-                                    <template v-slot:cell(material_number)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_number">
-                                    </template>
-                                    <template v-slot:cell(material_name)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_name">
-                                    </template>
-                                    <template v-slot:cell(material_name_ch)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_name_ch">
-                                    </template>
-                                    <template v-slot:cell(description)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.description">
-                                    </template>
-                                    <template v-slot:cell(description_ch)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.description_ch">
-                                    </template>
-                                    <template v-slot:cell(unit_weight)="row">
-                                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit_weight">
-                                    </template>
-                                    <template v-slot:cell(quantity)="row">
-                                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
-                                    </template>
-                                    <template v-slot:cell(unit)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit">
-                                    </template>
-                                    <template v-slot:cell(action)="row">
-                                        <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
-                                        <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
-                                        <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
-                                    </template>
-                                </b-table>
-                            </div>                              
-                        </div>
-                        <template v-slot:modal-header="">
-                                <h3 class="panel-title float-left">{{ title }}</h3> 
-                        </template>
-                        <template v-slot:modal-footer="">
-                            <button @click.prevent="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
-                        </template>
-                    </b-modal>                    
-                    <!-- End Edit Details Modal -->
-
-                    <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop>
-                        <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="row col-md-9 m-0 p-0">
-                                <div class="col-md-6">
-                                    <!-- <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br> -->
-                                    <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{buyer}}<br>
-                                    <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
-                                    <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
-                                </div>
-                                <div class="col-md-6">
-                                    <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
-                                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group m-auto col-md-12 text-center float-center">
-                                   <a :href="'images/product/' + taskHead[0]['product_image']"> <img id="blah" style="width: 70%;" :src="'images/product/' + taskHead[0]['product_image']" alt="product image" /></a>
-                                </div>
-                            </div>
-                            <div class="col-md-12 m-0 p-0 mt-3">
-                                <!-- <div class="mb-2 d-flex">
-                                    <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
-                                    <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
-                                </div> -->
-                                <div v-for="(store_name, index) in storeList" :key="index">
-                                    <h4 class="text-center col-12 bg-info text-light mt-3">{{$t(`${store_name_ch(store_name)}`)}}</h4>
-                                    <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
-                                        <template v-slot:cell(index)="row">
-                                            {{ row.index+1 }}
-                                        </template>
-                                        <!-- <template v-slot:cell(quantity)="row">
-                                            <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
-                                            <span v-else>{{ (row.item.quantity * product_qty)}}</span>
-                                        </template> -->
-                                        <template v-slot:cell(total_weight)="row">
-                                            {{(row.item.quantity * row.item.unit_weight).toFixed(2)}}
-                                        </template>
-                                    </b-table>
-                                </div>
-                            </div>                              
-                        </div>
-                        <template v-slot:modal-header="">
-                                <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
-                        </template>
-                        <template v-slot:modal-footer="">
-                            <div class="row m-0 p-0 col-md-12">
-                                <div class="col-md-5">
-                                    <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
-                                </div>
-                                <div class="col-md-7">
-                                    <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                                    <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
-                                </div>
-                            </div>
-                        </template>
-                    </b-modal>
-                    <!-- End view Details Modal -->
-                    
                 </div>
-
-                
             </div>
-        </div>  
+        </div> 
+        <!-- Start Edit Details Modal -->
+        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>                        
+            <div class="modal-body row m-0 p-0 mb-2">
+                <div class="row col-md-9 m-0 p-0">
+                    <div class="col-md-6">
+                        <!-- <label class="col-form-label">{{ $t('category')}}</label>
+                        <input list="CategoryList" class="form-control text-nowrap" v-model="taskHead[0]['product_category']">
+                        <datalist id="CategoryList">
+                            <option v-for="category in categorylistview" :key="category.category">{{ category }}</option>
+                        </datalist> -->
+                        <label class="col-form-label">{{ $t('buyer')}}</label>
+                        <input list="BuyerList" class="form-control text-nowrap" v-model="buyer">
+                        <datalist id="BuyerList">
+                            <option v-for="buyer in buyerlistview" :key="buyer.buyer">{{ buyer }}</option>
+                        </datalist>
+                        <span v-if="errors.buyer" class="error text-danger"> {{$t('required_field')}} <br></span>
+                        
+                        <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['product_code']">
+                        <span v-if="errors.product_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} <br></span>
+                        
+                        <label class="col-form-label">{{ $t('style') + ' ' + $t('name')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('specification')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['specification']">
+                        
+                        <label class="col-form-label">{{ $t('remarks')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
+                        
+                        <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
+                        <div>
+                            <select @change="store_change" class="form-control" id="store" v-model="store">
+                                <option value="2">{{ $t('injection_raw_materials') }}</option>
+                                <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                                <option value="4">{{ $t('polish_raw_materials') }}</option>
+                                <option value="5">{{ $t('wash_chemicals') }}</option>
+                                <option value="7">{{ $t('spray_chemicals') }}</option>
+                                <option value="8">{{ $t('printing_chemicals') }}</option>
+                                <option value="9">{{ $t('packaging_materials') }}</option>
+                                <option value="10">{{ $t('stationery_items') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-auto col-md-12 text-center float-center">
+                        <img id="blah" style="width: 70%;" :src="src + imageName" alt="product image" />
+                    </div>
+                    <div class="fileBrowser col-md-12 p-0 m-0">
+                        <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
+                            <button class="mdb btn btn-outline-success mx-auto">{{$t('browse')}}</button>
+                            <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
+                    <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
+                        <template v-slot:cell(index)="row">
+                            {{ row.index+1 }}
+                        </template>
+                        <template v-slot:cell(material_number)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_number">
+                        </template>
+                        <template v-slot:cell(material_name)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_name">
+                        </template>
+                        <template v-slot:cell(material_name_ch)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.material_name_ch">
+                        </template>
+                        <template v-slot:cell(description)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.description">
+                        </template>
+                        <template v-slot:cell(description_ch)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.description_ch">
+                        </template>
+                        <template v-slot:cell(unit_weight)="row">
+                            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit_weight">
+                        </template>
+                        <template v-slot:cell(quantity)="row">
+                            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
+                        </template>
+                        <template v-slot:cell(unit)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit">
+                        </template>
+                        <template v-slot:cell(action)="row">
+                            <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
+                            <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
+                            <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                        </template>
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-header="">
+                    <h3 class="panel-title float-left">{{ title }}</h3> 
+            </template>
+            <template v-slot:modal-footer="">
+                <button @click.prevent="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
+            </template>
+        </b-modal>                    
+        <!-- End Edit Details Modal -->
+
+        <!-- Start view Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop>
+            <div class="modal-body row m-0 p-0 mb-2">
+                <div class="row col-md-9 m-0 p-0">
+                    <div class="col-md-6">
+                        <!-- <span class="font-weight-bold">{{ $t('category')}}:</span> {{taskHead[0]['product_category']}}<br> -->
+                        <span class="font-weight-bold">{{ $t('buyer')}}:</span> {{buyer}}<br>
+                        <span class="font-weight-bold">{{ $t('code')}}:</span> {{taskHead[0]['product_code']}}<br>
+                        <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
+                    </div>
+                    <div class="col-md-6">
+                        <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
+                        <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-auto col-md-12 text-center float-center">
+                        <a :href="'images/product/' + taskHead[0]['product_image']"> <img id="blah" style="width: 70%;" :src="'images/product/' + taskHead[0]['product_image']" alt="product image" /></a>
+                    </div>
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3">
+                    <!-- <div class="mb-2 d-flex">
+                        <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
+                        <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
+                    </div> -->
+                    <div v-for="(store_name, index) in storeList" :key="index">
+                        <h4 class="text-center col-12 bg-info text-light mt-3">{{$t(`${store_name_ch(store_name)}`)}}</h4>
+                        <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
+                            <template v-slot:cell(index)="row">
+                                {{ row.index+1 }}
+                            </template>
+                            <!-- <template v-slot:cell(quantity)="row">
+                                <span v-if="row.item.quantity * product_qty > row.item.stock" class="text-danger">{{ (row.item.quantity * product_qty)}}</span>
+                                <span v-else>{{ (row.item.quantity * product_qty)}}</span>
+                            </template> -->
+                            <template v-slot:cell(total_weight)="row">
+                                {{(row.item.quantity * row.item.unit_weight).toFixed(2)}}
+                            </template>
+                        </b-table>
+                    </div>
+                </div>                              
+            </div>
+            <template v-slot:modal-header="">
+                    <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
+            </template>
+            <template v-slot:modal-footer="">
+                <div class="row m-0 p-0 col-md-12">
+                    <div class="col-md-5">
+                        <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                    </div>
+                    <div class="col-md-7">
+                        <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                        <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                    </div>
+                </div>
+            </template>
+        </b-modal>
+        <!-- End view Details Modal --> 
     </div>
 </template>
 
@@ -263,6 +259,7 @@ export default {
             inventoryList : [],
             productList : [],
             productListAll : [],
+            noprint : '',
             // taskDetailsByStore : [],
             store : 3,
             buyer : null,
@@ -377,6 +374,7 @@ export default {
         viewDetails(id) {
             this.product_qty = 1
             this.taskHeadId = id
+            this.noprint = 'noprint'
             fetch(`api/productdetails/${id}`)
             .then(res => res.json())
             .then(res => {

@@ -1,6 +1,6 @@
 <template>
     <div class="container justify-content-center">
-       <div class="col-md-12">
+       <div class="col-md-12" :class="noprint">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('requisition_list') }}</h3> 
@@ -24,7 +24,7 @@
                     </div> 
                 </div> 
                 <div class="card-body m-0 p-0">
-                    <div class="card-header d-flex align-items-center">
+                    <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -71,7 +71,7 @@
                     </template>
                     </b-table>
                     
-                    <div class="col-12 mx-auto p-0">
+                    <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
@@ -86,139 +86,138 @@
                         aria-controls="table-transition-example"
                         last-number
                         ></b-pagination>
-                    </div>
-
-                    <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop>
-                        
-                        <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-6">
-                                <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
-                                <div>
-                                    <select class="form-control" id="store" v-model="store" :disabled="storeDisabled">
-                                        <option value="2">{{ $t('injection_raw_materials') }}</option>
-                                        <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                                        <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                        <option value="5">{{ $t('wash_chemicals') }}</option>
-                                        <option value="7">{{ $t('spray_chemicals') }}</option>
-                                        <option value="8">{{ $t('printing_chemicals') }}</option>
-                                        <option value="9">{{ $t('packaging_materials') }}</option>
-                                        <option value="10">{{ $t('stationery_items') }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="col-form-label">{{ $t('requisition_no')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="col-form-label">{{ $t('remarks')}}</label>
-                                <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
-                            </div>
-                            <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
-                                    <template v-slot:cell(index)="row">
-                                        {{ row.index+1 }}
-                                    </template>
-                                    <template v-slot:cell(inventory_id)="row">
-                                        <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
-                                    </template>                                    
-                                    <template v-slot:cell(issue_etd)="row">
-                                        <input type="date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.issue_etd">
-                                    </template>                                    
-                                    <template v-slot:cell(master_sheet)="row">
-                                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.master_sheet">
-                                    </template>
-                                    <template v-slot:cell(quantity)="row">
-                                        <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
-                                    </template>
-                                    <template v-slot:cell(remarks)="row">
-                                        <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.remarks">
-                                    </template>
-                                    <template v-slot:cell(action)="row">
-                                        <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
-                                        <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
-                                        <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
-                                    </template>
-                                </b-table>
-                            </div>                              
-                        </div>
-                        <template v-slot:modal-header="">
-                            <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
-                            </div>
-                            <div class="col-md-3">
-                                <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
-                            </div>
-                        </template>
-                        <template v-slot:modal-footer="">
-                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
-                        </template>
-                    </b-modal>                    
-                    <!-- End Edit Details Modal -->
-
-                    <!-- Start view Details Modal -->
-                    <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop>
-                        <div class="modal-body row m-0 p-0 mb-2">
-                            <div class="col-md-6">
-                                <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}
-                            </div>
-                            <div class="col-md-6">                                
-                                <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{taskHead[0]['requisition_no']}}
-                            </div>
-                            <div class="col-md-12">
-                                <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
-                            </div>
-                            <div class="col-md-12 m-0 p-0 mt-3">
-                                <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
-                                    <template v-slot:cell(index)="row">
-                                        {{ row.index+1 }}
-                                    </template>                                    
-                                    <template v-slot:cell(issue_etd)="row">
-                                        {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
-                                    </template>                                   
-                                    <template v-slot:cell(stock_cann)="row">
-                                        {{ (row.item.quantity * row.item.cann_per_sheet).toFixed(0) }}
-                                    </template>
-                                    <template v-slot:cell(total_price)="row">
-                                        {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
-                                    </template>
-                                    <!-- <template slot="bottom-row">
-                                        <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center"></td>
-                                        <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
-                                    </template> -->
-                                </b-table>
-                            </div>                              
-                        </div>
-                        <template v-slot:modal-header="">
-                            <div class="col-md-9">
-                                <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
-                            </div>
-                            <div class="col-md-3">
-                                <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
-                            </div>
-                        </template>
-                        <template v-slot:modal-footer="">
-                            <div class="row m-0 p-0 col-md-12">
-                                <div class="col-md-5">
-                                    <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
-                                </div>
-                                <div class="col-md-7">
-                                    <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                                    <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
-                                </div>
-                            </div>
-                        </template>
-                    </b-modal>
-                    <!-- End view Details Modal -->                    
+                    </div>                                      
                 </div>
             </div>
-        </div>  
+        </div> 
+        <!-- Start Edit Details Modal -->
+        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop>
+            
+            <div class="modal-body row m-0 p-0 mb-2">
+                <div class="col-md-6">
+                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
+                    <div>
+                        <select class="form-control" id="store" v-model="store" :disabled="storeDisabled">
+                            <option value="2">{{ $t('injection_raw_materials') }}</option>
+                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
+                            <option value="4">{{ $t('polish_raw_materials') }}</option>
+                            <option value="5">{{ $t('wash_chemicals') }}</option>
+                            <option value="7">{{ $t('spray_chemicals') }}</option>
+                            <option value="8">{{ $t('printing_chemicals') }}</option>
+                            <option value="9">{{ $t('packaging_materials') }}</option>
+                            <option value="10">{{ $t('stationery_items') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="col-form-label">{{ $t('requisition_no')}}</label>
+                    <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']">
+                </div>
+                <div class="col-md-12">
+                    <label class="col-form-label">{{ $t('remarks')}}</label>
+                    <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
+                    <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
+                        <template v-slot:cell(index)="row">
+                            {{ row.index+1 }}
+                        </template>
+                        <template v-slot:cell(inventory_id)="row">
+                            <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
+                        </template>                                    
+                        <template v-slot:cell(issue_etd)="row">
+                            <input type="date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.issue_etd">
+                        </template>                                    
+                        <template v-slot:cell(master_sheet)="row">
+                            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.master_sheet">
+                        </template>
+                        <template v-slot:cell(quantity)="row">
+                            <input type="text" @keyup="grand_total_value" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
+                        </template>
+                        <template v-slot:cell(remarks)="row">
+                            <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.remarks">
+                        </template>
+                        <template v-slot:cell(action)="row">
+                            <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
+                            <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
+                            <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                        </template>
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-header="">
+                <div class="col-md-9">
+                    <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
+                </div>
+                <div class="col-md-3">
+                    <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
+                </div>
+            </template>
+            <template v-slot:modal-footer="">
+                <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
+            </template>
+        </b-modal>                    
+        <!-- End Edit Details Modal -->
+
+        <!-- Start view Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop>
+            <div class="modal-body row m-0 p-0 mb-2" >
+                <div class="col-md-6">
+                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}}
+                </div>
+                <div class="col-md-6">                                
+                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{taskHead[0]['requisition_no']}}
+                </div>
+                <div class="col-md-12">
+                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3">
+                    <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
+                        <template v-slot:cell(index)="row">
+                            {{ row.index+1 }}
+                        </template>                                    
+                        <template v-slot:cell(issue_etd)="row">
+                            {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
+                        </template>                                   
+                        <template v-slot:cell(stock_cann)="row">
+                            {{ (row.item.quantity * row.item.cann_per_sheet).toFixed(0) }}
+                        </template>
+                        <template v-slot:cell(total_price)="row">
+                            {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
+                        </template>
+                        <!-- <template slot="bottom-row">
+                            <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center"></td>
+                            <td class="text-white bg-info font-weight-bold text-center">{{grand_total}}</td>
+                        </template> -->
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-header="">
+                <div class="col-md-9">
+                    <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
+                </div>
+                <div class="col-md-3">
+                    <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
+                </div>
+            </template>
+            <template v-slot:modal-footer="">
+                <div class="row m-0 p-0 col-md-12">
+                    <div class="col-md-5">
+                        <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                    </div>
+                    <div class="col-md-7">
+                        <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                        <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                    </div>
+                </div>
+            </template>
+        </b-modal>
+        <!-- End view Details Modal -->  
     </div>
 </template>
 
@@ -239,6 +238,7 @@ export default {
             store: 3,
             today: new Date(),
             storeDisabled: false,
+            noprint : '',
             disable: false,
             taskHead : [{'requisition_no' : null,'remarks' : null, 'accept' : null}],
             taskDetails : [],
@@ -317,6 +317,7 @@ export default {
 
         viewDetails(id) {
             this.taskHeadId = id
+            this.noprint = 'noprint'
             if(this.requisitionList.length < 1){
                 this.grabRequsitionData()
             }  
@@ -354,7 +355,8 @@ export default {
             if(this.requisitionList.length < 1){
                 this.grabRequsitionData()
             }  
-            this.storeDisabled = true          
+            this.storeDisabled = true 
+            this.noprint = ''         
             this.$refs['dataEdit'].hide()
             this.$refs['dataView'].hide()
             

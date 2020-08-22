@@ -1,4 +1,18 @@
 // for table sorting Animation
 table.table-transition .flip-list-move {
     transition: transform 1s;
+}
+
+@media print { 
+  /* All your print styles go here */
+  .btn, .noprint { display: none !important; } 
+
+  table, th, td {
+    border: 1px solid black;
   }
+
+  .modal-xl {
+    max-width: 100% !important;
+   }
+
+ }

@@ -22,7 +22,7 @@
                             <option value="10">{{ $t('stationery_items') }}</option>
                         </select>
                     </div> 
-                    <div class="ml-auto">
+                    <div class="ml-auto noprint">
                         <b-form-checkbox @change="showEtd" v-model="etd" class=""> ETD </b-form-checkbox>
                         <div class="input-group">
                             <input type="date"  v-model="etdDate" class="">
@@ -31,7 +31,7 @@
                     </div>
                 </div> 
                 <div class="card-body m-0 p-0">
-                    <div class="card-header d-flex align-items-center">
+                    <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -98,7 +98,7 @@
                     </template>
                     </b-table>
                     
-                    <div class="col-12 mx-auto p-0">
+                    <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="totalRows"
