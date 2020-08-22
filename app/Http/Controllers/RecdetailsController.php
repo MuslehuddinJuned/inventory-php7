@@ -72,7 +72,7 @@ class RecdetailsController extends Controller
 			)C ON B.store_id = C.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
             )D ON A.inventory_id = D.inventory_id and A.issue_etd = D.receive_etd LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
-            )E ON A.inventory_id = E.inventory_id', [$id]);
+            )E ON A.inventory_id = E.inventory_id and E.issue_etd = D.receive_etd', [$id]);
         
         return compact('requisition');
     }

@@ -27,10 +27,10 @@ class InventoryissueController extends Controller
      */
     public function index()
     {
-        $Inventoryissue = DB::SELECT('SELECT A.id, requisition_no, issue_etd, remarks, accept, updated_at, store_name, store_id FROM (
+        $Inventoryissue = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, updated_at, store_name, store_id FROM (
             SELECT id, requisition_no, remarks, accept, updated_at FROM recheads WHERE accept IS NULL
             )A LEFT JOIN (
-            SELECT inventory_id, rechead_id, issue_etd, FROM recdetails
+            SELECT inventory_id, rechead_id FROM recdetails
             )B ON A.id = B.rechead_id LEFT JOIN(
             SELECT id, store_id FROM inventories
             )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores

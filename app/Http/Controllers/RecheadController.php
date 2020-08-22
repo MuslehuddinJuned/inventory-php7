@@ -95,7 +95,11 @@ class RecheadController extends Controller
      */
     public function update(Request $request, Rechead $rechead)
     {
+        $check = Rechead::select('accept')->where('id', $rechead->id)->get();
+
+        if(!$check[0]['accept'])
         $rechead->update($request->all());
+        else errors;
     }
 
     /**

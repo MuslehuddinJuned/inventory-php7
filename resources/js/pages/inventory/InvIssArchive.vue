@@ -109,6 +109,9 @@
                                     <template v-slot:cell(total_price)="row">
                                         {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
                                     </template>
+                                    <template v-slot:cell(issue_etd)="row">
+                                        {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
+                                    </template>
                                     <!-- <template slot="bottom-row">
                                         <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
                                         <td class="text-white bg-info font-weight-bold text-center"></td>
@@ -285,6 +288,7 @@ export default {
                     { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
 
@@ -299,6 +303,7 @@ export default {
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'price', label : this.$t('unit_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
         },

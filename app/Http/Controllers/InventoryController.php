@@ -131,7 +131,7 @@ class InventoryController extends Controller
             )A LEFT JOIN (
             SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
             )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
-            )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
+            )C ON A.id = C.inventory_id and B.receive_etd = C.issue_etd LEFT JOIN(SELECT id, name store_name FROM stores
             )D ON A.store_id = D.id');
             
         return compact('Inventory');
