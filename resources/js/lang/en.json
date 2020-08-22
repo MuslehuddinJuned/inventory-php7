@@ -1,4 +1,5 @@
 { 
+    "warehouse" : "Warehouse",
     "finished_goods" : "Finished Goods",
     "semifinished_goods" : "Semifinished Goods",
     "hide" : "Hide",

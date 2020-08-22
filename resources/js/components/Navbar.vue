@@ -20,10 +20,10 @@
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>
-              <router-link :to="{ name: 'inventory.InventoryListEtd' }" class="dropdown-item pl-3">                
+              <!-- <router-link :to="{ name: 'inventory.InventoryListEtd' }" class="dropdown-item pl-3">                
                 <b-icon icon="cart3"></b-icon>
                 {{ $t('InventoryItem') + ' (ETD)' }}
-              </router-link>
+              </router-link> -->
               <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-plus"></b-icon>
                 {{ $t('ItemReceive') }}
@@ -55,7 +55,7 @@
               </router-link> -->
             </div>
           </li>
-          <li v-if="user" class="nav-item dropdown">
+          <!-- <li v-if="user" class="nav-item dropdown">
             <a id="product" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="hourglass-split"></b-icon> {{ $t('WIP') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
               <router-link :to="{ name: 'wip.SemifinishedGoods' }" class="dropdown-item pl-3">                
@@ -67,7 +67,7 @@
                 {{ $t('finished_goods') }}
               </router-link>
             </div>
-          </li>
+          </li> -->
         </ul>
 
         <ul class="navbar-nav ml-auto">

@@ -99,20 +99,20 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
-        $inOutDetails = DB::SELECT('SELECT A.id, store_id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, received_qty, issued_qty FROM(
+        $inOutDetails = DB::SELECT('SELECT A.id, store_id, store_name, item, item_image, item_code, specification, unit, unit_price, inout_date, etd, received_qty, issued_qty FROM(
             SELECT id, store_id, item, item_image, item_code, specification, unit, unit_price FROM inventories WHERE id = ?
             )A LEFT JOIN ( SELECT id, name store_name FROM stores
 			)B ON A.store_id = B.id LEFT JOIN (
 
-            SELECT inventory_id, created_at inout_date, received_qty, 0 issued_qty FROM(
-            SELECT inventory_id, inventoryreceive_id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
+            SELECT inventory_id, created_at inout_date, etd, received_qty, 0 issued_qty FROM(
+            SELECT inventory_id, inventoryreceive_id, receive_etd etd, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
             )A LEFT JOIN (SELECT id, created_at FROM inventoryreceives WHERE deleted_by = 0
             )B ON A.inventoryreceive_id = B.id WHERE inventory_id = ?
                     
             UNION ALL 
                         
-            SELECT inventory_id, created_at inout_date, 0 received_qty, issued_qty FROM(
-            SELECT (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) issued_qty, inventory_id, rechead_id FROM recdetails WHERE accept = 1
+            SELECT inventory_id, created_at inout_date, etd, 0 received_qty, issued_qty FROM(
+            SELECT (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) issued_qty, issue_etd etd, inventory_id, rechead_id FROM recdetails WHERE accept = 1
             )A LEFT JOIN (
             SELECT rechead_id, created_at FROM `inventoryissues`
             )B ON A.rechead_id = B.rechead_id WHERE inventory_id = ?
@@ -122,6 +122,21 @@ class InventoryController extends Controller
         
     }
 
+    public function etd()
+    {
+        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_master_sheet IS NULL THEN 0 ELSE receive_master_sheet END) - (CASE WHEN issue_master_sheet IS NULL THEN 0 ELSE issue_master_sheet END))stock_master_sheet,
+            ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_id, store_name, 
+            (CASE WHEN receive_etd IS NULL THEN issue_etd ELSE receive_etd END)etd, issue_etd, cann_per_sheet, grade, accounts_code, weight, item, item_code, specification, unit, unit_price, item_image FROM(            
+            SELECT id, store_id, item, item_code, specification, cann_per_sheet, grade, accounts_code, weight, unit, unit_price, item_image FROM inventories
+            )A LEFT JOIN (
+            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
+            )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
+            )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
+            )D ON A.store_id = D.id');
+            
+        return compact('Inventory');
+    }
+
     public function balance($y1,$m1,$d1,$y2,$m2,$d2)
     {
         $date_1 = $y1.'-'.$m1.'-'.$d1;
@@ -129,17 +144,17 @@ class InventoryController extends Controller
 
         $balance = DB::SELECT('SELECT A.id, store_id, store_name, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price, (
             CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END) opening, (CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END)receiving_qty, (CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)issueing_qty, (
-            CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END + CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END - CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)closing FROM(
+            CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END + CASE WHEN receiving_qty IS NULL THEN 0 ELSE receiving_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END - CASE WHEN issueing_qty IS NULL THEN 0 ELSE issueing_qty END)closing, D.receive_etd FROM(
             SELECT id, store_id, cann_per_sheet, item, item_image, item_code, specification, unit, unit_price FROM inventories
             )A LEFT JOIN ( SELECT id, name store_name FROM stores
 			)B ON A.store_id = B.id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)received_qty FROM invenrecalls WHERE created_at < ? GROUP BY inventory_id
+            SELECT inventory_id, SUM(quantity)received_qty, receive_etd FROM invenrecalls WHERE created_at < ? GROUP BY inventory_id, receive_etd
             )D ON A.id = D.inventory_id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receiving_qty FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id
+            SELECT inventory_id, SUM(quantity)receiving_qty, receive_etd FROM invenrecalls WHERE created_at BETWEEN ? AND ? GROUP BY inventory_id, receive_etd
             )E ON A.id = E.inventory_id LEFT JOIN (
-            SELECT SUM(quantity)issued_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id
+            SELECT SUM(quantity)issued_qty, inventory_id, issue_etd FROM recdetails WHERE accept = 1 AND created_at < ? GROUP BY inventory_id, issue_etd
             )F ON A.id = F.inventory_id LEFT JOIN (
-            SELECT SUM(quantity)issueing_qty, inventory_id FROM recdetails WHERE accept = 1 AND created_at BETWEEN ? and ? GROUP BY inventory_id
+            SELECT SUM(quantity)issueing_qty, inventory_id, issue_etd FROM recdetails WHERE accept = 1 AND created_at BETWEEN ? and ? GROUP BY inventory_id, issue_etd
             )G ON A.id = G.inventory_id', [$date_1, $date_1, $date_2, $date_1, $date_1, $date_2]);
 
         return compact('balance');

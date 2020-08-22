@@ -8,7 +8,7 @@
                         <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div>
-                <div class="card-header row m-0">
+                <div class="card-header d-flex align-items-center">
                     <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
                     <div>
                         <select @change="store_change" class="form-control" id="store" v-model="store">
@@ -22,6 +22,13 @@
                             <option value="10">{{ $t('stationery_items') }}</option>
                         </select>
                     </div> 
+                    <div class="ml-auto">
+                        <b-form-checkbox @change="showEtd" v-model="etd" class=""> ETD </b-form-checkbox>
+                        <div class="input-group">
+                            <input type="date"  v-model="etdDate" class="">
+                            <button @click="showEtd('search')" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
+                        </div>
+                    </div>
                 </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center">
@@ -83,9 +90,11 @@
                         <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(action)="row">
-                        <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
-                        <a @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
-                        <a v-if="row.item.stock < 1" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                        <div v-if="etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}</div>
+                        <div v-else>
+                            <a @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
+                            <a v-if="row.item.stock < 1" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                        </div>
                     </template>
                     </b-table>
                     
@@ -211,6 +220,9 @@ export default {
             inventoryListAll : [],
             errors : [],
             store : 3,
+            etd : false,
+            etdDate : new Date(),
+            colTitle : 'Action',
             Id : '',
             Index : '',
             title: '',
@@ -240,21 +252,22 @@ export default {
     mounted() {
         this.isBusy = true
         this.src = '/images/item/'
+        this.etdDate = this.convertDate(this.etdDate)
         fetch(`api/inventory`)
-            .then( res => res.json())
-            .then(res => {  
-                this.inventoryListAll = res['Inventory'];
-                this.isBusy = false;                
-                
-                this.inventoryList = this.inventoryListByDept;
-                this.totalRows = this.inventoryList.length;
-                for (let i = 0; i < this.totalRows; i++) {
-                    this.inventoryList[i]['sn'] = i                
-                }
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
+        .then( res => res.json())
+        .then(res => {  
+            this.inventoryListAll = res['Inventory'];
+            
+            this.inventoryList = this.inventoryListByDept;
+            this.totalRows = this.inventoryList.length;
+            for (let i = 0; i < this.totalRows; i++) {
+                this.inventoryList[i]['sn'] = i                
+            }
+            this.isBusy = false;                
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
     },
 
     created() {            
@@ -281,8 +294,42 @@ export default {
             }
         },
 
-        viewDetails() {
+        showEtd(val){
+            if(!val) this.etd = !this.etd
+            
+            this.isBusy = true
+            this.src = '/images/item/'
+            let data = null
+            if(this.etd) {
+                data = 'etd'
+                this.colTitle = 'ETD'
+            }
+            else {
+                data = 'inventory'
+                this.colTitle = 'Action'
+            }
+            fetch(`api/${data}`)
+            .then( res => res.json())
+            .then(res => {  
+                this.inventoryListAll = res['Inventory'];
+                this.inventoryList = this.inventoryListByDept;
+                this.totalRows = this.inventoryList.length;
+                for (let i = 0; i < this.totalRows; i++) {
+                    this.inventoryList[i]['sn'] = i                
+                }
+                this.isBusy = false;                
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })
+        },
 
+        convertDate(str) {
+            var date = new Date(str),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                day = ("0" + date.getDate()).slice(-2)
+            return [year, mnth, day].join("-");
         },
 
         handleFileUpload(e) {
@@ -414,10 +461,16 @@ export default {
 
     computed: {
         inventoryListByDept() {
-            let id = this.store
-            return this.inventoryListAll.filter(function (item) {
-            return item['store_id'] == id
-            })
+            let id = this.store, etdDate = this.etdDate
+            if (this.etd) {
+                return this.inventoryListAll.filter(function (item) {
+                    return (item['store_id'] == id && item['etd'] == etdDate)
+                })
+            } else {
+                return this.inventoryListAll.filter(function (item) {
+                    return item['store_id'] == id
+                })
+            }
         },
 
         imageName() {
@@ -459,7 +512,7 @@ export default {
                     { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+                    { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             } else {
                 return [
@@ -472,7 +525,7 @@ export default {
                     { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+                    { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             }
             
