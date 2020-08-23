@@ -71,7 +71,7 @@
                         </div>
                     </template>
                     <template v-slot:cell(updated_at)="row">
-                        {{`${row.item.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                        {{`${row.item.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                     </template>
                     </b-table>
                     
@@ -118,7 +118,7 @@
                             {{ (row.item.quantity * row.item.unit_price).toFixed(2) }}
                         </template>
                         <template v-slot:cell(issue_etd)="row">
-                            {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}
+                            {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                         </template>
                         <!-- <template slot="bottom-row">
                             <td class="text-white bg-info font-weight-bold text-center">{{$t('grand_total')}}</td>
@@ -133,6 +133,13 @@
             </div>
             <template v-slot:modal-footer="">
                 <div class="row m-0 p-0 col-md-12">
+                    <div class="onlyprint mt-3 ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
+                    <div class="onlyprint mt-3 col-1"></div>
+                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
+                    <div class="onlyprint mt-3 col-1"></div>
+                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
+                    <div class="onlyprint mt-3 col-1"></div>
+                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
                     <div class="col-md-5">
                         <button @click="editDetails(-1)" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
                     </div>
@@ -322,6 +329,19 @@ export default {
                     // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]
+            } else if(this.store == 10){
+                return [
+                    { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                ]
             } else {
                 return [
                     { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
@@ -329,10 +349,10 @@ export default {
                     { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('stock'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 ]

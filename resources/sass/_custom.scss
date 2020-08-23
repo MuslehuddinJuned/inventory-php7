@@ -3,6 +3,10 @@ table.table-transition .flip-list-move {
     transition: transform 1s;
 }
 
+.onlyprint {
+  display: none !important;
+}
+
 @media print { 
   /* All your print styles go here */
   .btn, .noprint { display: none !important; } 
@@ -13,6 +17,10 @@ table.table-transition .flip-list-move {
 
   .modal-xl {
     max-width: 100% !important;
-   }
+  }
+
+  .onlyprint {
+    display: block !important;
+  }
 
  }

@@ -159,6 +159,9 @@
                         <template v-slot:cell(unit_weight)="row">
                             <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit_weight">
                         </template>
+                        <template v-slot:cell(total_weight)="row">
+                            {{ (row.item.unit_weight * row.item.quantity).toFixed(0)}}
+                        </template>
                         <template v-slot:cell(quantity)="row">
                             <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.quantity">
                         </template>
@@ -646,13 +649,14 @@ export default {
             return [
                 { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'material_number', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'material_name', label : this.$t('material_name') + '(EN)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'material_name_ch', label : this.$t('material_name') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'description', label : this.$t('description') + '(EN)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'description_ch', label : this.$t('description') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'material_name', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'material_name_ch', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'description_ch', label : this.$t('description') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit_weight', label : this.$t('unit_weight') + '(g)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_weight', label : this.$t('total_weight'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
             ]
         },

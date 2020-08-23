@@ -66,6 +66,10 @@
                 <b-icon icon="hourglass-bottom"></b-icon>
                 {{ $t('finished_goods') }}
               </router-link>
+              <router-link :to="{ name: 'wip.GoodsLocation' }" class="dropdown-item pl-3">
+                <fa icon="map-marked-alt" fixed-width/>
+                {{ $t('goods_location') }}
+              </router-link>
             </div>
           </li> -->
         </ul>

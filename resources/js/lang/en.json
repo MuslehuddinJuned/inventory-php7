@@ -1,4 +1,9 @@
 { 
+    "approved_by" : "Approved By",
+    "dept_head" : "Head of Dept.",
+    "checked_by" : "Checked By",
+    "prepared_by" : "Prepared By",
+    "goods_location" : "Goods Location",
     "warehouse" : "Warehouse",
     "finished_goods" : "Finished Goods",
     "semifinished_goods" : "Semifinished Goods",

@@ -159,10 +159,10 @@
                             {{ row.index+1 }}
                         </template>
                         <template v-slot:cell(inout_date)="row">
-                            {{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                            {{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                         </template>
                         <template v-slot:cell(etd)="row">
-                            {{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}
+                            {{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                         </template>
                     </b-table>
                 </div>                              
@@ -347,12 +347,12 @@ export default {
                 { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'opening', label : this.$t('opening'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'receiving_qty', label : this.$t('in'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'issueing_qty', label : this.$t('out'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'closing', label : this.$t('closing'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 

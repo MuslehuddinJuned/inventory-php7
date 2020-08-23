@@ -22,11 +22,12 @@
                             <option value="10">{{ $t('stationery_items') }}</option>
                         </select>
                     </div> 
-                    <div class="ml-auto noprint">
-                        <b-form-checkbox @change="showEtd" v-model="etd" class=""> ETD </b-form-checkbox>
+                    <div class="ml-auto" :class="noprint">
+                        <b-form-checkbox @change="showEtd" v-model="etd" class="noprint"> ETD </b-form-checkbox>
                         <div class="input-group">
+                            <div class="input-group-prepend onlyprint mr-3">ETD</div>
                             <input type="date"  v-model="etdDate" class="">
-                            <button @click="showEtd('search')" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
+                            <button @click="showEtd('search')" class="btn btn-secondary input-group-append noprint"><b-icon icon="search"></b-icon></button>
                         </div>
                     </div>
                 </div> 
@@ -90,7 +91,7 @@
                         <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(action)="row">
-                        <div v-if="etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMM-YYYY')}}</div>
+                        <div v-if="etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</div>
                         <div v-else>
                             <a @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
                             <a v-if="row.item.stock < 1" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
@@ -220,6 +221,7 @@ export default {
             inventoryListAll : [],
             errors : [],
             store : 3,
+            noprint: 'noprint',
             etd : false,
             etdDate : new Date(),
             colTitle : 'Action',
@@ -303,10 +305,12 @@ export default {
             if(this.etd) {
                 data = 'etd'
                 this.colTitle = 'ETD'
+                this.noprint = ''
             }
             else {
                 data = 'inventory'
                 this.colTitle = 'Action'
+                this.noprint = 'noprint'
             }
             fetch(`api/${data}`)
             .then( res => res.json())
@@ -517,14 +521,14 @@ export default {
             } else {
                 return [
                     { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center p-0', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification') + '(ISR)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             }

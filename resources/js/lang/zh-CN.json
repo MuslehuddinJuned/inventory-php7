@@ -1,4 +1,9 @@
 {
+    "approved_by" : "由批准",
+    "dept_head" : "部门主管",
+    "checked_by" : "通过检查",
+    "prepared_by" : "编制",
+    "goods_location" : "商品位置",
     "warehouse" : "仓库",
     "finished_goods" : "完成品",
     "semifinished_goods" : "半成品",
