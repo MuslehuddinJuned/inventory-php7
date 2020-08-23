@@ -124,7 +124,7 @@
                         <option>Adjust</option>
                     </select>
                     <label class="col-form-label">{{ $t('receive_id')}}</label>
-                    <input type="text" class="form-control" v-model="taskHead[0]['storeReceive_id']">
+                    <input type="text" class="form-control" v-model="taskHead[0]['storeReceive_id']" disabled>
                 </div>
                 <div class="col-md-12">
                     <label class="col-form-label">{{ $t('remarks')}}</label>
@@ -282,7 +282,7 @@ export default {
             store : 3,
             title: '',
             disable: false,
-            taskHead : [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'Purchase', 'storeReceive_id' : null}],
+            taskHead : [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -338,7 +338,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
+            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -422,9 +422,11 @@ export default {
             this.storeDisabled = true
 
             if(this.taskHeadId == null){
+                this.taskHead[0]['store'] = this.store
                 axios.post(`api/inventoryreceive`, this.taskHead[0])
                 .then(({data}) =>{
                     this.taskHeadId = data.InventoryReceiveId
+                    this.taskHead[0]['storeReceive_id'] = data.storeReceive_id
                     this.taskHead[0]['id'] = this.taskHeadId
                     if(this.inventoryreceiveList.length > 0){
                         this.inventoryreceiveList.unshift(this.taskHead[0])

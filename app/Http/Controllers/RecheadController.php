@@ -55,11 +55,27 @@ class RecheadController extends Controller
      */
     public function store(Request $request)
     {
-        $Rechead = $request->user()->rechead()->create($request->all());
+        if(strlen($request->store)<2) $store = '0' . $request->store;
+        else $store = $request->store;
+
+        $requisition_no = date("ym") . $store;
+        $check = date("ym") . $store . '%';
+
+        $max_id = DB::SELECT('SELECT MAX(requisition_no) requisition_no FROM recheads WHERE requisition_no LIKE ?', [$check]);
+                        
+        if($max_id[0]->requisition_no){
+            $requisition_no = $max_id[0]->requisition_no;
+            $requisition_no++;
+        } else $requisition_no = $requisition_no . '0001';
+
+        $Rechead = $request->user()->rechead()->create($request->except('requisition_no') + [
+            'requisition_no' => $requisition_no
+        ]);
 
         if(request()->expectsJson()){
             return response()->json([
-                'RecheadID' => $Rechead->id
+                'RecheadID' => $Rechead->id,
+                'requisition_no' => $requisition_no
             ]);
         } 
     }
@@ -98,7 +114,7 @@ class RecheadController extends Controller
         $check = Rechead::select('accept')->where('id', $rechead->id)->get();
 
         if(!$check[0]['accept'])
-        $rechead->update($request->all());
+        $rechead->update($request->except('requisition_no'));
         else errors;
     }
 

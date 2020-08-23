@@ -54,11 +54,28 @@ class InventoryreceiveController extends Controller
      */
     public function store(Request $request)
     {
-        $InventoryReceive = $request->user()->inventoryreceives()->create($request->all());
+        if(strlen($request->store)<2) $store = '0' . $request->store;
+        else $store = $request->store;
+
+        $storeReceive_id = date("ym") . $store;
+        $check = date("ym") . $store . '%';
+
+        $max_id = DB::SELECT('SELECT MAX(storeReceive_id) storeReceive_id FROM inventoryreceives WHERE storeReceive_id LIKE ?', [$check]);
+                        
+        if($max_id[0]->storeReceive_id){
+            $storeReceive_id = $max_id[0]->storeReceive_id;
+            $storeReceive_id++;
+        } else $storeReceive_id = $storeReceive_id . '0001';
+
+        
+        $InventoryReceive = $request->user()->inventoryreceives()->create($request->except('storeReceive_id') + [
+            'storeReceive_id' => $storeReceive_id
+        ]);
 
         if(request()->expectsJson()){
             return response()->json([
-                'InventoryReceiveId' => $InventoryReceive->id
+                'InventoryReceiveId' => $InventoryReceive->id,
+                'storeReceive_id' => $storeReceive_id
             ]);
         } 
     }
@@ -102,7 +119,7 @@ class InventoryreceiveController extends Controller
      */
     public function update(Request $request, Inventoryreceive $inventoryreceive)
     {
-        $inventoryreceive->update($request->all());
+        $inventoryreceive->update($request->except('storeReceive_id'));
     }
 
     /**

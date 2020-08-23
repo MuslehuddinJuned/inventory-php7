@@ -111,7 +111,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="col-form-label">{{ $t('requisition_no')}}</label>
-                    <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']">
+                    <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']" disabled>
                 </div>
                 <div class="col-md-12">
                     <label class="col-form-label">{{ $t('remarks')}}</label>
@@ -400,9 +400,11 @@ export default {
                 this.storeDisabled = true
 
                 if(this.taskHeadId == null){
+                    this.taskHead[0]['store'] = this.store
                     axios.post(`api/rechead`, this.taskHead[0])
                     .then(({data}) =>{
                         this.taskHeadId = data.RecheadID
+                        this.taskHead[0]['requisition_no'] = data.requisition_no
                         this.taskHead[0]['id'] = this.taskHeadId
                         if(this.requisitionList.length > 0){
                             this.requisitionList.unshift(this.taskHead[0])
