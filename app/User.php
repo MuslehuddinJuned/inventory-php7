@@ -145,4 +145,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function wipreceive(){
         return $this->hasMany(Wipreceive::class);
     }
+
+    public function polist(){
+        return $this->hasMany(Polist::class);
+    }
 }

@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('recdetails', 'RecdetailsController');
     Route::resource('productdetails', 'ProductdetailsController');
     Route::resource('producthead', 'ProductheadController');
+    Route::resource('polist', 'PolistController');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
