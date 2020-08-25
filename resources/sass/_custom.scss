@@ -7,6 +7,16 @@ table.table-transition .flip-list-move {
   display: none !important;
 }
 
+body {
+  background-image: url("https://i.pinimg.com/originals/aa/d0/25/aad0257efb6f7e171110d6963922ad26.jpg") !important;
+  background-color: #cccccc;
+  height: 100vh;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 @media print { 
   /* All your print styles go here */
   .btn, .noprint { display: none !important; } 

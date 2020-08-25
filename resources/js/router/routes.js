@@ -24,6 +24,7 @@ export default [
   { path: '/requisitionbyproduct', name: 'product.RequisitionList', component: page('product/RequisitionList.vue') },
   { path: '/semifinished', name: 'wip.SemifinishedGoods', component: page('wip/SemifinishedGoods.vue') },
   { path: '/finished', name: 'wip.FinishedGoods', component: page('wip/FinishedGoods.vue') },
+  { path: '/goodslocation', name: 'wip.GoodsLocation', component: page('wip/GoodsLocation.vue') },
 
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',

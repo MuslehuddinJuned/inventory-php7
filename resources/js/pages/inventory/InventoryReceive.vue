@@ -239,13 +239,15 @@
             </template>
             <template v-slot:modal-footer="">
                 <div class="row m-0 p-0 col-md-12">
-                    <div class="onlyprint mt-3 ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
-                    <div class="onlyprint mt-3 col-1"></div>
-                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
-                    <div class="onlyprint mt-3 col-1"></div>
-                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
-                    <div class="onlyprint mt-3 col-1"></div>
-                    <div class="onlyprint mt-3 col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
+                    <div class="onlyprint fixed-bottom">
+                        <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
+                    </div>
                     <div class="col-md-5">
                         <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                     </div>
