@@ -109,9 +109,9 @@
                     <input type="text" class="form-control" v-model="taskHead[0]['supplier_name']">
                 </div>
                 <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('invoice_no') + ' (PO)'}}</label>
+                    <label class="col-form-label">{{ $t('PO No')}}</label>
                     <input type="text" class="form-control" v-model="taskHead[0]['challan_no']">
-                    <label class="col-form-label">{{ $t('invoice_date')}}</label>
+                    <label class="col-form-label">{{ $t('PO Date')}}</label>
                     <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
                 </div>
                 <div class="col-md-4">

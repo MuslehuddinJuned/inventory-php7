@@ -1,4 +1,6 @@
 {
+    "check_po" : "检PO",
+    "po_list" : "清单PO",
     "approved_by" : "由批准",
     "dept_head" : "部门主管",
     "checked_by" : "通过检查",

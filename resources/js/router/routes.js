@@ -25,6 +25,8 @@ export default [
   { path: '/semifinished', name: 'wip.SemifinishedGoods', component: page('wip/SemifinishedGoods.vue') },
   { path: '/finished', name: 'wip.FinishedGoods', component: page('wip/FinishedGoods.vue') },
   { path: '/goodslocation', name: 'wip.GoodsLocation', component: page('wip/GoodsLocation.vue') },
+  { path: '/polist', name: 'po.PoList', component: page('po/PoList.vue') },
+  { path: '/pocheck', name: 'po.PoCheck', component: page('po/PoCheck.vue') },
 
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
