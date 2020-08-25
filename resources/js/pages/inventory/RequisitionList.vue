@@ -690,7 +690,7 @@ export default {
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
                 if(this.inventoryList[i]['store_id'] == this.store){
-                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit']})
+                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit'] + ' | ' + this.inventoryList[i]['specification']})
                 }                
             }
 
