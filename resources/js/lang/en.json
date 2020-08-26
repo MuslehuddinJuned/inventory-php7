@@ -1,5 +1,5 @@
 { 
-    "check_po" : "Check PO",
+    "monitor_po" : "Monitor PO",
     "po_list" : "List of PO",
     "approved_by" : "Approved By",
     "dept_head" : "Head of Dept.",

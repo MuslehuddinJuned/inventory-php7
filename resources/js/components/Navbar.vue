@@ -79,9 +79,9 @@
                 <b-icon icon="calendar2-plus"></b-icon>
                 {{ $t('po_list') }}
               </router-link>
-              <router-link :to="{ name: 'po.PoCheck' }" class="dropdown-item pl-3">
+              <router-link :to="{ name: 'po.PoMonitor' }" class="dropdown-item pl-3">
                 <b-icon icon="calendar2-check"></b-icon>
-                {{ $t('check_po') }}
+                {{ $t('monitor_po') }}
               </router-link>
             </div>
           </li>
