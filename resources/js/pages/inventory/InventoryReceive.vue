@@ -195,8 +195,8 @@
                     <span class="font-weight-bold">{{ $t('supplier')}}:</span> {{taskHead[0]['supplier_name']}}
                 </div>
                 <div class="col-md-4">                                
-                    <span class="font-weight-bold">{{ $t('invoice_no') + ' (PO)'}}:</span> {{taskHead[0]['challan_no']}}<br>
-                    <span class="font-weight-bold">{{ $t('invoice_date')}}:</span> {{taskHead[0]['challan_date']}}
+                    <span class="font-weight-bold">{{ $t('PO No')}}:</span> {{taskHead[0]['challan_no']}}<br>
+                    <span class="font-weight-bold">{{ $t('PO Date')}}:</span> {{taskHead[0]['challan_date']}}
                 </div>
                 <div class="col-md-4">
                     <span class="font-weight-bold">{{ $t('receive_type')}}:</span> {{taskHead[0]['stock_type']}}<br>
@@ -600,8 +600,8 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'supplier_name', label : this.$t('supplier'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'challan_no', label : this.$t('invoice_no')+ ' (PO)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'challan_date', label : this.$t('invoice_date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'challan_no', label : this.$t('PO No'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'challan_date', label : this.$t('PO Date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'stock_type', label : this.$t('receive_type'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'storeReceive_id', label : this.$t('receive_id'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]

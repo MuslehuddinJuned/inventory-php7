@@ -3,7 +3,7 @@
        <div class="col-md-12">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
-                    <h3 class="panel-title float-left">{{ $t('monitor_po') }}</h3>
+                    <h3 class="panel-title float-left">{{ $t('monitor_po') + ': ' + $t('ItemReceive') }}</h3>
                 </div>
                 <div class="card-header row m-0 p-0">
                     <div class="col-md-5">
@@ -192,7 +192,6 @@ export default {
                     j++
                 }
             } 
-            console.log(array)
             return array
         },
 
