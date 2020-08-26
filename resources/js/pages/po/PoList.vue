@@ -89,21 +89,22 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
+                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0">
-                            <div class="col-md-8 row m-0 p-0">
-                                <div class="col-md-12">
-                                    
+                            <div class="col-md-12 row m-0 p-0">
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('PO No.')}}</label>
+                                    <input list="PoList" class="form-control text-nowrap" v-model="po_no">
+                                    <datalist id="PoList">
+                                        <option v-for="po in PoNoListView" :key="po.value">{{ po.text }}</option>
+                                    </datalist>
+                                    <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field')}}</span>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('PO No')}}</label>
-                                    <input type="text" class="form-control" v-model="task[0]['po_no']">
-                                    <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field')}} <br></span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('grade')}}</label>
+                                    <label class="col-form-label">{{ $t('PO Date')}}</label>
                                     <input type="date" class="form-control" v-model="task[0]['po_date']">
+                                    <span v-if="errors.po_date" class="error text-danger"> {{$t('required_field')}}</span>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('buyer')}}</label>
@@ -111,13 +112,17 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
-                                    <b-form-select v-model="task[0]['product_code']" :options="product_codelistview"></b-form-select>
-                                    <span v-if="errors.item_code" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                    <b-form-select v-model="task[0]['producthead_id']" :options="product_codelistview"></b-form-select>
+                                    <span v-if="errors.producthead_id" class="error text-danger"> {{$t('required_field')}}</span>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('quantity')}}</label>
                                     <input type="text" class="form-control" v-model="task[0]['quantity']">
-                                    <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}} <br></span>
+                                    <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('remarks')}}</label>
+                                    <input type="text" class="form-control" v-model="task[0]['remarks']">
                                 </div>
                             </div>
                             
@@ -161,7 +166,7 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'grade' : null, 'accounts_code' : null, 'weight' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}],
+            task : [{'po_no' : null,'po_date' : this.convertDate(new Date()),'remarks' : null,'producthead_id' : null, 'quantity' : null}],
             taskId : null,
             buttonTitle : this.$t('save'),
 
@@ -211,7 +216,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'store_id' : null,'item_code' : null,'item' : null,'specification' : null, 'grade' : null, 'accounts_code' : null, 'weight' : null, 'cann_per_sheet' : null, 'unit' : null, 'unit_price' : 0, 'item_image' : 'noimage.jpg'}]
+            this.task = [{'po_no' : null,'po_date' : this.convertDate(new Date()),'remarks' : null,'producthead_id' : null, 'quantity' : null}]
         },
 
         po_change() {
@@ -223,10 +228,11 @@ export default {
         },
 
         change_buyer() {
-            let array = []
+            let array = [], j=0
             for (let i = 0; i < this.productList.length; i++) {
                 if (this.productList[i]['buyer'] == this.buyer) {
-                    array[i] = this.productList[i] 
+                    array[j] = this.productList[i] 
+                    j++
                 }               
             }
             this.product_codelistview = array
@@ -241,30 +247,25 @@ export default {
         },
 
         editDetails(id, index) {
-            this.src = '/images/item/'
-            this.save_image = null
             this.title = this.$t('UpdateItem')
             this.taskId = id
             this.Index = index
             this.task = this.singleTask
+            this.buyer = this.task[0]['buyer']
+            this.change_buyer()
         },
 
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
-            this.task[0]['item_image'] = this.save_image
-            this.task[0]['store_id'] = this.store
-            let options = { headers: {'enctype': 'multipart/form-data'} };
+            this.task[0]['po_no'] = this.po_no
 
             if(this.taskId == null){
-                axios.post(`api/inventory`, this.task[0], options)
+                axios.post(`api/polist`, this.task[0])
                 .then(({data}) =>{
                     this.errors = ''
-                    this.PoList.unshift(data.PoList)
-                    this.totalRows = this.PoList.length;
-                    for (let i = 0; i < this.totalRows; i++) {
-                        this.PoList[i]['sn'] = i                
-                    } 
+                    this.PoListAll = data.polist
+                    this.po_change()
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
@@ -279,11 +280,9 @@ export default {
                     alert(err.response.data.message)                      
                 })
             } else {
-                axios.patch(`api/inventory/${this.taskId}`, this.task[0], options)
+                axios.patch(`api/polist/${this.taskId}`, this.task[0])
                 .then(({data}) => {
                     this.errors = ''
-                    this.src = '/images/item/'
-                    this.task[0]['item_image'] = data.fileName
                     this.PoList[this.Index] = this.task[0];
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
@@ -305,21 +304,17 @@ export default {
                 position: 'center',
                 buttons: [
                     ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/inventory/${id}`)
+                        axios.delete(`api/polist/${id}`)
                         
                         .then(res => {
-                            this.PoList.splice(index, 1);
-                            this.totalRows = this.PoList.length
-
-                            for (let i = 0; i < this.totalRows; i++) {
-                                this.PoList[i]['sn'] = i                
-                            }
                             for (let i = 0; i < this.PoListAll.length; i++) {
                                 if(this.PoListAll[i]['id'] == id){
                                     this.PoListAll.splice(i, 1);
                                     break
                                 }               
                             }
+
+                        this.po_change()
                         })
                         .catch(err => {
                             alert(err.response.data.message);                       

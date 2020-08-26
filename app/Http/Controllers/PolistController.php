@@ -53,7 +53,25 @@ class PolistController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'po_no'=> 'required',
+            'producthead_id'=> 'required',
+            'quantity'=> 'required',
+            'po_date'=> 'required'
+        ]);
+
+        $polist = $request->user()->polist()->create($request->all());
+
+        $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, producthead_id, buyer, product_style, product_code, product_image FROM (
+            SELECT id, quantity, remarks, po_date, po_no, producthead_id FROM polists
+            )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads WHERE deleted_by = 0
+            )B ON A.producthead_id = B.id');
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'polist' => $PoList
+            ]);
+        } 
     }
 
     /**
@@ -87,7 +105,14 @@ class PolistController extends Controller
      */
     public function update(Request $request, Polist $polist)
     {
-        //
+        $this->validate($request, [
+            'po_no'=> 'required',
+            'producthead_id'=> 'required',
+            'quantity'=> 'required',
+            'po_date'=> 'required'
+        ]);
+
+        $polist->update($request->all());
     }
 
     /**
@@ -98,6 +123,6 @@ class PolistController extends Controller
      */
     public function destroy(Polist $polist)
     {
-        //
+        $polist->delete();
     }
 }
