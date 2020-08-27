@@ -7,18 +7,9 @@
                 </div>
                 <div class="card-header row m-0 p-0">
                     <div class="col-md-5">
-                        <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
+                        <label class="col-form-label">{{ $t('ETD')}}</label>
                         <div>
-                            <select @change="store_change" class="form-control" id="store" v-model="store">
-                                <option value="2">{{ $t('injection_raw_materials') }}</option>
-                                <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                                <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                <option value="5">{{ $t('wash_chemicals') }}</option>
-                                <option value="7">{{ $t('spray_chemicals') }}</option>
-                                <option value="8">{{ $t('printing_chemicals') }}</option>
-                                <option value="9">{{ $t('packaging_materials') }}</option>
-                                <option value="10">{{ $t('stationery_items') }}</option>
-                            </select>
+                            <input @change="etd_change" class="form-control" type="date" v-model="etd">
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -76,6 +67,9 @@
                     <template v-slot:cell(po_date)="row">
                         {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                     </template>
+                    <template v-slot:cell(balance)="row">
+                        {{ row.item.inventory_qty - row.item.total_qty}}
+                    </template>
                     <template v-slot:cell(item_image)="row">
                         <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
@@ -119,7 +113,8 @@ export default {
             PoListAll : [],
             po_no_list: [],
             po_no : null,
-            store: 3,
+            // store: 3,
+            etd: this.convertDate(new Date()),
             noprint: 'noprint',
 
             transProps: {
@@ -154,6 +149,14 @@ export default {
             this.currentPage = 1
         },
 
+        convertDate(str) {
+            var date = new Date(str),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                day = ("0" + date.getDate()).slice(-2)
+            return [year, mnth, day].join("-");
+        },
+
         po_change() {
             this.isBusy = true
             fetch(`api/polist/${this.po_no}`)
@@ -169,7 +172,9 @@ export default {
             })
         },
 
-        store_change() {
+        etd_change() {
+            let x = this.PoNoListView
+            console.log(x)
             this.PoList = this.PoListByPoNo;
             this.totalRows = this.PoList.length;
         },
@@ -179,10 +184,10 @@ export default {
 
     computed: {
         PoListByPoNo() {
-            let po = this.po_no, store = this.store, array = [], j=0 
+            let po = this.po_no, etd = this.etd, array = [], j=0 
 
             for (let i = 0; i < this.PoListAll.length; i++) {
-                if(this.PoListAll[i]['po_no'] == po && this.PoListAll[i]['store_id'] == store){
+                if(this.PoListAll[i]['po_no'] == po){
                     array[j] = this.PoListAll[i]
                     if(array[j]['inventory_qty'] < array[j]['total_qty']) {
                         array[j]['_rowVariant'] = 'danger'
@@ -197,8 +202,10 @@ export default {
 
         PoNoListView(){
             let array = []
-            for (let i = 0; i < this.po_no_list.length; i++) {                    
-                array.unshift({'value' : this.po_no_list[i]['po_no'], 'text' : this.po_no_list[i]['po_no']})
+            for (let i = 0; i < this.po_no_list.length; i++) {  
+                if (this.po_no_list[i]['etd'] == this.etd) {
+                    array.unshift({'value' : this.po_no_list[i]['po_no'], 'text' : this.po_no_list[i]['po_no']})
+                }                  
             }
             return array
         },
@@ -216,6 +223,7 @@ export default {
             
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
@@ -224,6 +232,7 @@ export default {
                 { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'inventory_qty', label : this.$t('stock'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_qty', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]           
             

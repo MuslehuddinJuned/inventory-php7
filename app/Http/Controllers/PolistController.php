@@ -24,8 +24,8 @@ class PolistController extends Controller
      */
     public function index()
     {
-        $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, producthead_id, buyer, product_style, product_code, product_image FROM (
-            SELECT id, quantity, remarks, po_date, po_no, producthead_id FROM polists
+        $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, etd, producthead_id, buyer, product_style, product_code, product_image FROM (
+            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists
             )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads WHERE deleted_by = 0
             )B ON A.producthead_id = B.id');
 
@@ -57,13 +57,14 @@ class PolistController extends Controller
             'po_no'=> 'required',
             'producthead_id'=> 'required',
             'quantity'=> 'required',
+            'etd'=> 'required',
             'po_date'=> 'required'
         ]);
 
         $polist = $request->user()->polist()->create($request->all());
 
-        $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, producthead_id, buyer, product_style, product_code, product_image FROM (
-            SELECT id, quantity, remarks, po_date, po_no, producthead_id FROM polists
+        $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, etd, producthead_id, buyer, product_style, product_code, product_image FROM (
+            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists
             )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads WHERE deleted_by = 0
             )B ON A.producthead_id = B.id');
 
@@ -82,7 +83,7 @@ class PolistController extends Controller
      */
     public function show($po_no)
     {
-        $polist = DB::SELECT('SELECT SUM(quantity*bom_qty) total_qty, (CASE WHEN inventory_qty IS NULL THEN 0 ELSE inventory_qty END) inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, 
+        $polist = DB::SELECT('SELECT product_code, SUM(quantity*bom_qty) total_qty, (CASE WHEN inventory_qty IS NULL THEN 0 ELSE inventory_qty END) inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, 
             unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM(
             SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) quantity, remarks, po_date, po_no, user_id, producthead_id, created_at, updated_at FROM polists WHERE po_no = ?
             )A LEFT JOIN (SELECT id, buyer, product_code FROM productheads WHERE deleted_by = 0
@@ -93,10 +94,10 @@ class PolistController extends Controller
                 SELECT id, challan_no, challan_date FROM inventoryreceives WHERE deleted_by = 0 and challan_no = ?
                 )A LEFT JOIN (SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) inventory_qty, master_sheet, price, receive_etd, inventory_id, inventoryreceive_id FROM invenrecalls
                 )B ON A.id = B.inventoryreceive_id GROUP BY challan_no, challan_date, master_sheet, price, inventory_id
-            )F ON F.inventory_id = D.id GROUP BY inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, unit, 
+            )F ON F.inventory_id = D.id GROUP BY product_code, inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, unit, 
             cann_per_sheet, grade, accounts_code, weight, unit_price, item_image', [$po_no, $po_no]);
 
-        $po_no = DB::SELECT('SELECT DISTINCT(po_no)po_no from polists');
+        $po_no = DB::SELECT('SELECT DISTINCT(po_no)po_no, etd from polists');
 
 
         return compact('polist', 'po_no');
@@ -126,6 +127,7 @@ class PolistController extends Controller
             'po_no'=> 'required',
             'producthead_id'=> 'required',
             'quantity'=> 'required',
+            'etd'=> 'required',
             'po_date'=> 'required'
         ]);
 

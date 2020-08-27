@@ -62,6 +62,9 @@
                     <template v-slot:cell(po_date)="row">
                         {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                     </template>
+                    <template v-slot:cell(etd)="row">
+                        {{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
+                    </template>
                     <template v-slot:cell(product_image)="row">
                         <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
@@ -121,6 +124,11 @@
                                     <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="col-form-label">{{ $t('ETD')}}</label>
+                                    <input type="date" class="form-control" v-model="task[0]['etd']">
+                                    <span v-if="errors.etd" class="error text-danger"> {{$t('required_field')}}</span>
+                                </div>
+                                <div class="col-md-12">
                                     <label class="col-form-label">{{ $t('remarks')}}</label>
                                     <input type="text" class="form-control" v-model="task[0]['remarks']">
                                 </div>
@@ -166,7 +174,7 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'po_no' : null,'po_date' : this.convertDate(new Date()),'remarks' : null,'producthead_id' : null, 'quantity' : null}],
+            task : [{'po_no' : null,'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}],
             taskId : null,
             buttonTitle : this.$t('save'),
 
@@ -216,7 +224,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'po_no' : null,'po_date' : this.convertDate(new Date()),'remarks' : null,'producthead_id' : null, 'quantity' : null}]
+            this.task = [{'po_no' : null, 'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}]
         },
 
         po_change() {
@@ -389,6 +397,7 @@ export default {
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
             ]           
             
