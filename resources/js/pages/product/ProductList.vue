@@ -492,14 +492,16 @@ export default {
                     this.src = '/images/product/'
                     this.taskHead[0]['product_image'] = data.fileName
                     for (let i = 0; i < this.taskDetails.length; i++) {
-                        if(this.taskDetails[i]['id']){                            
-                            axios.patch(`api/productdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
-                        } else {
-                            axios.post(`api/productdetails`, this.taskDetails[i])
-                            .then(({data})=>{
-                                this.taskDetails[i]['id'] = data.ProductdetailsID
-                            })
-                        }                        
+                        if (this.taskDetails[i]['quantity']) {
+                            if(this.taskDetails[i]['id']){                            
+                                axios.patch(`api/productdetails/${this.taskDetails[i]['id']}`, this.taskDetails[i])
+                            } else {
+                                axios.post(`api/productdetails`, this.taskDetails[i])
+                                .then(({data})=>{
+                                    this.taskDetails[i]['id'] = data.ProductdetailsID
+                                })
+                            }
+                        }                                                
                     }                    
                     for (let i = 0; i < this.productList.length; i++) {
                         if(this.productList[i]['id'] == this.taskHead[0]['id']){
