@@ -1,4 +1,5 @@
 { 
+    "fabric_raw_materials" : "Fabric Raw Materials",
     "balance" : "Balance",
     "monitor_po" : "Monitor PO",
     "po_list" : "List of PO",

@@ -120,6 +120,7 @@
                                 <option value="7">{{ $t('spray_chemicals') }}</option>
                                 <option value="8">{{ $t('printing_chemicals') }}</option>
                                 <option value="9">{{ $t('packaging_materials') }}</option>
+                                <option value="11">{{ $t('fabric_raw_materials') }}</option>
                                 <option value="10">{{ $t('stationery_items') }}</option>
                             </select>
                         </div>
@@ -362,6 +363,7 @@ export default {
         store_name_ch(store_name) {
             let store = {'Cutting Raw Materials' : 'cutting_raw_materials', 
                             'Stationery Items' : 'stationery_items',
+                            'Fabric Raw Materials' : 'fabric_raw_materials',
                             'Packaging Materials' : 'packaging_materials',
                             'Printing Chemicals' : 'printing_chemicals',
                             'Spray Chemicals' : 'spray_chemicals',

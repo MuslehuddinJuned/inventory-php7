@@ -19,6 +19,7 @@
                             <option value="7">{{ $t('spray_chemicals') }}</option>
                             <option value="8">{{ $t('printing_chemicals') }}</option>
                             <option value="9">{{ $t('packaging_materials') }}</option>
+                            <option value="11">{{ $t('fabric_raw_materials') }}</option>
                             <option value="10">{{ $t('stationery_items') }}</option>
                         </select>
                     </div> 
@@ -132,6 +133,7 @@
                                             <option value="7">{{ $t('spray_chemicals') }}</option>
                                             <option value="8">{{ $t('printing_chemicals') }}</option>
                                             <option value="9">{{ $t('packaging_materials') }}</option>
+                                            <option value="11">{{ $t('fabric_raw_materials') }}</option>
                                             <option value="10">{{ $t('stationery_items') }}</option>
                                         </select>
                                     </div>
@@ -159,7 +161,7 @@
                                     <label class="col-form-label">{{ $t('cann_per_sheet')}}</label>
                                     <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" v-model="task[0]['cann_per_sheet']">
                                 </div>
-                                <div v-if="store == 3" class="col-md-6">
+                                <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('weight')}} (kg)</label>
                                     <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" v-model="task[0]['weight']">
                                 </div>
@@ -526,8 +528,10 @@ export default {
                     { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification') + '(ISR)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
                 ]
