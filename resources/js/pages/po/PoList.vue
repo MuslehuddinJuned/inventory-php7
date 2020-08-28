@@ -8,12 +8,20 @@
                         <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div>
-                <div class="card-header d-flex align-items-center input-group">
-                    <label class="col-form-label mr-2">{{ $t('PO No:')}}</label>
-                    <div class="col-md-6">
-                        <model-select :options="PoNoListView" class="form-control" v-model="po_no"></model-select>
+                <div class="card-header row m-0 p-0">
+                    <div class="col-md-5">
+                        <label class="col-form-label">{{ $t('ETD')}}</label>
+                        <div>
+                            <input @change="etd_change" class="form-control" type="date" v-model="etd">
+                        </div>
                     </div>
-                        <button @click="po_change" class="btn btn-secondary input-group-append noprint"><b-icon icon="search"></b-icon></button>
+                    <div class="col-md-7">
+                        <label class="col-form-label">{{ $t('PO No:')}}</label>
+                        <div class="input-group">
+                            <model-select :options="PoNoListView" class="form-control float-left col-11" v-model="po_no"></model-select>
+                            <button @click="po_change" class="btn btn-secondary input-group-append noprint col-1"><b-icon icon="search"></b-icon></button>
+                        </div>
+                    </div>
                 </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
@@ -166,6 +174,7 @@ export default {
             PoListAll : [],
             errors : [],
             po_no : null,
+            etd: this.convertDate(new Date()),
             buyer : null,
             productList : [],
             product_codelistview: [],
@@ -244,6 +253,14 @@ export default {
                 }               
             }
             this.product_codelistview = array
+        },
+
+        etd_change() {
+            this.PoList = this.PoListByEtd;
+            this.totalRows = this.PoListByEtd.length;
+            for (let i = 0; i < this.totalRows; i++) {
+                this.PoList[i]['sn'] = i                
+            }
         },
 
         convertDate(str) {
@@ -353,6 +370,13 @@ export default {
             let po = this.po_no            
             return this.PoListAll.filter(function (item) {
                 return item['po_no'] == po
+            })            
+        },
+
+        PoListByEtd() {
+            let etd = this.etd            
+            return this.PoListAll.filter(function (item) {
+                return item['etd'] == etd
             })            
         },
 

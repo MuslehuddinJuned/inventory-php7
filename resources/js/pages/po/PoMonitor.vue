@@ -173,10 +173,7 @@ export default {
         },
 
         etd_change() {
-            let x = this.PoNoListView
-            console.log(x)
-            this.PoList = this.PoListByPoNo;
-            this.totalRows = this.PoList.length;
+            this.PoNoListView
         },
 
 
@@ -187,15 +184,13 @@ export default {
             let po = this.po_no, etd = this.etd, array = [], j=0 
 
             for (let i = 0; i < this.PoListAll.length; i++) {
-                if(this.PoListAll[i]['po_no'] == po){
-                    array[j] = this.PoListAll[i]
-                    if(array[j]['inventory_qty'] < array[j]['total_qty']) {
-                        array[j]['_rowVariant'] = 'danger'
-                    } else {
-                        array[j]['_rowVariant'] = ''
-                    }                      
-                    j++
-                }
+                array[j] = this.PoListAll[i]
+                if(array[j]['inventory_qty'] < array[j]['total_qty']) {
+                    array[j]['_rowVariant'] = 'danger'
+                } else {
+                    array[j]['_rowVariant'] = ''
+                }                      
+                j++
             } 
             return array
         },
