@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePolistsTable extends Migration
+class CreateRoleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class CreatePolistsTable extends Migration
      */
     public function up()
     {
-        Schema::create('polists', function (Blueprint $table) {
+        Schema::create('role_user', function (Blueprint $table) {
             $table->id();
-            $table->float('quantity')->nullable();
-            $table->string('remarks')->nullable();
-            $table->date('po_date')->nullable();
-            $table->date('etd')->nullable();
-            $table->string('po_no')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('producthead_id');
+            $table->unsignedBigInteger('role_id');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -33,6 +29,6 @@ class CreatePolistsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('polists');
+        Schema::dropIfExists('role_user');
     }
 }
