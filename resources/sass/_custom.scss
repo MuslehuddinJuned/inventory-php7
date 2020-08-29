@@ -7,6 +7,11 @@ table.table-transition .flip-list-move {
   display: none !important;
 }
 
+.modal-xxl {
+  max-width: 98% !important;
+}
+
+
 body {
   background-image: url("https://i.pinimg.com/originals/aa/d0/25/aad0257efb6f7e171110d6963922ad26.jpg") !important;
   background-color: #cccccc;
@@ -26,6 +31,10 @@ body {
   }
 
   .modal-xl {
+    max-width: 100% !important;
+  }
+
+  .modal-xxl {
     max-width: 100% !important;
   }
 

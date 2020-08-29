@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid justify-content-center">
-       <div class="col-md-12">
+       <div class="col-md-12" :class="noprint">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('po_list') }}</h3>                     
@@ -67,6 +67,9 @@
                     <template v-slot:cell(index)="row">
                         {{ row.index+1 }}
                     </template>
+                    <template v-slot:cell(po_no)="row">
+                        <div @click.prevent="viewPoDetails(row.item.po_no)" style="cursor: pointer;">{{ row.item.po_no }}</div>
+                    </template>
                     <template v-slot:cell(po_date)="row">
                         {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                     </template>
@@ -98,63 +101,139 @@
                         last-number
                         ></b-pagination>
                     </div>
-
-                    <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>
-                        
-                        <div class="modal-body row m-0 p-0">
-                            <div class="col-md-12 row m-0 p-0">
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('PO No.')}}</label>
-                                    <input list="PoList" class="form-control text-nowrap" v-model="po_no">
-                                    <datalist id="PoList">
-                                        <option v-for="po in PoNoListView" :key="po.value">{{ po.text }}</option>
-                                    </datalist>
-                                    <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field')}}</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('PO Date')}}</label>
-                                    <input type="date" class="form-control" v-model="task[0]['po_date']">
-                                    <span v-if="errors.po_date" class="error text-danger"> {{$t('required_field')}}</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('buyer')}}</label>
-                                    <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
-                                    <b-form-select v-model="task[0]['producthead_id']" :options="product_codelistview"></b-form-select>
-                                    <span v-if="errors.producthead_id" class="error text-danger"> {{$t('required_field')}}</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('quantity')}}</label>
-                                    <input type="text" class="form-control" v-model="task[0]['quantity']">
-                                    <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('ETD')}}</label>
-                                    <input type="date" class="form-control" v-model="task[0]['etd']">
-                                    <span v-if="errors.etd" class="error text-danger"> {{$t('required_field')}}</span>
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="col-form-label">{{ $t('remarks')}}</label>
-                                    <input type="text" class="form-control" v-model="task[0]['remarks']">
-                                </div>
-                            </div>
-                            
-                                                            
-                        </div>                        
-                        <template v-slot:modal-footer="">
-                            <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                            <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
-                        </template>
-                    </b-modal>
-                    
-                    <!-- End Edit Details Modal -->
-                    
                 </div>
             </div>
-        </div>  
+        </div> 
+        <!-- Start Edit Details Modal -->
+        <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>            
+            <div class="modal-body row m-0 p-0">
+                <div class="col-md-12 row m-0 p-0">
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('PO No.')}}</label>
+                        <input list="PoList" class="form-control text-nowrap" v-model="po_no">
+                        <datalist id="PoList">
+                            <option v-for="po in PoNoListView" :key="po.value">{{ po.text }}</option>
+                        </datalist>
+                        <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('PO Date')}}</label>
+                        <input type="date" class="form-control" v-model="task[0]['po_date']">
+                        <span v-if="errors.po_date" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('buyer')}}</label>
+                        <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
+                        <b-form-select v-model="task[0]['producthead_id']" :options="product_codelistview"></b-form-select>
+                        <span v-if="errors.producthead_id" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('quantity')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['quantity']">
+                        <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">{{ $t('ETD')}}</label>
+                        <input type="date" class="form-control" v-model="task[0]['etd']">
+                        <span v-if="errors.etd" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="col-form-label">{{ $t('remarks')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['remarks']">
+                    </div>
+                </div>
+                
+                                                
+            </div>                        
+            <template v-slot:modal-footer="">
+                <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+            </template>
+        </b-modal>                    
+        <!-- End Edit Details Modal -->
+
+        <!-- Start View PO Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xxl" :title="$t('monitor_po') + ': ' + $t('ItemReceive')" no-close-on-backdrop ok-only>
+            <div class="card-body m-0 p-0">
+                <div class="card-header d-flex align-items-center noprint">
+                    <b-form-group class="mb-0 mr-auto">
+                        <b-input-group size="sm">
+                            <b-form-input
+                            v-model="filter"
+                            type="search"
+                            id="filterInput"
+                            :placeholder= "TypetoSearch"
+                            ></b-form-input>
+                            <b-input-group-append>
+                            <b-button :disabled="!filter" @click="filter = ''">{{ $t('Clear')}}</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group size="sm" class="mb-0 ml-auto">
+                        <b-form-select
+                            v-model="perPage"
+                            id="perPageSelect"
+                            size="sm"
+                            :options="pageOptions"
+                        ></b-form-select>
+                    </b-form-group>                        
+                </div>
+                <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
+                :items="PoDetails"
+                :fields="poFields"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :filter="filter"
+                :filterIncludedFields="filterOn"
+                :tbody-transition-props="transProps"
+                @filtered="onFiltered"
+                class="table-transition"
+                >
+                <template v-slot:table-busy>
+                    <div class="text-center text-success my-2">
+                        <b-spinner class="align-middle"></b-spinner>
+                        <strong>{{$t('loading')}}</strong>
+                    </div>
+                </template>
+                <template v-slot:cell(index)="row">
+                    {{ row.index+1 }}
+                </template>
+                <template v-slot:cell(po_date)="row">
+                    {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
+                </template>
+                <template v-slot:cell(balance)="row">
+                    {{ row.item.inventory_qty - row.item.total_qty}}
+                </template>
+                <template v-slot:cell(item_image)="row">
+                    <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
+                </template>
+                </b-table>
+                
+                <div class="col-12 mx-auto p-0 noprint">
+                    <b-pagination
+                    v-model="currentPage"
+                    :total-rows="totalRows_po"
+                    :per-page="perPage"                            
+                    first-text="First"
+                    prev-text="Prev"
+                    next-text="Next"
+                    last-text="Last"
+                    align="center"
+                    size="sm"
+                    class="mdb bg-light m-0 rounded-0"
+                    aria-controls="table-transition-example"
+                    last-number
+                    ></b-pagination>
+                </div>                    
+            </div>
+            <template v-slot:modal-footer="">
+                <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+            </template>
+        </b-modal>
+        <!-- End View PO Details Modal --> 
     </div>
 </template>
 
@@ -178,7 +257,10 @@ export default {
             buyer : null,
             productList : [],
             product_codelistview: [],
-            noprint: 'noprint',
+            PoDetailsAll : [],
+            PoDetails : [],
+            totalRows_po: 1,
+            noprint: '',
             Id : '',
             Index : '',
             title: '',
@@ -271,6 +353,23 @@ export default {
             return [year, mnth, day].join("-");
         },
 
+        viewPoDetails(po) {
+            this.noprint = 'noprint'
+            this.isBusy = true
+            fetch(`api/polist/${po}`)
+            .then( res => res.json())
+            .then(res => {  
+                this.PoDetailsAll = res['polist']
+                this.PoDetails = this.PoDetailsByPoNo;
+                this.totalRows_po = this.PoDetails.length;
+                this.isBusy = false;                
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })
+            this.$refs['dataView'].show()
+        },
+
         editDetails(id, index) {
             this.title = this.$t('UpdateItem')
             this.taskId = id
@@ -359,6 +458,8 @@ export default {
         },
 
         hideModal() {
+            this.noprint = ''
+            this.$refs['dataView'].hide()
             this.$refs['dataEdit'].hide()
         },
 
@@ -371,6 +472,21 @@ export default {
             return this.PoListAll.filter(function (item) {
                 return item['po_no'] == po
             })            
+        },
+
+        PoDetailsByPoNo() {
+            let array = [], j=0 
+
+            for (let i = 0; i < this.PoDetailsAll.length; i++) {
+                array[j] = this.PoDetailsAll[i]
+                if(array[j]['inventory_qty'] < array[j]['total_qty']) {
+                    array[j]['_rowVariant'] = 'danger'
+                } else {
+                    array[j]['_rowVariant'] = ''
+                }                      
+                j++
+            } 
+            return array
         },
 
         PoListByEtd() {
@@ -416,6 +532,7 @@ export default {
             
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -423,6 +540,28 @@ export default {
                 { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+            ]           
+            
+        },
+
+        poFields() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            this.buttonTitle = this.$t('save')
+            
+            return [
+                { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item_no', label : this.$t('material_number'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item', label : this.$t('material_name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'inventory_qty', label : this.$t('stock'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_qty', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
             ]           
             
         },
@@ -443,5 +582,6 @@ export default {
 }
 </script>
 
-<style >
+<style lang="sass" scoped>
+
 </style>
