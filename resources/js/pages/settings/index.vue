@@ -37,6 +37,11 @@ export default {
           icon: 'lock',
           name: this.$t('password'),
           route: 'settings.password'
+        },
+        {
+          icon: 'users-cog',
+          name: this.$t('user_management'),
+          route: 'settings.role'
         }
       ]
     }

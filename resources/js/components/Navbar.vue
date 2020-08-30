@@ -75,19 +75,6 @@
                 {{ $t('goods_location') }}
               </router-link>
             </div>
-          </li> 
-          <li v-if="user" class="nav-item dropdown">
-            <a id="po" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="calendar2-day"></b-icon> {{ $t('PO') }}</a>
-            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
-              <router-link :to="{ name: 'po.PoList' }" class="dropdown-item pl-3">                
-                <b-icon icon="calendar2-plus"></b-icon>
-                {{ $t('po_list') }}
-              </router-link>
-              <router-link :to="{ name: 'po.PoMonitor' }" class="dropdown-item pl-3">
-                <b-icon icon="calendar2-check"></b-icon>
-                {{ $t('monitor_po') }}
-              </router-link>
-            </div>
           </li> -->
         </ul>
 

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import {
   faUser, faLock, faSignOutAlt, faCog, faTrashAlt, faEdit, faEye, faLanguage, faUserSecret, faUserNinja, faHistory, faPlus, faUtensils,
-  faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt
+  faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -16,7 +16,7 @@ import {
 
 library.add(
   faUser, faLock, faSignOutAlt, faCog, faGithub, faTrashAlt, faEdit, faEye, faLanguage, faUserSecret, faUserNinja, faHistory, faPlus,
-  faUtensils, faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt
+  faUtensils, faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog
 )
 
 Vue.component('fa', FontAwesomeIcon)

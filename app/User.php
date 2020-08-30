@@ -149,4 +149,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function polist(){
         return $this->hasMany(Polist::class);
     }
+
+    public function roles(){
+        return $this->belongsToMany(Role::class);
+    }
 }

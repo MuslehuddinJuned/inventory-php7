@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/user', 'Auth\UserController@current');
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
+    Route::resource('settings/profile', 'Settings\ProfileController');
     Route::patch('settings/password', 'Settings\PasswordController@update');
     Route::get('inventorybalance/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@balance');
     Route::get('etd', 'InventoryController@etd');

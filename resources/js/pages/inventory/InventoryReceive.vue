@@ -111,10 +111,13 @@
                     <input type="text" class="form-control" v-model="taskHead[0]['supplier_name']">
                 </div>
                 <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('PO No')}}</label>
-                    <input type="text" class="form-control" v-model="taskHead[0]['challan_no']">
-                    <label class="col-form-label">{{ $t('PO Date')}}</label>
-                    <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
+                        <label class="col-form-label">{{ $t('PO No')}}</label>
+                        <model-select :options="PoNoListView" class="form-control" v-model="taskHead[0]['polist_id']"></model-select>
+                    
+                        <label class="col-form-label">{{ $t('PO Date')}}</label>
+                        <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
+                    <!-- <input type="text" class="form-control" v-model="taskHead[0]['challan_no']"> -->
+                    
                 </div>
                 <div class="col-md-4">
                     <label class="col-form-label">{{ $t('receive_type')}}</label>
@@ -266,6 +269,7 @@
 
 <script>
 import uniq from 'lodash/uniq';
+import { ModelSelect } from 'vue-search-select';
 export default {
     middleware: 'auth',
 
@@ -279,6 +283,7 @@ export default {
             inventoryreceiveList : [],
             inventoryrec_h : [],
             inventoryrec_d : [],
+            PoListAll: [],
             storeDisabled : false,
             noprint : '',
             today : new Date(),
@@ -286,7 +291,7 @@ export default {
             store : 3,
             title: '',
             disable: false,
-            taskHead : [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null}],
+            taskHead : [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -312,13 +317,22 @@ export default {
     mounted() {
         this.today = this.convertDate(this.today)
         fetch(`api/inventory`)
-            .then( res => res.json())
-            .then(res => {  
-                this.inventoryList = res['Inventory'];
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
+        .then( res => res.json())
+        .then(res => {  
+            this.inventoryList = res['Inventory'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
+
+        fetch(`api/polist`)
+        .then( res => res.json())
+        .then(res => {  
+            this.PoListAll = res['PoList']
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
 
         this.title = this.$t('receive_item')
         this.showModal()
@@ -342,7 +356,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'remarks' : null,'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
+            this.taskHead = [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -478,6 +492,7 @@ export default {
                     .then(res => {
                         this.taskDetails = res['inventoryrec_d']
                         this.taskHead[0]['store_name'] = this.taskDetails[0]['store_name']
+                        this.taskHead[0]['challan_no'] = res['po_no'][0]['po_no']                       
                     })
 
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
@@ -720,12 +735,22 @@ export default {
             return total.toFixed(2);
         },
 
+        PoNoListView(){
+            let array = []
+            for (let i = 0; i < this.PoListAll.length; i++) {                    
+                array.unshift({'value' : this.PoListAll[i]['id'], 'text' : this.PoListAll[i]['po_no']})
+            }
+            return array
+        },
+
         loading(){
             return[ 
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'
             ]
         },
-    }
+    },
+
+    components: { ModelSelect }
 }
 </script>
 

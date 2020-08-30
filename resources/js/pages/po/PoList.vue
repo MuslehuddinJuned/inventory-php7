@@ -68,7 +68,7 @@
                         {{ row.index+1 }}
                     </template>
                     <template v-slot:cell(po_no)="row">
-                        <div @click.prevent="viewPoDetails(row.item.po_no)" style="cursor: pointer;">{{ row.item.po_no }}</div>
+                        <div @click.prevent="viewPoDetails(row.item.id)" style="cursor: pointer;">{{ row.item.po_no }}</div>
                     </template>
                     <template v-slot:cell(po_date)="row">
                         {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
@@ -112,9 +112,9 @@
                         <label class="col-form-label">{{ $t('PO No.')}}</label>
                         <input list="PoList" class="form-control text-nowrap" v-model="po_no">
                         <datalist id="PoList">
-                            <option v-for="po in PoNoListView" :key="po.value">{{ po.text }}</option>
+                            <option v-for="po in PoNoListView" :key="po.text">{{ po.text }}</option>
                         </datalist>
-                        <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field')}}</span>
+                        <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}}</span>
                     </div>
                     <div class="col-md-6">
                         <label class="col-form-label">{{ $t('PO Date')}}</label>
@@ -496,14 +496,14 @@ export default {
             })            
         },
 
-        PoNoList(){
-            return uniq(this.PoListAll.map(({ po_no }) => po_no))
-        },
+        // PoNoList(){
+        //     return uniq(this.PoListAll.map(({ po_no }) => po_no))
+        // },
 
         PoNoListView(){
             let array = []
-            for (let i = 0; i < this.PoNoList.length; i++) {                    
-                array.unshift({'value' : this.PoNoList[i], 'text' : this.PoNoList[i]})
+            for (let i = 0; i < this.PoListAll.length; i++) {                    
+                array.unshift({'value' : this.PoListAll[i]['po_no'], 'text' : this.PoListAll[i]['po_no']})
             }
             return array
         },
