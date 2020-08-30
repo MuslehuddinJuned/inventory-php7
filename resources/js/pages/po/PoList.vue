@@ -132,7 +132,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="col-form-label">{{ $t('quantity')}}</label>
-                        <input type="text" class="form-control" v-model="task[0]['quantity']">
+                        <input type="text" class="form-control" v-model="task[0]['quantity']" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                         <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
                     </div>
                     <div class="col-md-6">

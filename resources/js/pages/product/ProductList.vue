@@ -138,6 +138,40 @@
                     </div>
                 </div>
                 <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
+                    <table class="table table-striped table-bordered table-responsive-stack mx-auto">
+                        <thead class="bg-info text-center">
+                        <tr>
+                            <th style="width: 4%;" class="font-weight-bold">S/N</th>
+                            <th style="width: 30%;" class="font-weight-bold">{{ $t('material_name') }}</th>
+                            <th style="width: 25%;" class="font-weight-bold">{{$t('description')}}</th>
+                            <th style="width: 10%;" class="font-weight-bold">{{$t('quantity')}}</th>
+                            <th style="width: 11%;" class="font-weight-bold text-right">{{this.$t('Action')}}</th>
+                        </tr>
+                        </thead>
+                        <draggable v-model="taskDetails" tag="tbody">
+                            <tr v-for="(item, index) in taskDetails" :key="index" class="m-0 p-0" style="cursor: move;">
+                                <td scope="row" class="p-0 m-0">
+                                    <div class="d-none">{{ item.sn = index+1 }}</div>                                       
+                                    <input type="text" class="form-control m-0 border-0 bg-transparent rounded-0" name="sn" v-model="item.sn">
+                                </td>
+                                <td class=" m-0 p-0">
+                                    <model-select :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" v-model="item.inventory_id"></model-select>
+                                </td>
+                                <td class="m-0 p-0">
+                                    <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="item.description">
+                                </td>
+                                <td class="m-0 p-0">
+                                    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="item.quantity">
+                                </td>
+                                <td class="text-right m-0 p-0">
+                                    <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
+                                    <a @click="destroy_d(item.id, index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                                </td>
+                            </tr>
+                        </draggable>
+                    </table>
+                </div>
+                <!-- <div class="col-md-12 m-0 p-0 mt-3" :class="hideDetails">
                     <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfields">
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
@@ -173,12 +207,11 @@
                             <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.unit">
                         </template>
                         <template v-slot:cell(action)="row">
-                            <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
                             <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
                             <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
                         </template>
                     </b-table>
-                </div>                              
+                </div>                               -->
             </div>
             <template v-slot:modal-header="">
                     <h3 class="panel-title float-left">{{ title }}</h3> 
@@ -254,6 +287,7 @@
 <script>
 import uniq from 'lodash/uniq';
 import { ModelSelect } from 'vue-search-select';
+import draggable from "vuedraggable";
 export default {
     middleware: 'auth',
 
@@ -491,6 +525,7 @@ export default {
                 .then(({data}) => {
                     this.src = '/images/product/'
                     this.taskHead[0]['product_image'] = data.fileName
+                    console.log(this.taskDetails)
                     for (let i = 0; i < this.taskDetails.length; i++) {
                         if (this.taskDetails[i]['quantity']) {
                             if(this.taskDetails[i]['id']){                            
@@ -645,25 +680,25 @@ export default {
             ]
         },
 
-        taskDetailsfields() {
-            const lang = this.$i18n.locale
-            if (!lang) { return [] }
-            this.buttonTitle = this.$t('save')
-            return [
-                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'inventory_id', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'material_number', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'material_name', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'material_name_ch', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'description_ch', label : this.$t('description') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'unit_weight', label : this.$t('unit_weight') + '(g)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'total_weight', label : this.$t('total_weight'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
-            ]
-        },
+        // taskDetailsfields() {
+        //     const lang = this.$i18n.locale
+        //     if (!lang) { return [] }
+        //     this.buttonTitle = this.$t('save')
+        //     return [
+        //         { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+        //         { key: 'inventory_id', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'material_number', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'material_name', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'material_name_ch', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'description_ch', label : this.$t('description') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'unit_weight', label : this.$t('unit_weight') + '(g)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         // { key: 'total_weight', label : this.$t('total_weight'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+        //     ]
+        // },
 
         taskDetailsfieldsView() {
             const lang = this.$i18n.locale
@@ -671,10 +706,10 @@ export default {
             this.buttonTitle = this.$t('save')
 
             return [
-                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'sn', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'item_code', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'specification', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'weight', label : this.$t('unit_weight'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
@@ -726,7 +761,7 @@ export default {
         },
     },
 
-    components: { ModelSelect }
+    components: { ModelSelect, draggable }
 }
 </script>
 
