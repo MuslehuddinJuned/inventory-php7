@@ -655,7 +655,7 @@ export default {
                 // { key: 'material_number', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'material_name', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'material_name_ch', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'description_ch', label : this.$t('description') + '(CH)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'unit_weight', label : this.$t('unit_weight') + '(g)', class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},

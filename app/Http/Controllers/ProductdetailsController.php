@@ -68,8 +68,9 @@ class ProductdetailsController extends Controller
         //     )A LEFT JOIN (SELECT id, name store_name FROM stores
         // 	)B ON A.store_id = B.id ORDER BY store_name', [$id]);
         
-        $productDetails = DB::SELECT('SELECT A.id, quantity, remarks, A.inventory_id, producthead_id, store_id, store_name, item, item_code, weight, specification, unit, unit_price, item_image FROM(        
-            SELECT id, quantity, remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?)A LEFT JOIN (
+        $productDetails = DB::SELECT('SELECT A.id, quantity, remarks, A.inventory_id, producthead_id, store_id, store_name, item, item_code, weight, 
+            (CASE WHEN description IS NULL THEN specification ELSE description END)specification, unit, unit_price, item_image FROM(        
+            SELECT id, quantity, description,remarks, producthead_id, inventory_id FROM productdetails WHERE producthead_id = ?)A LEFT JOIN (
             SELECT id, store_id, item, item_code, weight, specification, unit, unit_price, item_image FROM inventories
             )B ON A.inventory_id = B.id LEFT JOIN (
             SELECT id, name store_name from stores
