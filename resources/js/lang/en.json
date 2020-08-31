@@ -1,4 +1,7 @@
 { 
+    "insert" : "Insert",
+    "view" : "View",
+    "roles" : "Roles",
     "user_management" : "User Management",
     "fabric_raw_materials" : "Fabric Raw Materials",
     "balance" : "Balance",

@@ -709,7 +709,7 @@ export default {
                 { key: 'sn', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'item_code', label : this.$t('material_number'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item', label : this.$t('material_name'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'description', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('description'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'weight', label : this.$t('unit_weight'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},

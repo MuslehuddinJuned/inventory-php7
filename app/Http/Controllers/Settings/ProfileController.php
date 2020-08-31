@@ -21,6 +21,18 @@ class ProfileController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if(!$request['check']) DB::SELECT('INSERT INTO role_user(user_id, role_id) VALUES (?, ?)', [$request['user_id'], $request['role_id']]);
+        else DB::SELECT('DELETE FROM role_user WHERE user_id = ? AND role_id = ?', [$request['user_id'], $request['role_id']]);
+    }
+
+    /**
      * Update the user's profile information.
      *
      * @param  \Illuminate\Http\Request $request
@@ -37,4 +49,6 @@ class ProfileController extends Controller
 
         return tap($user)->update($request->only('name', 'email'));
     }
+
+    
 }

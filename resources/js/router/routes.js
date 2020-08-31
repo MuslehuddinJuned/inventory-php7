@@ -27,13 +27,14 @@ export default [
   { path: '/goodslocation', name: 'wip.GoodsLocation', component: page('wip/GoodsLocation.vue') },
   { path: '/polist', name: 'po.PoList', component: page('po/PoList.vue') },
   { path: '/pomonitor', name: 'po.PoMonitor', component: page('po/PoMonitor.vue') },
+  { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
 
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
     component: page('settings/index.vue'),
     children: [
       { path: '', redirect: { name: 'settings.profile' } },
-      { path: 'role', name: 'settings.role', component: page('settings/role.vue') },
+      // { path: 'role', name: 'settings.role', component: page('settings/role.vue') },
       { path: 'profile', name: 'settings.profile', component: page('settings/profile.vue') },
       { path: 'password', name: 'settings.password', component: page('settings/password.vue') }
     ] },
