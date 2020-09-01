@@ -32,6 +32,17 @@ class ProfileController extends Controller
         else DB::SELECT('DELETE FROM role_user WHERE user_id = ? AND role_id = ?', [$request['user_id'], $request['role_id']]);
     }
 
+    public function show($id)
+    {
+        $roles = DB::SELECT('SELECT A.id, user_id, role_id, name FROM(
+            SELECT id, user_id, role_id, created_at, updated_at FROM role_user WHERE user_id = ?
+            )A LEFT JOIN (SELECT id, name FROM roles
+            )B ON A.role_id = B.id', [$id]);
+
+        return compact('roles');
+        
+    }
+
     /**
      * Update the user's profile information.
      *

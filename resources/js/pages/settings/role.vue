@@ -164,23 +164,15 @@
 
 <script>
 export default {
+    middleware: 'auth',
     data() {
         return{
             userList : [],
-            roles: [
-                {name: this.$t('user_management'), view:{value: false, id: 1}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
-                {name: this.$t('InventoryItem'), view:{value: false, id: 2}, insert:{value: false, id: 3}, update:{value: false, id: 4}, delete:{value: false, id: 5}},
-                {name: this.$t('ItemReceive'), view:{value: false, id: 6}, insert:{value: false, id: 7}, update:{value: false, id: 8}, delete:{value: false, id: 9}},
-                {name: this.$t('ItemIssue'), view:{value: false, id: 10}, insert:{value: false, id: 11}, update:{value: false, id: 12}, delete:{value: false, id: 13}},
-                {name: this.$t('requisition'), view:{value: false, id: 14}, insert:{value: false, id: 15}, update:{value: false, id: 16}, delete:{value: false, id: 17}},
-                {name: this.$t('product_details'), view:{value: false, id: 18}, insert:{value: false, id: 19}, update:{value: false, id: 20}, delete:{value: false, id: 21}},
-                {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 25}, delete:{value: false, id: 25}}
-            ],
+            roles: [],
             errors : [],
             noprint: 'noprint',
             buttonTitle : this.$t('close'),
             title: '',
-
 
             transProps: {
                 // Transition name
@@ -220,14 +212,54 @@ export default {
         },
 
         editDetails(id, name) {
+            let userRoles = []
             this.title = name
             this.taskId = id
+            this.totalRows_Role = this.roles.length
+            this.roles= [
+                {name: this.$t('user_management'), view:{value: false, id: 1}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
+                {name: this.$t('InventoryItem'), view:{value: false, id: 2}, insert:{value: false, id: 3}, update:{value: false, id: 4}, delete:{value: false, id: 5}},
+                {name: this.$t('ItemReceive'), view:{value: false, id: 6}, insert:{value: false, id: 7}, update:{value: false, id: 8}, delete:{value: false, id: 9}},
+                {name: this.$t('ItemIssue'), view:{value: false, id: 10}, insert:{value: false, id: 11}, update:{value: false, id: 12}, delete:{value: false, id: 13}},
+                {name: this.$t('requisition'), view:{value: false, id: 14}, insert:{value: false, id: 15}, update:{value: false, id: 16}, delete:{value: false, id: 17}},
+                {name: this.$t('product_details'), view:{value: false, id: 18}, insert:{value: false, id: 19}, update:{value: false, id: 20}, delete:{value: false, id: 21}},
+                {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 25}, delete:{value: false, id: 25}}
+            ]
             fetch(`api/settings/profile/${id}`)
             .then(res => res.json())
             .then(res => {  
-                this.roles = res['roles'];
-                this.totalRows_Role = this.roles.length;            
-                this.isBusy = false;                
+                userRoles = res['roles'];
+                for (let i = 0; i < userRoles.length; i++) {
+                    switch (userRoles[i]["name"]){
+                        case "user_management_View": this.roles[0]['view']['value'] = true; break;
+                        case "InventoryItem_View": this.roles[1]['view']['value'] = true; break;
+                        case "InventoryItem_Insert": this.roles[1]['insert']['value'] = true; break;
+                        case "InventoryItem_Update": this.roles[1]['update']['value'] = true; break;
+                        case "InventoryItem_Delete": this.roles[1]['delete']['value'] = true; break;
+                        case "ItemReceive_View": this.roles[2]['view']['value'] = true; break;
+                        case "ItemReceive_Insert": this.roles[2]['insert']['value'] = true; break;
+                        case "ItemReceive_Update": this.roles[2]['update']['value'] = true; break;
+                        case "ItemReceive_Delete": this.roles[2]['delete']['value'] = true; break;
+                        case "ItemIssue_View": this.roles[3]['view']['value'] = true; break;
+                        case "ItemIssue_Insert": this.roles[3]['insert']['value'] = true; break;
+                        case "ItemIssue_Update": this.roles[3]['update']['value'] = true; break;
+                        case "ItemIssue_Delete": this.roles[3]['delete']['value'] = true; break;
+                        case "requisition_View": this.roles[4]['view']['value'] = true; break;
+                        case "requisition_Insert": this.roles[4]['insert']['value'] = true; break;
+                        case "requisition_Update": this.roles[4]['update']['value'] = true; break;
+                        case "requisition_Delete": this.roles[4]['delete']['value'] = true; break;
+                        case "product_details_View": this.roles[5]['view']['value'] = true; break;
+                        case "product_details_Insert": this.roles[5]['insert']['value'] = true; break;
+                        case "product_details_Update": this.roles[5]['update']['value'] = true; break;
+                        case "product_details_Delete": this.roles[5]['delete']['value'] = true; break;
+                        case "po_list_View": this.roles[6]['view']['value'] = true; break;
+                        case "po_list_Insert": this.roles[6]['insert']['value'] = true; break;
+                        case "po_list_Update": this.roles[6]['update']['value'] = true; break;
+                        case "po_list_Delete": this.roles[6]['delete']['value'] = true; break;
+                    }
+                    
+                }
+
             })
             .catch(err => {
                 alert(err.response.data.message);
