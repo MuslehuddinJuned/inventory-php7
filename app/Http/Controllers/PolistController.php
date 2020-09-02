@@ -83,24 +83,42 @@ class PolistController extends Controller
      */
     public function show($po_id)
     {
-        $polist = DB::SELECT('SELECT product_code, SUM(quantity*bom_qty) total_qty, (CASE WHEN inventory_qty IS NULL THEN 0 ELSE inventory_qty END) inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, 
-            unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM(
-            SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) quantity, remarks, po_date, po_no, user_id, producthead_id, created_at, updated_at FROM polists WHERE id = ?
-            )A LEFT JOIN (SELECT id, buyer, product_code FROM productheads WHERE deleted_by = 0
-            )B ON A.producthead_id = B.id LEFT JOIN (SELECT id, producthead_id, inventory_id, quantity bom_qty FROM productdetails
-            )C ON B.id = C.producthead_id LEFT JOIN (SELECT id, store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM inventories
-            )D ON C.inventory_id = D.id LEFT JOIN (SELECT id, name store_name FROM stores
-            )E ON D.store_id = E.id LEFT JOIN(SELECT challan_no, challan_date, SUM(inventory_qty)inventory_qty, master_sheet, price, inventory_id FROM(
-                SELECT id, challan_no, polist_id,challan_date FROM inventoryreceives WHERE deleted_by = 0 and polist_id = ?
-                )A LEFT JOIN (SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) inventory_qty, master_sheet, price, receive_etd, inventory_id, inventoryreceive_id FROM invenrecalls
-                )B ON A.id = B.inventoryreceive_id GROUP BY challan_no, challan_date, master_sheet, price, inventory_id
-            )F ON F.inventory_id = D.id GROUP BY product_code, inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, unit, 
-            cann_per_sheet, grade, accounts_code, weight, unit_price, item_image', [$po_id, $po_id]);
+        // $polist = DB::SELECT('SELECT product_code, SUM(quantity*bom_qty) total_qty, (CASE WHEN inventory_qty IS NULL THEN 0 ELSE inventory_qty END) inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, 
+        //     unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM(
+        //     SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) quantity, remarks, po_date, po_no, user_id, producthead_id, created_at, updated_at FROM polists WHERE id = ?
+        //     )A LEFT JOIN (SELECT id, buyer, product_code FROM productheads WHERE deleted_by = 0
+        //     )B ON A.producthead_id = B.id LEFT JOIN (SELECT id, producthead_id, inventory_id, quantity bom_qty FROM productdetails
+        //     )C ON B.id = C.producthead_id LEFT JOIN (SELECT id, store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM inventories
+        //     )D ON C.inventory_id = D.id LEFT JOIN (SELECT id, name store_name FROM stores
+        //     )E ON D.store_id = E.id LEFT JOIN(SELECT challan_no, challan_date, SUM(inventory_qty)inventory_qty, master_sheet, price, inventory_id FROM(
+        //         SELECT id, challan_no, polist_id,challan_date FROM inventoryreceives WHERE deleted_by = 0 and polist_id = ?
+        //         )A LEFT JOIN (SELECT id, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) inventory_qty, master_sheet, price, receive_etd, inventory_id, inventoryreceive_id FROM invenrecalls
+        //         )B ON A.id = B.inventoryreceive_id GROUP BY challan_no, challan_date, master_sheet, price, inventory_id
+        //     )F ON F.inventory_id = D.id GROUP BY product_code, inventory_qty, po_date, po_no, store_id, store_name, item, item_code, specification, unit, 
+        //     cann_per_sheet, grade, accounts_code, weight, unit_price, item_image', [$po_id, $po_id]);
 
-        $po_no = DB::SELECT('SELECT DISTINCT(po_no)po_no, etd from polists');
+        // $po_no = DB::SELECT('SELECT DISTINCT(po_no)po_no, etd from polists');
+
+        $etd = DB::SELECT('SELECT DISTINCT(etd)etd FROM polists WHERE DATE(etd) >= CURDATE() ORDER BY etd');
+
+        $Inventory = DB::SELECT('SELECT A.id, ((CASE WHEN receive_master_sheet IS NULL THEN 0 ELSE receive_master_sheet END) - (CASE WHEN issue_master_sheet IS NULL THEN 0 ELSE issue_master_sheet END))stock_master_sheet,
+            ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_id, store_name, cann_per_sheet, grade, accounts_code, weight, item, item_code, specification, unit, unit_price, item_image FROM(            
+            SELECT id, store_id, item, item_code, specification, cann_per_sheet, grade, accounts_code, weight, unit, unit_price, item_image FROM inventories
+            )A LEFT JOIN (
+            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
+            )D ON A.store_id = D.id');
+            
+        $etdQty = DB::SELECT('SELECT SUM(CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)quantity, etd, inventory_id FROM(
+            SELECT pcs*quantity quantity, etd, inventory_id FROM(
+            SELECT id, quantity pcs, etd, producthead_id FROM polists WHERE DATE(etd) >= CURDATE()
+            )A LEFT JOIN (SELECT id FROM productheads WHERE deleted_by = 0
+            )B ON A.producthead_id = B.id LEFT JOIN (SELECT id, producthead_id, inventory_id, quantity FROM productdetails
+            )C ON B.id = C.producthead_id)A GROUP BY etd, inventory_id');
 
 
-        return compact('polist', 'po_no');
+        return compact('etd', 'Inventory', 'etdQty');
     }
 
     /**

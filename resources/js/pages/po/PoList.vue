@@ -68,7 +68,8 @@
                         {{ row.index+1 }}
                     </template>
                     <template v-slot:cell(po_no)="row">
-                        <div @click.prevent="viewPoDetails(row.item.id)" style="cursor: pointer;">{{ row.item.po_no }}</div>
+                        {{ row.item.po_no }}
+                        <!-- <div @click.prevent="viewPoDetails(row.item.id)" style="cursor: pointer;">{{ row.item.po_no }}</div> -->
                     </template>
                     <template v-slot:cell(po_date)="row">
                         {{`${row.item.po_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}

@@ -53,6 +53,10 @@
                 <b-icon icon="alarm"></b-icon>
                 {{ $t('po_list') }}
               </router-link>
+              <router-link :to="{ name: 'po.EtdMonitor' }" class="dropdown-item pl-3">
+                <b-icon icon="alarm-fill"></b-icon>
+                {{ $t('monitor_etd') }}
+              </router-link>
               <!-- <router-link :to="{ name: 'product.RequisitionList' }" class="dropdown-item pl-3">
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
