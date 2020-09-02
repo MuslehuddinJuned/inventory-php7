@@ -235,7 +235,7 @@
                     </div>
                     <div class="col-md-6">
                         <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
-                        <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                        
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -263,7 +263,10 @@
                             </template>
                         </b-table>
                     </div>
-                </div>                              
+                </div>  
+                <div class="col-12">
+                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                </div>                            
             </div>
             <template v-slot:modal-header="">
                     <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
@@ -525,7 +528,6 @@ export default {
                 .then(({data}) => {
                     this.src = '/images/product/'
                     this.taskHead[0]['product_image'] = data.fileName
-                    console.log(this.taskDetails)
                     for (let i = 0; i < this.taskDetails.length; i++) {
                         if (this.taskDetails[i]['quantity']) {
                             if(this.taskDetails[i]['id']){                            

@@ -111,12 +111,13 @@
                     <input type="text" class="form-control" v-model="taskHead[0]['supplier_name']">
                 </div>
                 <div class="col-md-4">
-                        <label class="col-form-label">{{ $t('PO No')}}</label>
-                        <model-select :options="PoNoListView" class="form-control" v-model="taskHead[0]['polist_id']"></model-select>
+                        <label class="col-form-label">{{ $t('invoice_no')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['challan_no']">
+                        <!-- <model-select :options="PoNoListView" class="form-control" v-model="taskHead[0]['polist_id']"></model-select> -->
                     
-                        <label class="col-form-label">{{ $t('PO Date')}}</label>
+                        <label class="col-form-label">{{ $t('Loading Date')}}</label>
                         <input type="date" class="form-control" v-model="taskHead[0]['challan_date']">
-                    <!-- <input type="text" class="form-control" v-model="taskHead[0]['challan_no']"> -->
+                    
                     
                 </div>
                 <div class="col-md-4">
@@ -128,8 +129,9 @@
                         <option>Return</option>
                         <option>Adjust</option>
                     </select>
-                    <label class="col-form-label">{{ $t('receive_id')}}</label>
-                    <input type="text" class="form-control" v-model="taskHead[0]['storeReceive_id']" disabled>
+                    <label class="col-form-label">{{ $t('receive_date')}}</label>
+                    <input type="date" class="form-control" v-model="taskHead[0]['receive_date']">
+                    <!-- <input type="text" class="form-control" v-model="taskHead[0]['storeReceive_id']" disabled> -->
                 </div>
                 <div class="col-md-12">
                     <label class="col-form-label">{{ $t('remarks')}}</label>
@@ -200,12 +202,12 @@
                     <span class="font-weight-bold">{{ $t('supplier')}}:</span> {{taskHead[0]['supplier_name']}}
                 </div>
                 <div class="col-md-4">                                
-                    <span class="font-weight-bold">{{ $t('PO No')}}:</span> {{taskHead[0]['challan_no']}}<br>
-                    <span class="font-weight-bold">{{ $t('PO Date')}}:</span> {{taskHead[0]['challan_date']}}
+                    <span class="font-weight-bold">{{ $t('invoice_no')}}:</span> {{taskHead[0]['challan_no']}}<br>
+                    <span class="font-weight-bold">{{ $t('Loading Date')}}:</span> {{taskHead[0]['challan_date']}}
                 </div>
                 <div class="col-md-4">
                     <span class="font-weight-bold">{{ $t('receive_type')}}:</span> {{taskHead[0]['stock_type']}}<br>
-                    <span class="font-weight-bold">{{ $t('receive_id')}}:</span> {{taskHead[0]['storeReceive_id']}}
+                    <span class="font-weight-bold">{{ $t('receive_date')}}:</span> {{taskHead[0]['receive_date']}}
                 </div>
                 <div class="col-md-12">
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
@@ -291,7 +293,7 @@ export default {
             store : 3,
             title: '',
             disable: false,
-            taskHead : [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null}],
+            taskHead : [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null, 'receive_date': this.convertDate(new Date()), 'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -356,7 +358,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null,'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
+            this.taskHead = [{'remarks' : null, 'polist_id' : null, 'challan_no' : null,'supplier_name' : null, 'receive_date': this.convertDate(new Date()),'challan_date' : this.convertDate(new Date()),'stock_type' : 'China Purchase', 'storeReceive_id' : null, 'inventory_id' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -492,7 +494,7 @@ export default {
                     .then(res => {
                         this.taskDetails = res['inventoryrec_d']
                         this.taskHead[0]['store_name'] = this.taskDetails[0]['store_name']
-                        this.taskHead[0]['challan_no'] = res['po_no'][0]['po_no']                       
+                        // this.taskHead[0]['challan_no'] = res['po_no'][0]['po_no']                       
                     })
 
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})

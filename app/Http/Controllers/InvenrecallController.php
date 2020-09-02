@@ -74,12 +74,12 @@ class InvenrecallController extends Controller
             )B ON A.inventory_id = B.id LEFT JOIN (SELECT id, name store_name FROM stores
             )C ON B.store_id = C.id', [$id]);
 
-        $po_no = DB::SELECT('SELECT po_no FROM(
-            SELECT id, polist_id FROM inventoryreceives WHERE id = ?
-            )A LEFT JOIN (SELECT po_no, id FROM polists
-            )B ON A.polist_id = B.id ORDER BY po_no', [$id]);
+        // $po_no = DB::SELECT('SELECT po_no FROM(
+        //     SELECT id, polist_id FROM inventoryreceives WHERE id = ?
+        //     )A LEFT JOIN (SELECT po_no, id FROM polists
+        //     )B ON A.polist_id = B.id ORDER BY po_no', [$id]);
 
-        return compact('inventoryrec_d', 'po_no');
+        return compact('inventoryrec_d');
     }
 
     /**

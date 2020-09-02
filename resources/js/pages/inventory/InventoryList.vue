@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid justify-content-center">
-       <div class="col-md-12">
-           <div class="card filterable">
+        <div class="col-md-12">
+            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('InventoryItem') }}</h3>                     
                     <div class="ml-auto">
@@ -153,7 +153,7 @@
                                     <label class="col-form-label">{{ $t('grade')}}</label>
                                     <input type="text" class="form-control" v-model="task[0]['grade']">
                                 </div>
-                                <div v-if="store == 3" class="col-md-6">
+                                <div class="col-md-6">
                                     <label class="col-form-label">{{ $t('accounts_code')}}</label>
                                     <input type="text" class="form-control" v-model="task[0]['accounts_code']">
                                 </div>
@@ -200,9 +200,7 @@
                     
                     <!-- End Edit Details Modal -->
                     
-                </div>
-
-                
+                </div>               
             </div>
         </div>  
     </div>
@@ -528,6 +526,7 @@ export default {
                     { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification') + '(ISR)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
