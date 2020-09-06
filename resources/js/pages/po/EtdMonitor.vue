@@ -75,6 +75,10 @@
                     <template v-slot:cell(item_code)="row">
                         <div class="text-nowrap">{{row.item.item_code}}: {{row.item.item}}</div>
                     </template>
+                    <template v-slot:cell(stock)="row">
+                        <div v-if="row.item.store_id == 3" class="text-nowrap">{{row.item.stock * row.item.cann_per_sheet}}</div>
+                        <div v-else class="text-nowrap">{{row.item.stock}}</div>
+                    </template>
                     <template v-slot:cell(balance)="row">
                         {{ row.item.inventory_qty - row.item.total_qty}}
                     </template>
@@ -149,7 +153,9 @@ export default {
             let stock = 0, varient = {}
             
             for (let j = 0; j < this.inventoryListAll.length; j++) {
-                stock = this.inventoryListAll[j]['stock']
+                if (this.inventoryListAll[j]['store_id'] == 3) {                    
+                    stock = parseFloat(this.inventoryListAll[j]['stock']) * parseFloat(this.inventoryListAll[j]['cann_per_sheet'])
+                } else stock = this.inventoryListAll[j]['stock']
                 varient = []
                 for (let k = 0; k < this.etdQty.length; k++) {
                     if(this.inventoryListAll[j]['id'] === this.etdQty[k]['inventory_id']){
@@ -228,7 +234,7 @@ export default {
             
             for (let i = 0; i < this.etdList.length; i++) {
                 data.push({ 'key': this.etdList[i]['etd'], label : this.convertDate(this.etdList[i]['etd']),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
-                data.push({ 'key': this.etdList[i]['etd'] + '-Balance', label : this.convertDate(this.etdList[i]['etd']) + ' Balance','sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold align-middle' })
+                data.push({ 'key': this.etdList[i]['etd'] + '-Balance', label : this.$t('balance'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold align-middle' })
             }
 
             return data
