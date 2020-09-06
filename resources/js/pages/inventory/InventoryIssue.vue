@@ -99,10 +99,12 @@
         <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop>
             <div v-for="task in singleTask" :key="task.id" class="modal-body row m-0 p-0 mb-2">
                 <div class="col-md-6">
-                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}
+                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}} <br>
+                    <span class="font-weight-bold">{{ $t('ETD')}}:</span>
                 </div>
-                <div class="col-md-6">                                
-                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}
+                <div class="col-md-6 text-right">                                
+                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}<br>
+                    <span class="font-weight-bold">{{ $t('date')}}:</span> {{`${task.created_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
                 </div>
                 <div class="col-md-12">
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{task.remarks}}

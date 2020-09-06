@@ -92,17 +92,15 @@
         <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop ok-only>
             <div v-for="task in singleTask" :key="task.id" class="modal-body row m-0 p-0 mb-2">
                 <div class="col-md-6">
-                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}
-                </div>
-                <div class="col-md-6">                                
-                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}
-                </div>
-                <div class="col-md-6">
-                    <span v-if="task.decision == 'Accepted'" class="font-weight-bold text-success">{{ $t('accept') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
-                    <span v-if="task.decision == 'Rejected'" class="font-weight-bold text-danger">{{ $t('reject') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</span>
-                </div>
-                <div class="col-md-6">                                
+                    <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}<br>
+                    <span class="font-weight-bold">{{ $t('ETD')}}:</span><br>
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{task.remarks}}
+                </div>
+                <div class="col-md-6 text-right">                                
+                    <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{task.requisition_no}}<br>
+                    <span class="font-weight-bold">{{ $t('date')}}:</span> {{`${task.created_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}<br>
+                    <span v-if="task.decision == 'Accepted'" class="font-weight-bold text-success">{{ $t('accept') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</span>
+                    <span v-if="task.decision == 'Rejected'" class="font-weight-bold text-danger">{{ $t('reject') }}: {{`${task.updated_at}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</span>
                 </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
                     <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView">
