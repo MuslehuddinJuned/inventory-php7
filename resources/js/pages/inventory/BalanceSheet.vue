@@ -344,16 +344,16 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             return [
-                { key: 'item_image', label : this.$t('item_image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'opening', label : this.$t('opening'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'receiving_qty', label : this.$t('in'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'issueing_qty', label : this.$t('out'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'closing', label : this.$t('closing'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item_image', label : this.$t('item_image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'opening', label : this.$t('opening'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'receiving_qty', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'issueing_qty', label : this.$t('out'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'closing', label : this.$t('closing'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
@@ -362,11 +362,11 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'index', label : '#', class: 'text-center', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'inout_date', label : this.$t('date'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'etd', label : this.$t('ETD'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'received_qty', label : this.$t('in'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'issued_qty', label : this.$t('out'), class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'inout_date', label : this.$t('date'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : this.$t('ETD'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'received_qty', label : this.$t('in'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'issued_qty', label : this.$t('out'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 

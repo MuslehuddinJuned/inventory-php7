@@ -344,35 +344,35 @@ export default {
             this.buttonTitle = this.$t('save')
             if(this.store == 3){
                 return [
-                    { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'grade', label : this.$t('grade'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock_master_sheet', label : this.$t('stock_master_sheet'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'quantity', label : this.$t('stock_sheet'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+                    { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'grade', label : this.$t('grade'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock_master_sheet', label : this.$t('stock_master_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('stock_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'action', label: this.$t('Action'),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             } else {
                 return [
-                    { key: 'index', label : '#', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center p-0', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'specification', label : this.$t('specification') + '(ISR)', sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t('Action'),  class: 'text-right', thClass: 'border-top border-dark font-weight-bold'}
+                    { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle p-0', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'specification', label : this.$t('specification') + '(ISR)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'unit_price', label : this.$t('unit_price'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'total_price', label : this.$t('total_price'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'action', label: this.$t('Action'),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
                 ]
             }
             
