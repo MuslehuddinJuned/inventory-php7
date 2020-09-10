@@ -25,7 +25,8 @@ class RecdetailsController extends Controller
      */
     public function index()
     {
-        //
+        $polist = DB::SELECT('SELECT id value, po_no text FROM `polists` ORDER BY created_at DESC');
+        return compact('polist');
     }
 
     /**
@@ -63,16 +64,18 @@ class RecdetailsController extends Controller
      */
     public function show($id)
     {
-        $requisition = DB::SELECT('SELECT A.id, store_id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, 
-        master_sheet, cann_per_sheet, grade, remarks, accept, A.inventory_id, receive_etd, A.issue_etd, rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
-            SELECT id, quantity, master_sheet, remarks, accept, inventory_id, rechead_id, issue_etd FROM recdetails WHERE rechead_id= ?
+        $requisition = DB::SELECT('SELECT A.id, po_no, product_code, polist_id, po_qty, store_id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, 
+        master_sheet, cann_per_sheet, grade, remarks, accept, A.inventory_id, A.issue_etd, rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
+            SELECT id, polist_id, po_qty, quantity, master_sheet, remarks, accept, inventory_id, rechead_id, issue_etd FROM recdetails WHERE rechead_id = ?
             )A LEFT JOIN (
             SELECT id, store_id, cann_per_sheet, grade, item, item_code, specification, unit, unit_price, item_image FROM inventories
             )B ON A.inventory_id = B.id LEFT JOIN ( SELECT id, name store_name FROM stores
 			)C ON B.store_id = C.id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
-            )D ON A.inventory_id = D.inventory_id and A.issue_etd = D.receive_etd LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
-            )E ON A.inventory_id = E.inventory_id and E.issue_etd = D.receive_etd', [$id]);
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id, receive_etd
+            )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
+            )E ON A.inventory_id = E.inventory_id LEFT JOIN (SELECT id, po_no, producthead_id FROM polists
+            )F ON A.polist_id = F.id LEFT JOIN (SELECT id, product_code FROM productheads
+            )G ON F.producthead_id = G.id', [$id]);
         
         return compact('requisition');
     }
@@ -102,6 +105,8 @@ class RecdetailsController extends Controller
         $Recdetails = Recdetails::find($id);
         
         $Recdetails->quantity = $request['quantity'];
+        $Recdetails->polist_id = $request['polist_id'];
+        $Recdetails->po_qty = $request['po_qty'];
         $Recdetails->rechead_id = $request['rechead_id'];
         $Recdetails->inventory_id = $request['inventory_id'];
         $Recdetails->issue_etd = $request['issue_etd'];

@@ -25,14 +25,15 @@ class RecheadController extends Controller
      */
     public function index()
     {
-        $Rechead = DB::SELECT('SELECT A.id, requisition_no, remarks, accept, created_at, store_id, store_name FROM (
+        $Rechead = DB::SELECT('SELECT A.id, requisition_no, po_no, remarks, accept, created_at, store_id, store_name FROM (
             SELECT id, requisition_no, remarks, accept, created_at FROM recheads
             )A LEFT JOIN (
-            SELECT inventory_id, rechead_id FROM recdetails
+            SELECT inventory_id, rechead_id, polist_id FROM recdetails
             )B ON A.id = B.rechead_id LEFT JOIN(
             SELECT id, store_id FROM inventories
             )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores
-			)D ON C.store_id = D.id GROUP BY A.id ORDER BY created_at DESC');
+			)D ON C.store_id = D.id LEFT JOIN ( SELECT id, po_no FROM polists
+			)E ON B.polist_id = E.id GROUP BY A.id, po_no ORDER BY created_at DESC');
 
         return compact('Rechead');
     }

@@ -103,6 +103,12 @@
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
                         </template>
+                        <template v-slot:cell(polist_id)="row">
+                            <model-select v-model="row.item.polist_id" :options="polist_options" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" style="min-width: 150px;"></model-select>
+                        </template> 
+                        <template v-slot:cell(po_qty)="row">
+                            <input type="text" v-model="row.item.po_qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
+                        </template> 
                         <template v-slot:cell(inventory_id)="row">
                             <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
                         </template>                                    
@@ -142,7 +148,7 @@
         <!-- End Edit Details Modal -->
 
         <!-- Start view Details Modal -->
-        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('requisition')" no-close-on-backdrop>
+        <b-modal ref="dataView" id="dataView" size="xxl" :title="$t('requisition')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0 mb-2" >
                 <div class="col-md-6">
                     <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}} <br>
@@ -230,6 +236,7 @@ export default {
             title: '',
             store: 3,
             store_options: [],
+            polist_options: [],
             today: new Date(),
             storeDisabled: false,
             noprint : '',
@@ -269,13 +276,22 @@ export default {
         })
 
         fetch(`api/inventory`)
-            .then( res => res.json())
-            .then(res => {  
-                this.inventoryList = res['Inventory'];
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
+        .then( res => res.json())
+        .then(res => {  
+            this.inventoryList = res['Inventory'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
+
+        fetch(`api/recdetails`)
+        .then( res => res.json())
+        .then(res => {  
+            this.polist_options = res['polist'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
 
         this.title = this.$t('receive_item')
         this.showModal()
@@ -307,7 +323,7 @@ export default {
         },
 
         addRow() {            
-            this.taskDetails.push({'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
+            this.taskDetails.push({'quantity' : 0, 'issue_etd' : this.today, 'polist_id': null, 'po_qty': 0, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null})
         },
 
         grand_total_value() {
@@ -373,7 +389,7 @@ export default {
                 this.title = this.$t('UpdateItem')
                 this.hideDetails = ''
                 if (this.taskDetails.length == 0) {
-                    this.taskDetails = [{'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                    this.taskDetails = [{'quantity' : 0, 'polist_id': null, 'po_qty': 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                 }
                 this.$refs['dataView'].hide()
                 this.$refs['dataEdit'].show()
@@ -409,7 +425,7 @@ export default {
                         this.disable = !this.disable
                         this.buttonTitle = this.$t('save')
                         this.hideDetails = ''
-                        this.taskDetails = [{'quantity' : 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
+                        this.taskDetails = [{'quantity' : 0, 'polist_id': null, 'po_qty': 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                     })
                     .catch(err => {
                         if(err.response.status == 422){
@@ -571,6 +587,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'created_at', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -585,6 +602,8 @@ export default {
 
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'polist_id', label : this.$t('PO No'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_qty', label : this.$t('PO Qty'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'inventory_id', label : this.$t('item'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('stock_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -607,6 +626,8 @@ export default {
 
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                    { key: 'polist_id', label : this.$t('PO No'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_qty', label : this.$t('PO Qty'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'inventory_id', label : this.$t('item'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'price', label : this.$t('unit_price'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -624,8 +645,10 @@ export default {
             if(this.store == 3){
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_no', label : this.$t('PO No'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'grade', label : this.$t('grade'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -639,8 +662,8 @@ export default {
             } else if(this.store == 10){
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('stock'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -652,8 +675,10 @@ export default {
             } else {
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_no', label : this.$t('PO No') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'stock', label : this.$t('stock'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

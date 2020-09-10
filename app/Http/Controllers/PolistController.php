@@ -53,6 +53,7 @@ class PolistController extends Controller
      */
     public function store(Request $request)
     {
+        //po_no should be unique, don't change it
         $this->validate($request, [
             'po_no'=> 'required|unique:polists,po_no',
             'producthead_id'=> 'required',
@@ -141,6 +142,7 @@ class PolistController extends Controller
      */
     public function update(Request $request, Polist $polist)
     {
+        //po_no should be unique, don't change it
         $this->validate($request, [
             'po_no'=> 'required|unique:polists,po_no,'.$polist->id,
             'producthead_id'=> 'required',
