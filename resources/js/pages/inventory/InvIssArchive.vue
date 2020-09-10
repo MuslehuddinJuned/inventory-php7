@@ -292,6 +292,7 @@ export default {
                     { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'grade', label : this.$t('grade'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

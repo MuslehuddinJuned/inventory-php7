@@ -64,10 +64,10 @@ class RecdetailsController extends Controller
     public function show($id)
     {
         $requisition = DB::SELECT('SELECT A.id, store_id, quantity,((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, 
-        master_sheet, cann_per_sheet, remarks, accept, A.inventory_id, receive_etd, A.issue_etd, rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
+        master_sheet, cann_per_sheet, grade, remarks, accept, A.inventory_id, receive_etd, A.issue_etd, rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
             SELECT id, quantity, master_sheet, remarks, accept, inventory_id, rechead_id, issue_etd FROM recdetails WHERE rechead_id= ?
             )A LEFT JOIN (
-            SELECT id, store_id, cann_per_sheet, item, item_code, specification, unit, unit_price, item_image FROM inventories
+            SELECT id, store_id, cann_per_sheet, grade, item, item_code, specification, unit, unit_price, item_image FROM inventories
             )B ON A.inventory_id = B.id LEFT JOIN ( SELECT id, name store_name FROM stores
 			)C ON B.store_id = C.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
