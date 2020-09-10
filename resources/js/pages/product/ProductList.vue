@@ -112,17 +112,7 @@
                         
                         <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
                         <div>
-                            <select @change="store_change" class="form-control" id="store" v-model="store">
-                                <option value="2">{{ $t('injection_raw_materials') }}</option>
-                                <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                                <option value="4">{{ $t('polish_raw_materials') }}</option>
-                                <option value="5">{{ $t('wash_chemicals') }}</option>
-                                <option value="7">{{ $t('spray_chemicals') }}</option>
-                                <option value="8">{{ $t('printing_chemicals') }}</option>
-                                <option value="9">{{ $t('packaging_materials') }}</option>
-                                <option value="11">{{ $t('fabric_raw_materials') }}</option>
-                                <option value="10">{{ $t('stationery_items') }}</option>
-                            </select>
+                            <b-form-select @change="store_change" id="store" v-model="store" :options="store_options"></b-form-select>
                         </div>
                     </div>
                 </div>
@@ -224,7 +214,7 @@
         <!-- End Edit Details Modal -->
 
         <!-- Start view Details Modal -->
-        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop>
+        <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0 mb-2">
                 <div class="row col-md-9 m-0 p-0">
                     <div class="col-md-6">
@@ -249,7 +239,7 @@
                         <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                     </div> -->
                     <div v-for="(store_name, index) in storeList" :key="index">
-                        <h4 class="text-center col-12 bg-info text-light mt-3">{{$t(`${store_name_ch(store_name)}`)}}</h4>
+                        <h4 class="text-center col-12 bg-info text-light mt-3">{{ store_name }}</h4>
                         <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
                             <template v-slot:cell(index)="row">
                                 {{ row.index+1 }}
@@ -306,6 +296,7 @@ export default {
             noprint : '',
             // taskDetailsByStore : [],
             store : 3,
+            store_options: [],
             buyer : null,
             errors : [],
             title: '',
@@ -337,6 +328,15 @@ export default {
     },
 
     mounted() {
+        fetch(`api/store`)
+        .then(res => res.json())
+        .then(res => {
+            this.store_options = res['Store'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
+
         this.fetchData()
         fetch(`api/inventory`)
         .then( res => res.json())
@@ -346,9 +346,6 @@ export default {
         .catch(err => {
             alert(err.response.data.message);
         })
-
-        
-        
     },
 
     methods: {
@@ -549,7 +546,7 @@ export default {
                     
                 })
                 .then(res => {
-                    this.fetchData()
+                    // this.fetchData()
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.errors = ''

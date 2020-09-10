@@ -134,6 +134,7 @@
 
 <script>
 import uniq from 'lodash/uniq';
+import { ModelSelect } from 'vue-search-select';
 export default {
     middleware: 'auth',
 
@@ -383,7 +384,9 @@ export default {
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'
             ]
         },
-    }
+    },
+
+    components: { ModelSelect }
 
 }
 </script>

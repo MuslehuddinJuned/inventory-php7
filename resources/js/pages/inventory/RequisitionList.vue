@@ -10,19 +10,8 @@
                 </div>
                 <div class="card-header row m-0">
                     <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
-                    <div>
-                        <select @change="store_change" class="form-control" id="store" v-model="store">
-                            <option value="2">{{ $t('injection_raw_materials') }}</option>
-                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                            <option value="4">{{ $t('polish_raw_materials') }}</option>
-                            <option value="5">{{ $t('wash_chemicals') }}</option>
-                            <option value="7">{{ $t('spray_chemicals') }}</option>
-                            <option value="8">{{ $t('printing_chemicals') }}</option>
-                            <option value="9">{{ $t('packaging_materials') }}</option>
-                            <option value="11">{{ $t('fabric_raw_materials') }}</option>
-                            <option value="10">{{ $t('stationery_items') }}</option>
-                        </select>
-                    </div> 
+                    <div style="min-width: 400px;"><model-select :options="store_options" class="form-control" v-model="store"></model-select></div>
+                    <button @click="store_change" class="btn ml-3 btn-secondary noprint"><b-icon icon="search"></b-icon></button>
                 </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
@@ -98,17 +87,7 @@
                 <div class="col-md-6">
                     <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
                     <div>
-                        <select class="form-control" id="store" v-model="store" :disabled="storeDisabled">
-                            <option value="2">{{ $t('injection_raw_materials') }}</option>
-                            <option value="3">{{ $t('cutting_raw_materials') }}</option>
-                            <option value="4">{{ $t('polish_raw_materials') }}</option>
-                            <option value="5">{{ $t('wash_chemicals') }}</option>
-                            <option value="7">{{ $t('spray_chemicals') }}</option>
-                            <option value="8">{{ $t('printing_chemicals') }}</option>
-                            <option value="9">{{ $t('packaging_materials') }}</option>
-                            <option value="11">{{ $t('fabric_raw_materials') }}</option>
-                            <option value="10">{{ $t('stationery_items') }}</option>
-                        </select>
+                        <b-form-select id="store" v-model="store" :options="store_options" :disabled="storeDisabled"></b-form-select>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -236,6 +215,7 @@
 
 <script>
 import uniq from 'lodash/uniq';
+import { ModelSelect } from 'vue-search-select';
 export default {
     middleware: 'auth',
 
@@ -249,6 +229,7 @@ export default {
             requisitionList : [],
             title: '',
             store: 3,
+            store_options: [],
             today: new Date(),
             storeDisabled: false,
             noprint : '',
@@ -277,6 +258,16 @@ export default {
 
     mounted() {
         this.today = this.convertDate(this.today)
+        
+        fetch(`api/store`)
+        .then(res => res.json())
+        .then(res => {
+            this.store_options = res['Store'];
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
+
         fetch(`api/inventory`)
             .then( res => res.json())
             .then(res => {  
@@ -715,7 +706,9 @@ export default {
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'
             ]
         },
-    }
+    },
+
+    components: { ModelSelect }
 }
 </script>
 
