@@ -263,6 +263,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -286,42 +287,45 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
-            if(this.store == 3)
+            if(this.store == 3){
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_no', label : this.$t('PO No'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'grade', label : this.$t('grade'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 ]
-
-            else if(this.store == 10)
-
+            } else if(this.store == 10){
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'price', label : this.$t('unit_price') + '($)', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price') + '($)', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 ]
-
-            else 
-
+            } else {
                 return [
                     { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                    { key: 'item_code', label : this.$t('material') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'item', label : this.$t('material') + ' ' + this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'po_no', label : this.$t('PO No') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('specification'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'price', label : this.$t('unit_price') + '($)', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -329,6 +333,7 @@ export default {
                     { key: 'issue_etd', label : this.$t('ETD'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 ]
+            }
         },
 
         grand_total_cal() {
