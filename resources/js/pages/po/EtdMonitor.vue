@@ -161,9 +161,11 @@ export default {
                         this.inventoryListAll[j][this.etdQty[k]['etd']] = this.etdQty[k]['quantity']
                         stock -= this.etdQty[k]['quantity']
                         if (stock < 0) {
+                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = stock
                             varient[this.etdQty[k]['etd'] + '-Balance'] = 'danger';
+                        } else {
+                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = '+' + stock
                         }
-                        this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = stock
 
                     } else { continue }
                     this.inventoryListAll[j]['_cellVariants'] = varient

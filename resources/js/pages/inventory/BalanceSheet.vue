@@ -58,7 +58,7 @@
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
-                    @row-clicked="(item) => viewDetails(item.id)"
+                    @row-clicked="(item) => viewDetails(item.id, searchDateStart, searchDateEnd, 'show')"
                     class="table-transition"
                     style="cursor : pointer"
                     >
@@ -108,29 +108,30 @@
             </div>
         </div>  
         <!-- Start view Details Modal -->
-        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('product_details')" no-close-on-backdrop ok-only>
+        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('balance_sheet') + ': ' + $t('Inventory')" no-close-on-backdrop ok-only>
             <div class="modal-body row m-0 p-0 mb-2">
                 <div class="row col-md-9 m-0 p-0">
                     <div class="col-md-6">
                         <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{inOutDetails[0]['store_name']}}<br>
                         <span class="font-weight-bold">{{ $t('item_code')}}:</span> {{inOutDetails[0]['item_code']}}<br>
-                        <span class="font-weight-bold">{{ $t('item')}}:</span> {{inOutDetails[0]['item']}}
+                        <span class="font-weight-bold">{{ $t('item')}}:</span> {{inOutDetails[0]['item']}}<br>
+                        <span class="font-weight-bold">{{ $t('date')}}:</span> {{searchDateStart + ' to ' + searchDateEnd}}
                     </div>
                     <div class="col-md-6">
                         <span class="font-weight-bold">{{ $t('specification')}}:</span> {{inOutDetails[0]['specification']}}<br>
                         <span class="font-weight-bold">{{ $t('unit')}}:</span> {{inOutDetails[0]['unit']}}<br>
                         <span class="font-weight-bold">{{ $t('unit_price')}}:</span> {{inOutDetails[0]['unit_price']}}
                     </div>
-                    <div class="input-group col-md-8 mt-2">
+                    <!-- <div class="input-group col-md-8 mt-2">
                         <input v-model="searchDateStart" class="form-control input-group-prepend" type="date">
                         <div>
                             <div class="input-group-text">to</div>
                         </div>
                         <input v-model="searchDateEnd" class="form-control input-group-append" type="date">
                         <div>
-                        <button @click="searchDateDetails" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
+                        <button @click="viewDetails(taskId, searchDateStart, searchDateEnd, 'showed')" class="btn btn-secondary input-group-append"><b-icon icon="search"></b-icon></button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-md-3">
                     <div class="form-group m-auto col-md-12 text-center float-center">
@@ -138,7 +139,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
-                    <b-table show-empty small striped hover stacked="md" :busy="isBusy" :items="inOutDetailsfiltered" :fields="inOutDetailsFields">
+                    <b-table show-empty small striped hover stacked="md" :busy="isBusy" :items="inOutDetails" :fields="inOutDetailsFields">
                         <template v-slot:table-busy>
                             <div class="text-center text-success my-2">
                                 <b-spinner class="align-middle"></b-spinner>
@@ -147,12 +148,15 @@
                         </template>
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
-                        </template>
+                        </template>                        
+                        <!-- <template v-slot:cell(balance)="row">
+                            {{balance_single_method(row.item.received_qty, row.item.issued_qty)}}
+                        </template> -->
                         <template v-slot:cell(inout_date)="row">
-                            {{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
+                            <span v-if="row.item.inout_date">{{`${row.item.inout_date}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</span>
                         </template>
                         <template v-slot:cell(etd)="row">
-                            {{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
+                            <span v-if="row.item.etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</span>
                         </template>
                     </b-table>
                 </div>                              
@@ -179,9 +183,10 @@ export default {
             inventoryList : [],
             inventoryListfiltered : [],
             inOutDetails : [{'store_name' : '', 'item_code' : '', 'item' : '', 'specification' : '', 'unit' : '', 'unit_price' : ''}],
-            inOutDetailsfiltered : [],
             searchDateStart : null,
             searchDateEnd : null,
+            y1: null, m1: null, d1: null, y2: null, m2: null, d2: null,
+            balance_single: 0,
             stockType : 'all',
             taskId : null,
             store: 3,
@@ -236,27 +241,35 @@ export default {
             return [year, mnth, day].join("-");
         },
 
-        viewDetails(id) {
+        balance_single_method(rec, iss){
+            this.balance_single = parseFloat(this.balance_single) + parseFloat(rec) - parseFloat(iss)
+            return this.balance_single
+        },
+
+        viewDetails(id, date_1, date_2, state) {
             this.noprint = 'noprint'
             this.isBusy = true
             this.taskId = id
-            fetch(`api/inventory/${id}`)
-            .then(res => res.json())
-            .then(res => {
+            this.balance_single = 0
+            let balance = 0
+
+            this.isBusy = true
+            fetch(`api/inventoryinout/${id}/${this.y1}/${this.m1}/${this.d1}/${this.y2}/${this.m2}/${this.d2}`)
+            .then( res => res.json())
+            .then(res => {  
                 this.inOutDetails = res['inOutDetails']
-                this.inOutDetailsfiltered = this.inOutDetailsSearch
-            })
-            .then(res =>{
+                for (let i = 0; i < this.inOutDetails.length; i++) {
+                    balance = balance + parseFloat(this.inOutDetails[i]['received_qty']) - parseFloat(this.inOutDetails[i]['issued_qty'])
+                    this.inOutDetails[i]['balance'] = balance
+                    
+                }
                 this.isBusy = false;
             })
             .catch(err => {
-                alert(err.response.data.message)
+                alert(err.response.data.message);
             })
-            this.$refs['dataView'].show()
-        },
 
-        searchDateDetails() {
-            this.inOutDetailsfiltered = this.inOutDetailsSearch
+            this.$refs['dataView'].show()
         },
 
         store_change() {
@@ -265,20 +278,19 @@ export default {
         },
 
         fetchData(date_1, date_2) {
-            let y1=null, m1=null, d1=null, y2=null, m2=null, d2=null
-
-            y1 = date_1.getFullYear()
-            m1 = ("0" + (date_1.getMonth() + 1)).slice(-2)
-            d1 = ("0" + date_1.getDate()).slice(-2)
-            y2 = date_2.getFullYear()
-            m2 = ("0" + (date_2.getMonth() + 1)).slice(-2)
-            d2 = ("0" + date_2.getDate()).slice(-2)
 
             this.searchDateStart = this.convertDate(date_1)
             this.searchDateEnd = this.convertDate(date_2)
+            date_2.setDate(date_2.getDate() + 1)
+            this.y1 = date_1.getFullYear()
+            this.m1 = ("0" + (date_1.getMonth() + 1)).slice(-2)
+            this.d1 = ("0" + date_1.getDate()).slice(-2)
+            this.y2 = date_2.getFullYear()
+            this.m2 = ("0" + (date_2.getMonth() + 1)).slice(-2)
+            this.d2 = ("0" + date_2.getDate()).slice(-2)            
 
             this.isBusy = true
-            fetch(`api/inventorybalance/${y1}/${m1}/${d1}/${y2}/${m2}/${d2}`)
+            fetch(`api/inventorybalance/${this.y1}/${this.m1}/${this.d1}/${this.y2}/${this.m2}/${this.d2}`)
             .then( res => res.json())
             .then(res => {  
                 this.inventoryList = res['balance'];
@@ -325,15 +337,6 @@ export default {
             
         },
 
-        inOutDetailsSearch() {
-            let start_date = this.searchDateStart
-            let end_date = new Date(this.searchDateEnd)
-            end_date = this.convertDate(end_date.setDate(end_date.getDate() + 1))
-            return this.inOutDetails.filter(function (item) {
-                return (item['inout_date'] >= start_date && item['inout_date'] < end_date)
-            })
-        },
-
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
@@ -363,10 +366,13 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'po_no', label : this.$t('PO No'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'rec_req_no', label : this.$t('invoice_no') + '/ ' + this.$t('requisition_no'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'inout_date', label : this.$t('date'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'etd', label : this.$t('ETD'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'received_qty', label : this.$t('in'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'issued_qty', label : this.$t('out'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'balance', label : this.$t('balance'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
