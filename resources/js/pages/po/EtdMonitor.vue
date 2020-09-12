@@ -12,6 +12,19 @@
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            :title="storeName"
+                            :data="inventoryList"
+                            :fields="json_fields"
+                            worksheet="ETD Monitor"
+                            name="ETD Monitor.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -115,6 +128,14 @@ export default {
             etdList : [],
             etdQty : [],
             store: 3,
+            storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
+            json_fields: {
+                'Material No': 'item_code',
+                'Material': 'item',
+                'Description': 'specification',
+                'Unit': 'unit',
+                'Stock': 'stock',
+            },
             store_options: [],
             noprint: 'noprint',
 
@@ -159,6 +180,7 @@ export default {
                 for (let k = 0; k < this.etdQty.length; k++) {
                     if(this.inventoryListAll[j]['id'] === this.etdQty[k]['inventory_id']){
                         this.inventoryListAll[j][this.etdQty[k]['etd']] = this.etdQty[k]['quantity']
+                        this.inventoryListAll[j][this.etdQty[k]['etd'] + '-product_code'] = this.etdQty[k]['product_code']
                         stock -= this.etdQty[k]['quantity']
                         if (stock < 0) {
                             this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = stock
@@ -234,12 +256,16 @@ export default {
             ]  
             
             for (let i = 0; i < this.etdList.length; i++) {
-                data.push({ 'key': this.etdList[i]['etd'], label : this.convertDate(this.etdList[i]['etd']),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
-                data.push({ 'key': this.etdList[i]['etd'] + '-Balance', label : this.$t('balance'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold align-middle' })
+                data.push({ 'key': this.etdList[i]['etd'], 'label' : this.convertDate(this.etdList[i]['etd']),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
+                data.push({ 'key': this.etdList[i]['etd'] + '-Balance', 'label' : this.$t('balance'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
+                data.push({ 'key': this.etdList[i]['etd'] + '-product_code', 'label' : this.$t('style') + ' ' + this.$t('code'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
+
+                this.json_fields[this.convertDate(this.etdList[i]['etd'])] = this.etdList[i]['etd']
+                this.json_fields[this.convertDate(this.etdList[i]['etd']) + '-Balance'] = this.etdList[i]['etd'] + '-Balance'
+                this.json_fields[this.convertDate(this.etdList[i]['etd']) + '-Style Code'] = this.etdList[i]['etd'] + '-product_code'
             }
 
-            return data
-            
+            return data            
         },
     },
 

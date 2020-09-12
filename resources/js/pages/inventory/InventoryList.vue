@@ -220,7 +220,6 @@ export default {
                 'Material': 'item',
                 'Description': 'specification',
                 'Grade': 'grade',
-                'Material': 'item',
                 'Stock': 'stock',
                 'Unit': 'unit',
                 'Weight': 'weight',

@@ -25,6 +25,19 @@
                 </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            :title="etd"
+                            :data="PoList"
+                            :fields="json_fields"
+                            worksheet="PO List"
+                            name="PO List.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -283,6 +296,14 @@ export default {
             filter: null,
             filterOn: [],
             isBusy: false,
+            json_fields: {
+                'PO No': 'po_no',
+                'Buyer': 'buyer',
+                'Style Code': 'product_code',
+                'Quantity': 'quantity',
+                'PO Date': 'po_date',
+                'ETD': 'etd',
+            },
         }
     },
 
