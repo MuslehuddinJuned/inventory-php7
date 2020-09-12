@@ -23,6 +23,19 @@
                 </div> 
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            :title="storeName"
+                            :data="inventoryList"
+                            :fields="json_fields"
+                            worksheet="Inventory Item"
+                            name="Inventory Item.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -201,6 +214,20 @@ export default {
             inventoryListAll : [],
             errors : [],
             store : 3,
+            storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
+            json_fields: {
+                'Material No': 'item_code',
+                'Material': 'item',
+                'Description': 'specification',
+                'Grade': 'grade',
+                'Material': 'item',
+                'Stock': 'stock',
+                'Unit': 'unit',
+                'Weight': 'weight',
+                'Total Weight': 'total_weight',
+                'Unit Price': 'unit_price',
+                'Total Price': 'total_price',
+            },
             store_options: [],
             noprint: 'noprint',
             etd : false,
@@ -284,6 +311,13 @@ export default {
             this.totalRows = this.inventoryListByDept.length;
             for (let i = 0; i < this.totalRows; i++) {
                 this.inventoryList[i]['sn'] = i                
+            }
+
+            for (let i = 0; i < this.store_options.length; i++) {
+                if (this.store_options[i]['value'] == this.store) {
+                    this.storeName = this.store_options[i]['text'] 
+                    break    
+                }       
             }
         },
 
@@ -509,6 +543,7 @@ export default {
                     { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
                 ]
+                
             } else {
                 return [
                     { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

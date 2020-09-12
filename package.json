@@ -27,6 +27,7 @@
     "sweetalert2": "^8.19.0",
     "vform": "^1.0.1",
     "vue-i18n": "^8.18.2",
+    "vue-json-excel": "^0.2.98",
     "vue-meta": "^1.6.0",
     "vue-router": "^3.3.4",
     "vue-search-select": "^2.9.3",

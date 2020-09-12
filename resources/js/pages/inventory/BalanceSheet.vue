@@ -20,6 +20,19 @@
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            :title="storeName"
+                            :data="inventoryListfiltered"
+                            :fields="json_fields"
+                            worksheet="Balance Sheet"
+                            name="Balance Sheet.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -190,6 +203,7 @@ export default {
             stockType : 'all',
             taskId : null,
             store: 3,
+            storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
             store_options: [],
             noprint: '',
 
@@ -204,6 +218,18 @@ export default {
             filter: null,
             filterOn: [],
             isBusy: false,
+
+            json_fields: {
+                'Material No': 'item_code',
+                'Material': 'item',
+                'Unit': 'unit',
+                'Unit Price': 'unit_price',
+                'Opening': 'opening',
+                'In': 'receiving_qty',
+                'Out': 'issueing_qty',
+                'Closing': 'closing',
+                'Total Price': 'total_price',
+            },
         }
     },
 
@@ -275,6 +301,15 @@ export default {
         store_change() {
             this.inventoryListfiltered = this.balance;
             this.totalRows = this.inventoryListfiltered.length;
+
+            for (let i = 0; i < this.store_options.length; i++) {
+                if (this.store_options[i]['value'] == this.store) {
+                    this.storeName = this.store_options[i]['text'] 
+                    break    
+                }       
+            }
+            
+
         },
 
         fetchData(date_1, date_2) {

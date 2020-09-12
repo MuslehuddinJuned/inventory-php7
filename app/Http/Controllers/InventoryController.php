@@ -128,16 +128,18 @@ class InventoryController extends Controller
                 
             UNION ALL
                     
-            SELECT A.inventory_id, ('Opening Balance')rec_req_no, NULL po_no, NULL inout_date, NULL etd, 
+            SELECT inventory_id, ('Opening Balance')rec_req_no, NULL po_no, NULL inout_date, NULL etd, 
             (CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END) received_qty , 0 issued_qty FROM(
-            SELECT inventory_id, inventoryreceive_id, SUM(quantity)received_qty FROM invenrecalls WHERE inventory_id = ? GROUP BY inventory_id, inventoryreceive_id
-            )A INNER JOIN (SELECT id FROM inventoryreceives WHERE receive_date < ? AND deleted_by = 0
-            )B ON A.inventoryreceive_id = B.id LEFT JOIN(
-                SELECT SUM(quantity)issued_qty, inventory_id FROM(SELECT rechead_id FROM inventoryissues WHERE  created_at < ?
-                )A LEFT JOIN (SELECT id FROM recheads
-                )B ON A.rechead_id= B.id LEFT JOIN (SELECT inventory_id, quantity, rechead_id FROM recdetails WHERE accept = 1
-                )C ON B.id = C.rechead_id WHERE inventory_id IS NOT null GROUP BY inventory_id
-            )C ON A.inventory_id = C.inventory_id
+            SELECT A.inventory_id, SUM(issued_qty)issued_qty, SUM(received_qty)received_qty FROM(
+                SELECT inventory_id, inventoryreceive_id, SUM(quantity)received_qty FROM invenrecalls WHERE inventory_id = ? GROUP BY inventory_id, inventoryreceive_id
+                )A INNER JOIN (SELECT id FROM inventoryreceives WHERE receive_date < ? AND deleted_by = 0
+                )B ON A.inventoryreceive_id = B.id LEFT JOIN(
+                    SELECT issued_qty, inventory_id FROM(SELECT rechead_id FROM inventoryissues WHERE  created_at < ?
+                    )A LEFT JOIN (SELECT id FROM recheads
+                    )B ON A.rechead_id= B.id LEFT JOIN (SELECT inventory_id, SUM(quantity)issued_qty, rechead_id FROM recdetails WHERE accept = 1 AND inventory_id IS NOT null GROUP BY inventory_id, rechead_id
+                    )C ON B.id = C.rechead_id
+                )C ON A.inventory_id = C.inventory_id GROUP BY A.inventory_id
+            )A 
 
             )C ON A.id = C.inventory_id ORDER BY inout_date", [$id, $id, $date_1, $date_2, $id, $date_1, $date_2, $id, $date_1, $id, $date_1]);
 

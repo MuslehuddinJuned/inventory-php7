@@ -28,6 +28,10 @@ Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
+//-------------- Export table data to JsonExcel https://github.com/jecovier/vue-json-excel#readme -----------------//
+import JsonExcel from 'vue-json-excel'
+Vue.component('downloadExcel', JsonExcel)
+
 //----------For searchable select option: https://www.npmjs.com/package/vue-search-select -----//
 import 'vue-search-select/dist/VueSearchSelect.css'
 

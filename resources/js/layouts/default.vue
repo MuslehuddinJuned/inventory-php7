@@ -1,5 +1,6 @@
 <template>
   <div class="main-layout">
+    <div class="text-right col-12 onlyprint">{{Dated}}</div>
     <navbar />
 
     <div class="mt-2 mb-5">
@@ -23,6 +24,12 @@ export default {
 
   components: {
     Navbar
+  },
+
+  data() {
+    return{
+      Dated: new Date(),
+    }
   }
 }
 </script>
