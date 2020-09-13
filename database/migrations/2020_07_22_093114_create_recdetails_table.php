@@ -16,11 +16,16 @@ class CreateRecdetailsTable extends Migration
         Schema::create('recdetails', function (Blueprint $table) {
             $table->id();
             $table->float('quantity')->nullable();
+            $table->float('po_qty')->nullable();
+            $table->date('issue_etd')->nullable();
+            $table->float('master_sheet')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('accept')->nullable();
+            $table->unsignedBigInteger('polist_id')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('inventory_id');
             $table->unsignedBigInteger('rechead_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();
             $table->foreign('rechead_id')->references('id')->on('recheads')->onDelete('cascade');

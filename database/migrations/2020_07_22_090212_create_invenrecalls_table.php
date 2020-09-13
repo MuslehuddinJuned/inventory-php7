@@ -16,11 +16,14 @@ class CreateInvenrecallsTable extends Migration
         Schema::create('invenrecalls', function (Blueprint $table) {
             $table->id();
             $table->float('quantity')->nullable();
+            $table->float('master_sheet')->nullable();
             $table->float('price')->nullable();
+            $table->date('receive_etd')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('inventory_id');
             $table->unsignedBigInteger('inventoryreceive_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();
             $table->foreign('inventoryreceive_id')->references('id')->on('inventoryreceives')->onDelete('cascade');

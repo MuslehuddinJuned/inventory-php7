@@ -21,7 +21,9 @@ class CreateInventoryreceivesTable extends Migration
             $table->string('storeReceive_id')->nullable();
             $table->string('stock_type')->nullable();
             $table->date('challan_date')->nullable();
+            $table->date('receive_date')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('polist_id')->nullable();
             $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();

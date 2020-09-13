@@ -19,7 +19,8 @@ class CreateWipissuesTable extends Migration
             $table->string('etd')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('producthead_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
 
             $table->timestamps();
         });

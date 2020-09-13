@@ -18,6 +18,8 @@ class CreateWipstoresTable extends Migration
             $table->string('name')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
+
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

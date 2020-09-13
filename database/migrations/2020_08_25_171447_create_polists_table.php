@@ -22,6 +22,7 @@ class CreatePolistsTable extends Migration
             $table->string('po_no')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('producthead_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
             $table->timestamps();
         });
     }
