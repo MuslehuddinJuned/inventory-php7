@@ -145,7 +145,7 @@
                                     <input type="text" class="form-control m-0 border-0 bg-transparent rounded-0" name="sn" v-model="item.sn">
                                 </td>
                                 <td class=" m-0 p-0">
-                                    <model-select :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" v-model="item.inventory_id"></model-select>
+                                    <model-select v-model="item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" style='min-width: 300px;'></model-select>
                                 </td>
                                 <td class="m-0 p-0">
                                     <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="item.description">

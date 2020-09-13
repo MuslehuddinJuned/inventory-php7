@@ -110,7 +110,7 @@
                             <input type="text" v-model="row.item.po_qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
                         </template> 
                         <template v-slot:cell(inventory_id)="row">
-                            <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
+                            <model-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" style='min-width: 300px;'></model-select>
                         </template>                                    
                         <template v-slot:cell(issue_etd)="row">
                             <input type="date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.issue_etd">
@@ -125,7 +125,6 @@
                             <input type="text" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.remarks">
                         </template>
                         <template v-slot:cell(action)="row">
-                            <!-- <a @click="viewDetails(row.item.machine_name, row.item.machine_description)" class="btn btn-sm text-black-50" data-toggle="modal" data-target="#dataView"><fa icon="eye" fixed-width /></a> -->
                             <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
                             <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
                         </template>

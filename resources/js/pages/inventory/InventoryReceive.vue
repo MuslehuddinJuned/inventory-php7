@@ -122,7 +122,7 @@
                             {{ row.index+1 }}
                         </template>
                         <template v-slot:cell(inventory_id)="row">
-                            <b-form-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-select>
+                            <model-select v-model="row.item.inventory_id" :options="itemlistview" class="form-control row-fluid m-0 border-0 bg-transparent rounded-0" style='min-width: 300px;'></model-select>
                         </template>
                         <template v-slot:cell(receive_etd)="row">
                             <input type="date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0" v-model="row.item.receive_etd">
