@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/user', 'Auth\UserController@current');
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
+    Route::get('settings/roles', 'Settings\ProfileController@allRoles');
     Route::resource('settings/profile', 'Settings\ProfileController');
     Route::patch('settings/password', 'Settings\PasswordController@update');
     Route::get('inventorybalance/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@balance');
@@ -33,7 +34,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('recdetails', 'RecdetailsController');
     Route::resource('productdetails', 'ProductdetailsController');
     Route::resource('producthead', 'ProductheadController');
-    Route::resource('polist', 'PolistController');
+    Route::middleware('can:user_management_View')->group(function(){
+        Route::resource('polist', 'PolistController');
+    });
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

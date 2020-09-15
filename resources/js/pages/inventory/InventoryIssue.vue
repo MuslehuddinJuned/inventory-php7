@@ -135,11 +135,11 @@
                         <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
                     </div>
                     <div class="col-md-5">
-                        <button @click="editDetails(-1)" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
+                        <button @click="editDetails(-1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
                     </div>
                     <div class="col-md-7">
                         <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                        <button @click="editDetails(1)" class="mdb btn btn-outline-default float-right">{{ $t('accept') }}</button>
+                        <button @click="editDetails(1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-default float-right">{{ $t('accept') }}</button>
                     </div>
                 </div>
             </template>
@@ -161,6 +161,7 @@ export default {
     data() {
         return{
             inventoryissueList : [],
+            roles: [],
             disable: false,
             store: 3,
             store_options: [],
@@ -205,8 +206,11 @@ export default {
         .then(res => {
             this.store_options = res['Store'];
         })
-        .catch(err => {
-            alert(err.response.data.message);
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
         })
     },
 
@@ -215,6 +219,14 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+
+        checkRoles(role) {
+            for (let i = 0; i < this.roles.length; i++) {
+                if (this.roles[i]['name'] == role) {
+                    return true
+                }                
+            } return false
         },
 
         store_change() {

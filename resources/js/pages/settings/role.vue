@@ -223,7 +223,7 @@ export default {
                 {name: this.$t('ItemIssue'), view:{value: false, id: 10}, insert:{value: false, id: 11}, update:{value: false, id: 12}, delete:{value: false, id: 13}},
                 {name: this.$t('requisition'), view:{value: false, id: 14}, insert:{value: false, id: 15}, update:{value: false, id: 16}, delete:{value: false, id: 17}},
                 {name: this.$t('product_details'), view:{value: false, id: 18}, insert:{value: false, id: 19}, update:{value: false, id: 20}, delete:{value: false, id: 21}},
-                {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 25}, delete:{value: false, id: 25}}
+                {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 24}, delete:{value: false, id: 25}}
             ]
             fetch(`api/settings/profile/${id}`)
             .then(res => res.json())

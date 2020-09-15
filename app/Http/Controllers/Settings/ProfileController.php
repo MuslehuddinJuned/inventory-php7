@@ -39,8 +39,16 @@ class ProfileController extends Controller
             )A LEFT JOIN (SELECT id, name FROM roles
             )B ON A.role_id = B.id', [$id]);
 
-        return compact('roles');
-        
+        return compact('roles');        
+    }
+
+    public function allRoles()
+    {
+        $allRoles = DB::SELECT('SELECT name FROM(SELECT id, name, created_at, updated_at FROM roles
+                )A INNER JOIN(SELECT id, user_id, role_id FROM role_user WHERE user_id = ?
+                )B ON A.id = B.role_id', [auth()->user()->id]);
+
+        return compact('allRoles');
     }
 
     /**
