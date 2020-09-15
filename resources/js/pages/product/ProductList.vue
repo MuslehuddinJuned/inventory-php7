@@ -80,7 +80,7 @@
             </div>
         </div> 
         <!-- Start Edit Details Modal -->
-        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>                        
+        <b-modal ref="dataEdit" id="dataEdit" size="xxl" :title="title" no-close-on-backdrop>                        
             <div class="modal-body row m-0 p-0 mb-2">
                 <div class="row col-md-9 m-0 p-0">
                     <div class="col-md-6">
@@ -110,10 +110,10 @@
                         <label class="col-form-label">{{ $t('remarks')}}</label>
                         <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
                         
-                        <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
+                        <!-- <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
                         <div>
                             <b-form-select @change="store_change" id="store" v-model="store" :options="store_options"></b-form-select>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -238,9 +238,9 @@
                         <div class="float-left py-auto"><h5 class="my-auto">{{$t('material_list_for_quantity')}} </h5></div>
                         <div><input type="number" class="ml-2 form-control" v-model="product_qty"></div>
                     </div> -->
-                    <div v-for="(store_name, index) in storeList" :key="index">
-                        <h4 class="text-center col-12 bg-info text-light mt-3">{{ store_name }}</h4>
-                        <b-table show-empty small striped hover stacked="md" :items="materialsByStore(store_name)" :fields="taskDetailsfieldsView">
+                    <!-- <div v-for="(store_name, index) in storeList" :key="index"> -->
+                        <!-- <h4 class="text-center col-12 bg-info text-light mt-3">{{ store_name }}</h4> -->
+                        <b-table show-empty small striped hover stacked="md" :items="taskDetailsAll" :fields="taskDetailsfieldsView" class="mt-3">
                             <template v-slot:cell(index)="row">
                                 {{ row.index+1 }}
                             </template>
@@ -252,7 +252,7 @@
                                 {{(row.item.quantity * row.item.weight).toFixed(2)}}
                             </template>
                         </b-table>
-                    </div>
+                    <!-- </div> -->
                 </div>  
                 <div class="col-12">
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
@@ -437,29 +437,30 @@ export default {
             this.save_image = null
             this.title = this.$t('UpdateItem')
             this.hideDetails = ''
-            this.taskDetails = this.taskDetailsByStore
+            // this.taskDetails = this.taskDetailsByStore
+            this.taskDetails = this.taskDetailsAll
             if (this.taskDetails.length == 0) {
                 this.taskDetails = [{'quantity' : null, 'inventory_id' : null, 'store_id' : this.store, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
             }
             this.$refs['dataEdit'].show()         
         },
 
-        materialsByStore(store) {
-            let array =[]
-            for (let i = 0; i < this.taskDetailsAll.length; i++) {
-                if (this.taskDetailsAll[i]['store_name'] == store) {                
-                    array[i] = this.taskDetailsAll[i]                
-                }
-            }
-            return array
-        },
+        // materialsByStore(store) {
+        //     let array =[]
+        //     for (let i = 0; i < this.taskDetailsAll.length; i++) {
+        //         if (this.taskDetailsAll[i]['store_name'] == store) {                
+        //             array[i] = this.taskDetailsAll[i]                
+        //         }
+        //     }
+        //     return array
+        // },
 
-        store_change() {
-            this.taskDetails = this.taskDetailsByStore
-            if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'quantity' : null, 'inventory_id' : null, 'store_id' : this.store, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
-            }
-        },
+        // store_change() {
+        //     this.taskDetails = this.taskDetailsByStore
+        //     if (this.taskDetails.length == 0) {
+        //         this.taskDetails = [{'quantity' : null, 'inventory_id' : null, 'store_id' : this.store, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
+        //     }
+        // },
 
         row_material(id) {
             for (let i = 0; i < this.inventoryList.length; i++) {
@@ -653,12 +654,12 @@ export default {
             })
         },
 
-        taskDetailsByStore() {
-            let id = this.store
-            return this.taskDetailsAll.filter(function (item) {
-            return item['store_id'] == id
-            })
-        },
+        // taskDetailsByStore() {
+        //     let id = this.store
+        //     return this.taskDetailsAll.filter(function (item) {
+        //     return item['store_id'] == id
+        //     })
+        // },
 
         TypetoSearch() {
             const lang = this.$i18n.locale
@@ -737,9 +738,9 @@ export default {
         itemlistview(){
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
-                if (this.inventoryList[i]['store_id'] == this.store) {                    
+                // if (this.inventoryList[i]['store_id'] == this.store) {                    
                     array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit'] + ' | ' + this.inventoryList[i]['specification']})
-                }
+                // }
             }
             return array
         },
