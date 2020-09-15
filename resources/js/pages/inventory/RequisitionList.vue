@@ -81,7 +81,7 @@
             </div>
         </div> 
         <!-- Start Edit Details Modal -->
-        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop>
+        <b-modal ref="dataEdit" id="dataEdit" size="xxl" :title="$t('requisition')" no-close-on-backdrop>
             
             <div class="modal-body row m-0 p-0 mb-2">
                 <div class="col-md-6">

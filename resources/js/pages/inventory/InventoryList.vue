@@ -120,7 +120,7 @@
                     </div>
 
                     <!-- Start Edit Details Modal -->
-                    <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>
+                    <b-modal ref="dataEdit" id="dataEdit" size="xxl" :title="title" no-close-on-backdrop>
                         
                         <div class="modal-body row m-0 p-0">
                             <div class="col-md-8 row m-0 p-0">
@@ -201,6 +201,7 @@
 <script>
 import uniq from 'lodash/uniq';
 import { ModelSelect } from 'vue-search-select';
+import store from '~/store'
 export default {
     middleware: 'auth',
 
@@ -289,7 +290,8 @@ export default {
         })
     },
 
-    created() {            
+    created() {      
+        console.log('inventory', store.getters['inventory'])      
         // this.buttonTitle = this.buttonTitle;
     },
 
