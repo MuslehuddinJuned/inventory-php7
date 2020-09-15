@@ -1,4 +1,7 @@
 { 
+    "hrm" : "Human Resource Management",
+    "inventory_mgt" : "Inventory Management",
+    "choose_a_module" : "Choose A Module",
     "receive_date" : "Receive Date",
     "insert" : "Insert",
     "view" : "View",

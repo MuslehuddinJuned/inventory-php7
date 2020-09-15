@@ -1,4 +1,7 @@
 {
+    "hrm" : "人力资源管理",
+    "inventory_mgt" : "库存管理",
+    "choose_a_module" : "选择一个模块",
     "receive_date" : "收到日期",
     "insert" : "插",
     "view" : "视图",

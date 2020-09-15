@@ -13,7 +13,7 @@
       <div id="navbarToggler" class="collapse navbar-collapse">
         <ul class="navbar-nav">
           <locale-dropdown />
-          <li v-if="user" class="nav-item dropdown">
+          <li v-if="user && module_no == 1" class="nav-item dropdown">
             <a id="inventory" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="cart4"></b-icon> {{ $t('Inventory') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="inventory">
               <router-link :to="{ name: 'inventory.InventoryList' }" class="dropdown-item pl-3">                
@@ -42,7 +42,7 @@
               </router-link>
             </div>
           </li>
-          <li v-if="user" class="nav-item dropdown">
+          <li v-if="user && module_no == 1" class="nav-item dropdown">
             <a id="product" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="box-seam"></b-icon> {{ $t('product') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
               <router-link :to="{ name: 'product.ProductList' }" class="dropdown-item pl-3">                
@@ -63,7 +63,7 @@
               </router-link> -->
             </div>
           </li>
-          <!-- <li v-if="user" class="nav-item dropdown">
+          <!-- <li v-if="user  && module_no == 1" class="nav-item dropdown">
             <a id="wip" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="hourglass-split"></b-icon> {{ $t('WIP') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
               <router-link :to="{ name: 'wip.SemifinishedGoods' }" class="dropdown-item pl-3">                
@@ -126,6 +126,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import LocaleDropdown from './LocaleDropdown'
+import Cookies from 'js-cookie'
 
 export default {
   components: {
@@ -136,9 +137,15 @@ export default {
     appName: window.config.appName
   }),
 
-  computed: mapGetters({
-    user: 'auth/user'
-  }),
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    }),
+
+    module_no() {
+      return Cookies.get('module_no')
+    },
+  },
 
   methods: {
     async logout () {
