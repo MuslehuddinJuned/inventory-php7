@@ -265,6 +265,7 @@ export default {
             inventoryrec_h : [],
             inventoryrec_d : [],
             PoListAll: [],
+            roles: [],
             storeDisabled : false,
             noprint : '',
             today : new Date(),
@@ -326,6 +327,12 @@ export default {
             alert(err.response.data.message);
         })
 
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
+
         this.title = this.$t('receive_item')
         this.showModal()
         
@@ -344,6 +351,14 @@ export default {
                 mnth = ("0" + (date.getMonth() + 1)).slice(-2),
                 day = ("0" + date.getDate()).slice(-2)
             return [year, mnth, day].join("-");
+        },
+
+        checkRoles(role) {
+            for (let i = 0; i < this.roles.length; i++) {
+                if (this.roles[i]['name'] == role) {
+                    return true
+                }                
+            } return false
         },
 
         addDetails(){

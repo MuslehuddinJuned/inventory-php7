@@ -292,6 +292,7 @@ export default {
         return{
             inventoryList : [],
             productList : [],
+            roles: [],
             productListAll : [],
             noprint : '',
             // taskDetailsByStore : [],
@@ -346,6 +347,12 @@ export default {
         .catch(err => {
             alert(err.response.data.message);
         })
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
     },
 
     methods: {
@@ -353,6 +360,14 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+
+        checkRoles(role) {
+            for (let i = 0; i < this.roles.length; i++) {
+                if (this.roles[i]['name'] == role) {
+                    return true
+                }                
+            } return false
         },
 
         change_buyer() {

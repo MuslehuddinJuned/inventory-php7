@@ -213,6 +213,7 @@ export default {
         return{
             inventoryList : [],
             inventoryListAll : [],
+            roles: [],
             errors : [],
             store : 3,
             storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
@@ -288,6 +289,12 @@ export default {
         .catch(err => {
             alert(err.response.data.message);
         })
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
     },
 
     created() {      
@@ -301,6 +308,15 @@ export default {
             this.totalRows = filteredItems.length
             this.currentPage = 1
         },
+
+        checkRoles(role) {
+            for (let i = 0; i < this.roles.length; i++) {
+                if (this.roles[i]['name'] == role) {
+                    return true
+                }                
+            } return false
+        },
+
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
