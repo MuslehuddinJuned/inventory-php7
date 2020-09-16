@@ -20,23 +20,21 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::get('settings/roles', 'Settings\ProfileController@allRoles');
-    Route::resource('settings/profile', 'Settings\ProfileController');
+    Route::resource('settings/profile', 'Settings\ProfileController')->middleware('can:user_management_View');
     Route::patch('settings/password', 'Settings\PasswordController@update');
-    Route::get('inventorybalance/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@balance');
-    Route::get('inventoryinout/{id}/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@inout');
-    Route::get('etd', 'InventoryController@etd');
-    Route::resource('inventory', 'InventoryController');
+    Route::get('inventorybalance/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@balance')->middleware('can:InventoryItem_View');
+    Route::get('inventoryinout/{id}/{y1}/{m1}/{d1}/{y2}/{m2}/{d2}', 'InventoryController@inout')->middleware('can:InventoryItem_View');
+    Route::get('etd', 'InventoryController@etd')->middleware('can:InventoryItem_View');
+    Route::resource('inventory', 'InventoryController')->middleware('can:InventoryItem_View');
     Route::resource('store', 'StoreController');
-    Route::resource('inventoryreceive', 'InventoryreceiveController');
-    Route::resource('invenrecall', 'InvenrecallController');
-    Route::resource('inventoryissue', 'InventoryissueController');
-    Route::resource('rechead', 'RecheadController');
-    Route::resource('recdetails', 'RecdetailsController');
-    Route::resource('productdetails', 'ProductdetailsController');
-    Route::resource('producthead', 'ProductheadController');
-    Route::middleware('can:user_management_View')->group(function(){
-        Route::resource('polist', 'PolistController');
-    });
+    Route::resource('inventoryreceive', 'InventoryreceiveController')->middleware('can:ItemReceive_View');
+    Route::resource('invenrecall', 'InvenrecallController')->middleware('can:ItemReceive_View');
+    Route::resource('inventoryissue', 'InventoryissueController')->middleware('can:ItemIssue_View');
+    Route::resource('rechead', 'RecheadController')->middleware('can:requisition_View');
+    Route::resource('recdetails', 'RecdetailsController')->middleware('can:requisition_View');
+    Route::resource('productdetails', 'ProductdetailsController')->middleware('can:product_details_View');
+    Route::resource('producthead', 'ProductheadController')->middleware('can:product_details_View');
+    Route::resource('polist', 'PolistController')->middleware('can:po_list_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

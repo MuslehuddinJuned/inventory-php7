@@ -297,11 +297,6 @@ export default {
         })
     },
 
-    created() {      
-        console.log('inventory', store.getters['inventory'])      
-        // this.buttonTitle = this.buttonTitle;
-    },
-
     methods: {
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
