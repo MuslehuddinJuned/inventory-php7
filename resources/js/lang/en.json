@@ -1,5 +1,8 @@
 { 
-    "employee" : "Employee",
+    "photograph" : "Photograph",
+    "emergency_contact" : "Emergency Contact",
+    "official_info" : "Official Information",
+    "personal_info" : "Personal Information",
     "insert_new_employee" : "Insert New Employee",
     "update_employee_profile" : "Update Employee Profile",
     "employee_management" : "Employee Management",

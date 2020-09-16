@@ -93,131 +93,156 @@
         <!-- Start Edit Details Modal -->
         <b-modal ref="dataEdit" id="dataEdit" size="xxl" :title="title" no-close-on-backdrop>            
             <div class="modal-body row m-0 p-0">
-                <Form autocomplete="off" class="was-validated">            
-                <input autocomplete="false" name="hidden" type="text" style="display:none;">
-                    <div class="setup-content mt-5" id="step-1">
-                        <div class="form-row col-md-12">                          
-                            <div class="form-group col-md-3">
-                                <label for="employee_id" class="col-form-label">{{$t('save')}}{{$t('employee')}} ID</label>
-                                <input v-model="task[0]['employee_id']" type="text" class="form-control is-valid" id="employee_id" name="employee_id" required>
-                                <span v-if="errors.employee_id" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
-                                <div v-else class="invalid-feedback">{{$t('required_field') + ' ' + $t('unique')}}</div>
-
-                            </div>                      
-                            <div class="form-group col-md-6">                        
-                                <label for="first_name" class="col-form-label">Full Name</label>
-                                <input type="text" class="form-control" id="first_name" name="Name" v-model="task[0]['first_name']">
-                            </div>                        
-                            <div class="form-group col-md-3">                   
-                                <label for="last_name" class="col-form-label">Nick Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" v-model="task[0]['last_name']">
+                <div class="row col-12 m-0 p-0">
+                    <div v-if="stepper==1" @click="stepper = 1" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 1" class="form mdb btn btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-primary rounded-circle font-weight-bold">1</button><br>{{$t('personal_info')}}</div>
+                    <div v-if="stepper!=1" @click="stepper = 1" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 1" class="form btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-outline-secondary rounded-circle">1</button><br>{{$t('personal_info')}}</div>
+                    <div v-if="stepper==2" @click="stepper = 2" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-primary rounded-circle font-weight-bold">2</button><br>{{$t('official_info')}}</div>
+                    <div v-if="stepper!=2" @click="stepper = 2" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-outline-secondary rounded-circle">2</button><br>{{$t('official_info')}}</div>
+                    <div v-if="stepper==3" @click="stepper = 3" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-primary rounded-circle font-weight-bold">3</button><br>{{$t('emergency_contact')}}</div>
+                    <div v-if="stepper!=3" @click="stepper = 3" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-outline-secondary rounded-circle">3</button><br>{{$t('emergency_contact')}}</div>
+                    <div v-if="stepper==4" @click="stepper = 4" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-primary rounded-circle font-weight-bold">4</button><br>{{$t('photograph')}}</div>
+                    <div v-if="stepper!=4" @click="stepper = 4" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-outline-secondary rounded-circle">4</button><br>{{$t('photograph')}}</div>
+                </div>
+                <div v-if="stepper == 1" class="setup-content mt-5" id="step-1">
+                    <div class="form-row col-md-12">                          
+                        <div class="form-group col-md-3">
+                            <label for="employee_id" class="col-form-label">{{$t('save')}}{{$t('employee')}} ID</label>
+                            <input v-model="task[0]['employee_id']" type="text" class="form-control is-valid" id="employee_id" name="employee_id">
+                            <span v-if="errors.employee_id" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
+                        </div>                      
+                        <div class="form-group col-md-6">                        
+                            <label for="first_name" class="col-form-label">Full Name</label>
+                            <input type="text" class="form-control" id="first_name" name="Name" v-model="task[0]['first_name']">
+                        </div>                        
+                        <div class="form-group col-md-3">                   
+                            <label for="last_name" class="col-form-label">Nick Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" v-model="task[0]['last_name']">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="address" class="col-form-label">Address:</label>
+                            <textarea class="form-control" id="address" name="address" v-model="task[0]['address']"></textarea>
+                        </div>       
+                        <div class="form-group col-md-4">
+                            <label for="mobile_no" class="col-form-label">Phone</label>
+                            <input type="tel" class="form-control" id="mobile_no" name="mobile_no" v-model="task[0]['mobile_no']">
+                        </div>                        
+                        <div class="form-group col-md-8">
+                            <label for="email" class="col-form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" v-model="task[0]['email']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="date_of_birth" class="col-form-label">Birth Day</label>
+                            <input @change="lazySaving('date_of_birth', date_of_birth)" type="date" class="form-control" id="date_of_birth" name="date_of_birth" v-model="task[0]['date_of_birth']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="gender" class="col-form-label">Gender</label>
+                            <select @change="lazySaving('gender', gender)"  class="form-control" id="gender" name="gender" v-model="task[0]['gender']">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>
+                        </div>                        
+                        <div class="form-group col-md-3">
+                            <label for="marital_status" class="col-form-label">Marital Status</label>
+                            <select @change="lazySaving('marital_status', marital_status)" class="form-control" id="marital_status" name="marital_status" v-model="task[0]['marital_status']">
+                                <option>Single</option>
+                                <option>Married</option>
+                                <option>Widowed</option>
+                                <option>Divorced</option>
+                            </select>
+                        </div>                        
+                        <div class="form-group col-md-3">
+                            <label for="blood_group" class="col-form-label">Blood Group</label>
+                            <select @change="lazySaving('blood_group', blood_group)" class="form-control" id="blood_group" name="blood_group" v-model="task[0]['blood_group']">
+                                <option>O+ve</option>
+                                <option>O-ve</option>
+                                <option>A+ve</option>
+                                <option>A-ve</option>
+                                <option>B+ve</option>
+                                <option>B-ve</option>
+                                <option>AB+ve</option>
+                                <option>AB-ve</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        </div>
+                    </div>
+                </div>
+                <div v-if="stepper == 2" class="setup-content mt-5" id="step-2">
+                    <div class="form-row col-md-12">                        
+                        <div class="form-group col-md-4">
+                            <label for="designation" class="col-form-label">Designation</label>
+                            <input type="text" class="form-control" id="designation" name="designation" v-model="task[0]['designation']">
+                        </div>   
+                        <div class="form-group col-md-4">
+                            <label for="department" class="col-form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" v-model="task[0]['department']">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="section" class="col-form-label">Section</label>
+                            <input type="text" class="form-control" id="section" name="section" v-model="task[0]['section']">
+                        </div>                        
+                        <div class="form-group col-md-4">
+                            <label for="work_location" class="col-form-label">Work Location</label>
+                            <input type="text" class="form-control" id="work_location" name="work_location" v-model="task[0]['work_location']">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="start_date" class="col-form-label">Joining Date</label>
+                            <input type="date" @change="lazySaving('start_date', start_date)" class="form-control" id="start_date" name="start_date" v-model="task[0]['start_date']">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="salary" class="col-form-label">Salary</label>
+                            <input type="text" class="form-control" id="salary" name="salary" v-model="task[0]['salary']">
+                        </div>
+                        <div class="form-group col-md-12">
+                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        </div>
+                    </div>
+                </div>
+                <div v-if="stepper == 3" class="setup-content mt-5" id="step-3">
+                    <div class="form-row col-md-12">                        
+                        <div class="form-group col-md-12">
+                            <label for="contact_name" class="col-form-label">Contact Name</label>
+                            <input type="text" class="form-control" id="contact_name" name="contact_name" v-model="task[0]['contact_name']">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="contact_address" class="col-form-label">Address</label>
+                            <textarea class="form-control" id="contact_address" name="contact_address" v-model="task[0]['contact_address']"></textarea>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="contact_phone" class="col-form-label">Phone No.</label>
+                            <input type="text" class="form-control" id="contact_phone" name="contact_phone" v-model="task[0]['contact_phone']">
+                        </div>                        
+                        <div class="form-group col-md-8">
+                            <label for="relationship" class="col-form-label">Relationship</label>
+                            <input type="text" class="form-control" id="relationship" name="relationship" v-model="task[0]['relationship']">
+                        </div>
+                        <div class="form-group col-md-12">
+                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        </div>
+                    </div>
+                </div> 
+                <div v-if="stepper == 4" class="setup-content mt-5" id="step-4">
+                    <div class="form col-md-12 m-auto text-center float-center mt-5">
+                        <div class="row mt-5">
+                            <div class="col-md-6">
+                                <img id="blah" style="width: 70%;" :src="src + employee_image" alt="your image" />
                             </div>
-                            <div class="form-group col-md-12">
-                                <label for="address" class="col-form-label">Address:</label>
-                                <textarea class="form-control" id="address" name="address" v-model="task[0]['address']"></textarea>
-                            </div>       
-                            <div class="form-group col-md-4">
-                                <label for="mobile_no" class="col-form-label">Phone</label>
-                                <input type="tel" class="form-control" id="mobile_no" name="mobile_no" v-model="task[0]['mobile_no']">
-                            </div>                        
-                            <div class="form-group col-md-8">
-                                <label for="email" class="col-form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" v-model="task[0]['email']">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="date_of_birth" class="col-form-label">Birth Day</label>
-                                <input @change="lazySaving('date_of_birth', date_of_birth)" type="date" class="form-control" id="date_of_birth" name="date_of_birth" v-model="task[0]['date_of_birth']">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="gender" class="col-form-label">Gender</label>
-                                <select @change="lazySaving('gender', gender)"  class="form-control" id="gender" name="gender" v-model="task[0]['gender']">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Others</option>
-                                </select>
-                            </div>                        
-                            <div class="form-group col-md-3">
-                                <label for="marital_status" class="col-form-label">Marital Status</label>
-                                <select @change="lazySaving('marital_status', marital_status)" class="form-control" id="marital_status" name="marital_status" v-model="task[0]['marital_status']">
-                                    <option>Single</option>
-                                    <option>Married</option>
-                                    <option>Widowed</option>
-                                    <option>Divorced</option>
-                                </select>
-                            </div>                        
-                            <div class="form-group col-md-3">
-                                <label for="blood_group" class="col-form-label">Blood Group</label>
-                                <select @change="lazySaving('blood_group', blood_group)" class="form-control" id="blood_group" name="blood_group" v-model="task[0]['blood_group']">
-                                    <option>O+ve</option>
-                                    <option>O-ve</option>
-                                    <option>A+ve</option>
-                                    <option>A-ve</option>
-                                    <option>B+ve</option>
-                                    <option>B-ve</option>
-                                    <option>AB+ve</option>
-                                    <option>AB-ve</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-12">
-                            <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                            <div class="col-md-6">
+                                <div class="fileBrowser d-flex align-items-baseline col-md-12">
+                                    <div class="form-group col-md-12 upload-btn-wrapper p-0" id="employee_image">
+                                        <button class="mdb btn btn-outline-success col-md-8">Upload a Photograph</button>
+                                        <input type="file" @change="handleFileUpload" id="upload" name="employee_image" class="pointer" :disabled="disable" />
+                                    </div>
+                                </div>
+                                <div class="form-group mt-0 col-md-12">
+                                    <button class="mdb btn btn-outline-default col-md-8"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle.replace("Next", "Exit")}}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="setup-content mt-5" id="step-2">
-                        <div class="form-row col-md-12">                        
-                            <div class="form-group col-md-4">
-                                <label for="designation" class="col-form-label">Designation</label>
-                                <input type="text" class="form-control" id="designation" name="designation" v-model="task[0]['designation']">
-                            </div>   
-                            <div class="form-group col-md-4">
-                                <label for="department" class="col-form-label">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" v-model="task[0]['department']">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="section" class="col-form-label">Section</label>
-                                <input type="text" class="form-control" id="section" name="section" v-model="task[0]['section']">
-                            </div>                        
-                            <div class="form-group col-md-4">
-                                <label for="work_location" class="col-form-label">Work Location</label>
-                                <input type="text" class="form-control" id="work_location" name="work_location" v-model="task[0]['work_location']">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="start_date" class="col-form-label">Joining Date</label>
-                                <input type="date" @change="lazySaving('start_date', start_date)" class="form-control" id="start_date" name="start_date" v-model="task[0]['start_date']">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="salary" class="col-form-label">Salary</label>
-                                <input type="text" class="form-control" id="salary" name="salary" v-model="task[0]['salary']">
-                            </div>
-                            <div class="form-group col-md-12">
-                            <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setup-content mt-5" id="step-3">
-                        <div class="form-row col-md-12">                        
-                            <div class="form-group col-md-12">
-                                <label for="contact_name" class="col-form-label">Contact Name</label>
-                                <input type="text" class="form-control" id="contact_name" name="contact_name" v-model="task[0]['contact_name']">
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label for="contact_address" class="col-form-label">Address</label>
-                                <textarea class="form-control" id="contact_address" name="contact_address" v-model="task[0]['contact_address']"></textarea>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="contact_phone" class="col-form-label">Phone No.</label>
-                                <input type="text" class="form-control" id="contact_phone" name="contact_phone" v-model="task[0]['contact_phone']">
-                            </div>                        
-                            <div class="form-group col-md-8">
-                                <label for="relationship" class="col-form-label">Relationship</label>
-                                <input type="text" class="form-control" id="relationship" name="relationship" v-model="task[0]['relationship']">
-                            </div>
-                            <div class="form-group col-md-12">
-                            <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
-                            </div>
-                        </div>
-                    </div>            
-                </Form>                                                
+                </div>                                                
             </div>                        
             <template v-slot:modal-footer="">
                 <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
@@ -249,6 +274,7 @@ export default {
             save_image : null,
             buttonTitle : this.$t('save'),
             disable: false,
+            stepper: 1,
             
             noprint: 'noprint',
 
@@ -487,6 +513,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.border-5{
+    border-width: 5px !important;
+}
 </style>
