@@ -27,8 +27,12 @@ export default [
   { path: '/goodslocation', name: 'wip.GoodsLocation', component: page('wip/GoodsLocation.vue') },
   { path: '/polist', name: 'po.PoList', component: page('po/PoList.vue') },
   { path: '/etdmonitor', name: 'po.EtdMonitor', component: page('po/EtdMonitor.vue') },
-  { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
 
+
+  { path: '/employee-profile', name: 'hr.EmployeeProfile', component: page('hr/profile/EmployeeProfile.vue') },
+
+
+  { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/settings',
     component: page('settings/index.vue'),

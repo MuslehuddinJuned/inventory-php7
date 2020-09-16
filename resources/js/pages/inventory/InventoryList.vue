@@ -200,8 +200,7 @@
 
 <script>
 import uniq from 'lodash/uniq';
-import { ModelSelect } from 'vue-search-select';
-import store from '~/store'
+import { ModelSelect } from 'vue-search-select'
 export default {
     middleware: 'auth',
 

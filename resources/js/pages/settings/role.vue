@@ -215,7 +215,6 @@ export default {
             let userRoles = []
             this.title = name
             this.taskId = id
-            this.totalRows_Role = this.roles.length
             this.roles= [
                 {name: this.$t('user_management'), view:{value: false, id: 1}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('inventory_mgt'), view:{value: false, id: 26}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
@@ -227,7 +226,10 @@ export default {
                 {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 24}, delete:{value: false, id: 25}},
                 {name: this.$t('monitor_etd'), view:{value: false, id: 27}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('hrm'), view:{value: false, id: 28}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
-            ]
+                {name: this.$t('employee_profile'), view:{value: false, id: 29}, insert:{value: false, id: 30}, update:{value: false, id: 31}, delete:{value: false, id: 32}},
+            ]            
+            this.totalRows_Role = this.roles.length
+            
             fetch(`api/settings/profile/${id}`)
             .then(res => res.json())
             .then(res => {  
@@ -262,6 +264,10 @@ export default {
                         case "po_list_Delete": this.roles[7]['delete']['value'] = true; break;
                         case "monitor_etd_View": this.roles[8]['view']['value'] = true; break;
                         case "hrm_View": this.roles[9]['view']['value'] = true; break;
+                        case "employee_profile_View": this.roles[10]['view']['value'] = true; break;
+                        case "employee_profile_Insert": this.roles[10]['insert']['value'] = true; break;
+                        case "employee_profile_Update": this.roles[10]['update']['value'] = true; break;
+                        case "employee_profile_Delete": this.roles[10]['delete']['value'] = true; break;
                     }
                     
                 }

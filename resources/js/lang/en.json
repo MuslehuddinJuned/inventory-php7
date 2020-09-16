@@ -1,4 +1,10 @@
 { 
+    "employee" : "Employee",
+    "insert_new_employee" : "Insert New Employee",
+    "update_employee_profile" : "Update Employee Profile",
+    "employee_management" : "Employee Management",
+    "employee_exit" : "Employee Exit",
+    "employee_profile" : "Employee Profile",
     "hrm" : "Human Resource Management",
     "inventory_mgt" : "Inventory Management",
     "choose_a_module" : "Choose A Module",

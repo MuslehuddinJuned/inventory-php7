@@ -1,4 +1,10 @@
 {
+    "employee" : "员工",
+    "insert_new_employee" : "插入新员工",
+    "update_employee_profile" : "更新员工资料",
+    "employee_management" : "员工管理",
+    "employee_exit" : "员工退出",
+    "employee_profile" : "员工档案",
     "hrm" : "人力资源管理",
     "inventory_mgt" : "库存管理",
     "choose_a_module" : "选择一个模块",

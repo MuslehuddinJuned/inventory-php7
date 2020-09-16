@@ -80,6 +80,19 @@
               </router-link>
             </div>
           </li> -->
+          <li v-if="user && module_no == 2" class="nav-item dropdown">
+            <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="people-fill"></b-icon> {{ $t('employee_management') }}</a>
+            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">
+              <router-link :to="{ name: 'hr.EmployeeProfile' }" class="dropdown-item pl-3">                
+                <b-icon icon="person-lines-fill"></b-icon>
+                {{ $t('employee_profile') }}
+              </router-link>
+              <router-link :to="{ name: 'hr.EmployeeExit' }" class="dropdown-item pl-3">                
+                <b-icon icon="person-x-fill"></b-icon>
+                {{ $t('employee_exit') }}
+              </router-link>
+            </div>
+          </li>
         </ul>
 
         <ul class="navbar-nav ml-auto">
