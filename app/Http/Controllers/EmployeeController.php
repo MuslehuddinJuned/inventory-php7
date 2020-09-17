@@ -175,17 +175,6 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        $Employee = Employee::find($employee->id);
-
-        if($Employee->employee_image != 'noimage.jpg'){
-            //Delete Image
-            $path = public_path().'/images/employee/'.$Employee->employee_image;
-            @unlink($path);
-
-        }
-
-        $Employee->deleted_by = 1;
-        $Employee->employee_image = 'noimage.jpg';
-        $Employee->save();
+        //
     }
 }

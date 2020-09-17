@@ -565,40 +565,40 @@ export default {
             }
         },
 
-        destroy(id, index) {
-            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-                timeout: 20000,           
-                position: 'center',
-                buttons: [
-                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/inventory/${id}`)
+        // destroy(id, index) {
+        //     this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+        //         timeout: 20000,           
+        //         position: 'center',
+        //         buttons: [
+        //             ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
+        //                 axios.delete(`api/inventory/${id}`)
                         
-                        .then(res => {
-                            this.employeeList.splice(index, 1);
-                            this.totalRows = this.employeeList.length
+        //                 .then(res => {
+        //                     this.employeeList.splice(index, 1);
+        //                     this.totalRows = this.employeeList.length
 
-                            for (let i = 0; i < this.totalRows; i++) {
-                                this.employeeList[i]['sn'] = i                
-                            }
-                            for (let i = 0; i < this.employeeListAll.length; i++) {
-                                if(this.employeeListAll[i]['id'] == id){
-                                    this.employeeListAll.splice(i, 1);
-                                    break
-                                }               
-                            }
-                        })
-                        .catch(err => {
-                            alert(err.response.data.message);                       
-                        });
+        //                     for (let i = 0; i < this.totalRows; i++) {
+        //                         this.employeeList[i]['sn'] = i                
+        //                     }
+        //                     for (let i = 0; i < this.employeeListAll.length; i++) {
+        //                         if(this.employeeListAll[i]['id'] == id){
+        //                             this.employeeListAll.splice(i, 1);
+        //                             break
+        //                         }               
+        //                     }
+        //                 })
+        //                 .catch(err => {
+        //                     alert(err.response.data.message);                       
+        //                 });
 
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }, true],
-                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }],
-                ]            
-            });
-        },
+        //                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        //             }, true],
+        //             ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+        //                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        //             }],
+        //         ]            
+        //     });
+        // },
 
     },
 
