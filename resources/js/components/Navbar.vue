@@ -80,16 +80,25 @@
               </router-link>
             </div>
           </li> -->
-          <li v-if="user && module_no == 2" class="nav-item dropdown">
+          <li v-if="user && module_no == 2 && (checkRoles('employee_profile_View'))" class="nav-item dropdown">
             <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="people-fill"></b-icon> {{ $t('employee_management') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">
-              <router-link :to="{ name: 'hr.EmployeeProfile' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('employee_profile_View')" :to="{ name: 'hr.EmployeeProfile' }" class="dropdown-item pl-3">                
                 <b-icon icon="person-lines-fill"></b-icon>
                 {{ $t('employee_profile') }}
               </router-link>
               <router-link :to="{ name: 'hr.EmployeeExit' }" class="dropdown-item pl-3">                
                 <b-icon icon="person-x-fill"></b-icon>
                 {{ $t('employee_exit') }}
+              </router-link>
+            </div>
+          </li>
+          <li v-if="user && module_no == 2 && (checkRoles('holiday_management_View'))" class="nav-item dropdown">
+            <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="smartwatch"></b-icon> {{ $t('attendance') }}</a>
+            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">
+              <router-link v-if="checkRoles('holiday_management_View')" :to="{ name: 'hr.HolidayManagement' }" class="dropdown-item pl-3">                
+                <b-icon icon="calendar-day-fill"></b-icon>
+                {{ $t('holiday_management') }}
               </router-link>
             </div>
           </li>
@@ -147,8 +156,17 @@ export default {
   },
 
   data: () => ({
-    appName: window.config.appName
+    appName: window.config.appName,
+    roles: [],
   }),
+
+  mounted() {
+    fetch(`api/settings/roles`)
+    .then(res => res.json())
+    .then(res => {
+        this.roles = res['allRoles'];
+    })
+  },
 
   computed: {
     ...mapGetters({
@@ -167,7 +185,15 @@ export default {
 
       // Redirect to login.
       this.$router.push({ name: 'login' })
-    }
+    },
+
+    checkRoles(role) {
+        for (let i = 0; i < this.roles.length; i++) {
+            if (this.roles[i]['name'] == role) {
+                return true
+            }                
+        } return false
+    },
   }
 }
 </script>

@@ -24,7 +24,7 @@ class HolidayController extends Controller
     public function index()
     {
         $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->orderBy('weekly_holiday', 'asc')->get();
-        return view('holiday.index', compact('HolidayList'));
+        return compact('HolidayList');
     }
 
     /**

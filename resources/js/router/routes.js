@@ -30,6 +30,7 @@ export default [
 
 
   { path: '/employee-profile', name: 'hr.EmployeeProfile', component: page('hr/profile/EmployeeProfile.vue') },
+  { path: '/holiday-management', name: 'hr.HolidayManagement', component: page('hr/attendance/HolidayManagement.vue') },
 
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },

@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('polist', 'PolistController')->middleware('can:po_list_View');
 
     Route::resource('employee', 'EmployeeController')->middleware('can:employee_profile_View');
+    Route::resource('holiday', 'HolidayController')->middleware('can:holiday_management_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
