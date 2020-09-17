@@ -5,7 +5,7 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('employee_profile') }}</h3>                     
                     <div class="ml-auto">
-                        <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
+                        <button v-if="checkRoles('employee_profile_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div>
                 <div class="card-body m-0 p-0">
@@ -373,7 +373,7 @@
                 </div>
             </div>
             <template v-slot:modal-footer="">
-                <button @click="editDetails" class="mdb btn btn-outline-default">{{ $t('edit') }}</button>
+                <button v-if="checkRoles('employee_profile_Update')" @click="editDetails" class="mdb btn btn-outline-default">{{ $t('edit') }}</button>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
         </b-modal>
