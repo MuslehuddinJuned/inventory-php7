@@ -35,8 +35,8 @@ class CreateEmployeesTable extends Migration
             $table->text('contact_address')->nullable();
             $table->string('contact_phone')->nullable();
             $table->string('relationship')->nullable();
-            $table->string('employee_image')->nullable();
-            $table->string('status')->nullable();
+            $table->string('employee_image')->default('noimage.jpg');
+            $table->string('status')->default('active');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('deleted_by')->default(0);
             $table->timestamps();

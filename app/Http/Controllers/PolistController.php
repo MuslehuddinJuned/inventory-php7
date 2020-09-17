@@ -54,6 +54,7 @@ class PolistController extends Controller
     public function store(Request $request)
     {
         //po_no should be unique, don't change it
+        // be carefull when add deleted_by functionality for uniqness of po_no
         $this->validate($request, [
             'po_no'=> 'required|unique:polists,po_no',
             'producthead_id'=> 'required',

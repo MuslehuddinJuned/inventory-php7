@@ -176,9 +176,9 @@
                                     <img id="blah" style="width: 70%;" :src="src + imageName" alt="product image" />
                                 </div>
                                 <div class="fileBrowser col-md-12 p-0 m-0">
-                                    <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
+                                    <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="item_image">
                                         <button class="mdb btn btn-outline-success mx-auto">{{$t('browse')}}</button>
-                                        <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
+                                        <input type="file" @change="handleFileUpload" id="upload" name="ItemImage" class="pointer mx-auto"/>
                                     </div>
                                 </div>
                             </div>

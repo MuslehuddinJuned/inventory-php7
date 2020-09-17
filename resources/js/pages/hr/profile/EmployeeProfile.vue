@@ -54,7 +54,9 @@
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
+                    @row-clicked="(item) => viewDetails(item.id)"
                     class="table-transition"
+                    style="cursor : pointer"
                     >
                     <template v-slot:table-busy>
                         <div class="text-center text-success my-2">
@@ -68,8 +70,7 @@
                     <template v-slot:cell(employee_image)="row">
                         <a :href="'/images/employee/' + row.item.employee_image"><b-img :src="'/images/employee/' + row.item.employee_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
-                    </b-table>
-                    
+                    </b-table>                    
                     <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
                         v-model="currentPage"
@@ -94,66 +95,62 @@
         <b-modal ref="dataEdit" id="dataEdit" size="xxl" :title="title" no-close-on-backdrop>            
             <div class="modal-body row m-0 p-0">
                 <div class="row col-12 m-0 p-0">
-                    <div v-if="stepper==1" @click="stepper = 1" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 1" class="form mdb btn btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-primary rounded-circle font-weight-bold">1</button><br>{{$t('personal_info')}}</div>
-                    <div v-if="stepper!=1" @click="stepper = 1" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 1" class="form btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-outline-secondary rounded-circle">1</button><br>{{$t('personal_info')}}</div>
-                    <div v-if="stepper==2" @click="stepper = 2" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-primary rounded-circle font-weight-bold">2</button><br>{{$t('official_info')}}</div>
-                    <div v-if="stepper!=2" @click="stepper = 2" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-outline-secondary rounded-circle">2</button><br>{{$t('official_info')}}</div>
-                    <div v-if="stepper==3" @click="stepper = 3" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-primary rounded-circle font-weight-bold">3</button><br>{{$t('emergency_contact')}}</div>
-                    <div v-if="stepper!=3" @click="stepper = 3" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-outline-secondary rounded-circle">3</button><br>{{$t('emergency_contact')}}</div>
-                    <div v-if="stepper==4" @click="stepper = 4" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-primary rounded-circle font-weight-bold">4</button><br>{{$t('photograph')}}</div>
-                    <div v-if="stepper!=4" @click="stepper = 4" class="col-3 border-bottom border-secondary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-outline-secondary rounded-circle">4</button><br>{{$t('photograph')}}</div>
+                    <div v-if="stepper==1" @click="stepper_method(1)" class="col-3 border-top border-left border-right border-primary p-3 border-5 text-center" style="cursor: pointer; border-radius:15px 15px 0px 0px;"><button v-if="stepper > 1" class="form mdb btn btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-primary rounded-circle font-weight-bold">1</button><br>{{$t('personal_info')}}</div>
+                    <div v-if="stepper!=1" @click="stepper_method(1)" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 1" class="form btn-success rounded-circle font-weight-bold">1</button><button v-if="stepper < 2" class="form btn-outline-secondary rounded-circle">1</button><br>{{$t('personal_info')}}</div>
+                    <div v-if="stepper==2" @click="stepper_method(2)" class="col-3 border-top border-left border-right border-primary p-3 border-5 text-center" style="cursor: pointer; border-radius:15px 15px 0px 0px;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-primary rounded-circle font-weight-bold">2</button><br>{{$t('official_info')}}</div>
+                    <div v-if="stepper!=2" @click="stepper_method(2)" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 2" class="form btn-success rounded-circle font-weight-bold">2</button><button v-if="stepper < 3" class="form btn-outline-secondary rounded-circle">2</button><br>{{$t('official_info')}}</div>
+                    <div v-if="stepper==3" @click="stepper_method(3)" class="col-3 border-top border-left border-right border-primary p-3 border-5 text-center" style="cursor: pointer; border-radius:15px 15px 0px 0px;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-primary rounded-circle font-weight-bold">3</button><br>{{$t('emergency_contact')}}</div>
+                    <div v-if="stepper!=3" @click="stepper_method(3)" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 3" class="form btn-success rounded-circle font-weight-bold">3</button><button v-if="stepper < 4" class="form btn-outline-secondary rounded-circle">3</button><br>{{$t('emergency_contact')}}</div>
+                    <div v-if="stepper >= 4" @click="stepper_method(4)" class="col-3 border-top border-left border-right border-primary p-3 border-5 text-center" style="cursor: pointer; border-radius:15px 15px 0px 0px;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-primary rounded-circle font-weight-bold">4</button><br>{{$t('photograph')}}</div>
+                    <div v-if="stepper < 4" @click="stepper_method(4)" class="col-3 border-bottom border-primary p-3 border-5 text-center" style="cursor: pointer;"><button v-if="stepper > 4" class="form btn-success rounded-circle font-weight-bold">4</button><button v-if="stepper < 5" class="form btn-outline-secondary rounded-circle">4</button><br>{{$t('photograph')}}</div>
                 </div>
-                <div v-if="stepper == 1" class="setup-content mt-5" id="step-1">
+                <div v-if="stepper == 1" class="col-12 mt-3">
                     <div class="form-row col-md-12">                          
                         <div class="form-group col-md-3">
-                            <label for="employee_id" class="col-form-label">{{$t('save')}}{{$t('employee')}} ID</label>
-                            <input v-model="task[0]['employee_id']" type="text" class="form-control is-valid" id="employee_id" name="employee_id">
+                            <label for="employee_id" class="col-form-label">{{$t('employee')}} ID</label>
+                            <input v-model="task[0]['employee_id']" type="text" class="form-control" id="employee_id" name="employee_id">
                             <span v-if="errors.employee_id" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
                         </div>                      
-                        <div class="form-group col-md-6">                        
-                            <label for="first_name" class="col-form-label">Full Name</label>
+                        <div class="form-group col-md-3">                        
+                            <label for="first_name" class="col-form-label">{{$t('name')}}</label>
                             <input type="text" class="form-control" id="first_name" name="Name" v-model="task[0]['first_name']">
-                        </div>                        
-                        <div class="form-group col-md-3">                   
-                            <label for="last_name" class="col-form-label">Nick Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" v-model="task[0]['last_name']">
                         </div>
-                        <div class="form-group col-md-12">
-                            <label for="address" class="col-form-label">Address:</label>
-                            <textarea class="form-control" id="address" name="address" v-model="task[0]['address']"></textarea>
-                        </div>       
+                        <div class="form-group col-md-6">
+                            <label for="email" class="col-form-label">{{$t('email')}}</label>
+                            <input type="email" class="form-control" id="email" name="email" v-model="task[0]['email']">
+                        </div>
                         <div class="form-group col-md-4">
-                            <label for="mobile_no" class="col-form-label">Phone</label>
+                            <label for="mobile_no" class="col-form-label">{{$t('phone')}}</label>
                             <input type="tel" class="form-control" id="mobile_no" name="mobile_no" v-model="task[0]['mobile_no']">
                         </div>                        
                         <div class="form-group col-md-8">
-                            <label for="email" class="col-form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" v-model="task[0]['email']">
+                            <label for="address" class="col-form-label">{{$t('address')}}</label>
+                            <input type="text" class="form-control" id="address" name="address" v-model="task[0]['address']">
+                        </div>       
+                        <div class="form-group col-md-3">
+                            <label for="date_of_birth" class="col-form-label">{{$t('date_of_birth')}}</label>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" v-model="task[0]['date_of_birth']">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="date_of_birth" class="col-form-label">Birth Day</label>
-                            <input @change="lazySaving('date_of_birth', date_of_birth)" type="date" class="form-control" id="date_of_birth" name="date_of_birth" v-model="task[0]['date_of_birth']">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="gender" class="col-form-label">Gender</label>
-                            <select @change="lazySaving('gender', gender)"  class="form-control" id="gender" name="gender" v-model="task[0]['gender']">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Others</option>
+                            <label for="gender" class="col-form-label">{{$t('gender')}}</label>
+                            <select class="form-control" id="gender" name="gender" v-model="task[0]['gender']">
+                                <option>{{$t('male')}}</option>
+                                <option>{{$t('female')}}</option>
+                                <option>{{$t('others')}}</option>
                             </select>
                         </div>                        
                         <div class="form-group col-md-3">
-                            <label for="marital_status" class="col-form-label">Marital Status</label>
-                            <select @change="lazySaving('marital_status', marital_status)" class="form-control" id="marital_status" name="marital_status" v-model="task[0]['marital_status']">
-                                <option>Single</option>
-                                <option>Married</option>
-                                <option>Widowed</option>
-                                <option>Divorced</option>
+                            <label for="marital_status" class="col-form-label">{{$t('marital_status')}}</label>
+                            <select class="form-control" id="marital_status" name="marital_status" v-model="task[0]['marital_status']">
+                                <option>{{$t('single')}}</option>
+                                <option>{{$t('married')}}</option>
+                                <option>{{$t('widowed')}}</option>
+                                <option>{{$t('divorced')}}</option>
                             </select>
                         </div>                        
                         <div class="form-group col-md-3">
-                            <label for="blood_group" class="col-form-label">Blood Group</label>
-                            <select @change="lazySaving('blood_group', blood_group)" class="form-control" id="blood_group" name="blood_group" v-model="task[0]['blood_group']">
+                            <label for="blood_group" class="col-form-label">{{$t('blood_group')}}</label>
+                            <select class="form-control" id="blood_group" name="blood_group" v-model="task[0]['blood_group']">
                                 <option>O+ve</option>
                                 <option>O-ve</option>
                                 <option>A+ve</option>
@@ -165,80 +162,73 @@
                             </select>
                         </div>
                         <div class="form-group col-md-12">
-                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        <button @click="stepper_method(2, 'save')" class="mdb btn btn-outline-primary nextBtn float-right" type="button" ><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{buttonTitle}} & {{$t('next')}}</button> 
                         </div>
                     </div>
                 </div>
-                <div v-if="stepper == 2" class="setup-content mt-5" id="step-2">
+                <div v-if="stepper == 2" class="col-12 mt-3">
                     <div class="form-row col-md-12">                        
                         <div class="form-group col-md-4">
-                            <label for="designation" class="col-form-label">Designation</label>
+                            <label for="designation" class="col-form-label">{{$t('designation')}}</label>
                             <input type="text" class="form-control" id="designation" name="designation" v-model="task[0]['designation']">
                         </div>   
                         <div class="form-group col-md-4">
-                            <label for="department" class="col-form-label">Department</label>
+                            <label for="department" class="col-form-label">{{$t('department')}}</label>
                             <input type="text" class="form-control" id="department" name="department" v-model="task[0]['department']">
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="section" class="col-form-label">Section</label>
+                            <label for="section" class="col-form-label">{{$t('section')}}</label>
                             <input type="text" class="form-control" id="section" name="section" v-model="task[0]['section']">
                         </div>                        
                         <div class="form-group col-md-4">
-                            <label for="work_location" class="col-form-label">Work Location</label>
+                            <label for="work_location" class="col-form-label">{{$t('work_location')}}</label>
                             <input type="text" class="form-control" id="work_location" name="work_location" v-model="task[0]['work_location']">
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="start_date" class="col-form-label">Joining Date</label>
-                            <input type="date" @change="lazySaving('start_date', start_date)" class="form-control" id="start_date" name="start_date" v-model="task[0]['start_date']">
+                            <label for="start_date" class="col-form-label">{{$t('joining_date')}}</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" v-model="task[0]['start_date']">
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="salary" class="col-form-label">Salary</label>
+                            <label for="salary" class="col-form-label">{{$t('salary')}}</label>
                             <input type="text" class="form-control" id="salary" name="salary" v-model="task[0]['salary']">
                         </div>
                         <div class="form-group col-md-12">
-                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        <button @click="stepper_method(2, 'save')" class="mdb btn btn-outline-primary nextBtn float-right" type="button" ><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{buttonTitle}} & {{$t('next')}}</button> 
                         </div>
                     </div>
                 </div>
-                <div v-if="stepper == 3" class="setup-content mt-5" id="step-3">
+                <div v-if="stepper == 3" class="col-12 mt-3">
                     <div class="form-row col-md-12">                        
                         <div class="form-group col-md-12">
-                            <label for="contact_name" class="col-form-label">Contact Name</label>
+                            <label for="contact_name" class="col-form-label">{{$t('contact_person')}}</label>
                             <input type="text" class="form-control" id="contact_name" name="contact_name" v-model="task[0]['contact_name']">
                         </div>
                         <div class="form-group col-md-12">
-                            <label for="contact_address" class="col-form-label">Address</label>
+                            <label for="contact_address" class="col-form-label">{{$t('address')}}</label>
                             <textarea class="form-control" id="contact_address" name="contact_address" v-model="task[0]['contact_address']"></textarea>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="contact_phone" class="col-form-label">Phone No.</label>
+                            <label for="contact_phone" class="col-form-label">{{$t('phone')}}</label>
                             <input type="text" class="form-control" id="contact_phone" name="contact_phone" v-model="task[0]['contact_phone']">
                         </div>                        
                         <div class="form-group col-md-8">
-                            <label for="relationship" class="col-form-label">Relationship</label>
+                            <label for="relationship" class="col-form-label">{{$t('relationship')}}</label>
                             <input type="text" class="form-control" id="relationship" name="relationship" v-model="task[0]['relationship']">
                         </div>
                         <div class="form-group col-md-12">
-                        <button class="mdb btn btn-outline-primary nextBtn float-right col-md-2" type="button" ><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle}}</button> 
+                        <button @click="stepper_method(2, 'save')" class="mdb btn btn-outline-primary nextBtn float-right" type="button" ><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{buttonTitle}} & {{$t('next')}}</button> 
                         </div>
                     </div>
                 </div> 
-                <div v-if="stepper == 4" class="setup-content mt-5" id="step-4">
-                    <div class="form col-md-12 m-auto text-center float-center mt-5">
-                        <div class="row mt-5">
-                            <div class="col-md-6">
-                                <img id="blah" style="width: 70%;" :src="src + employee_image" alt="your image" />
-                            </div>
-                            <div class="col-md-6">
-                                <div class="fileBrowser d-flex align-items-baseline col-md-12">
-                                    <div class="form-group col-md-12 upload-btn-wrapper p-0" id="employee_image">
-                                        <button class="mdb btn btn-outline-success col-md-8">Upload a Photograph</button>
-                                        <input type="file" @change="handleFileUpload" id="upload" name="employee_image" class="pointer" :disabled="disable" />
-                                    </div>
-                                </div>
-                                <div class="form-group mt-0 col-md-12">
-                                    <button class="mdb btn btn-outline-default col-md-8"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{buttonTitle.replace("Next", "Exit")}}</button>
-                                </div>
+                <div v-if="stepper > 3" class="col-12 mt-3">
+                    <div class="form col-md-12 mx-auto">
+                        <div class="form-group col-md-12 text-center">
+                            <img id="blah" :src="src + imageName" alt="product image" class="col-md-2" />
+                        </div>
+                        <div class="fileBrowser col-md-12">
+                            <div class="form-group col-md-12 upload-btn-wrapper text-center" id="employee_image">
+                                <button class="mdb btn btn-outline-success">{{$t('browse')}}</button>
+                                <input type="file" @change="handleFileUpload" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
                             </div>
                         </div>
                     </div>
@@ -250,6 +240,143 @@
             </template>
         </b-modal>        
         <!-- End Edit Details Modal --> 
+
+        <!-- Start view Details Modal -->
+        <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('employee_profile')" no-close-on-backdrop>
+            <div class="modal-body row m-0 p-0">
+                <div class="col-md-4 text-center m-0">
+                    <h4 class="">ID: {{task[0]['employee_id']}}</h4>
+                    <img style="width: 100%; " :src="'/images/employee/' + task[0]['employee_image']" alt="Picture not found">
+                </div>
+                <div class="col-md-8 m-0">
+                    <div class="col-md-12 p-0">
+                        <h2>{{task[0]['name']}}</h2>
+                        <h4>{{task[0]['designation']}}</h4>
+                        <h5>{{$t('department')}}: {{task[0]['department']}}</h5>
+                    </div>
+                    <div class="row m-0 p-0 p-0 col-md-12 mt-5">
+                        <div class="col-md-4"><p class="font-weight-bold mb-0">{{$t('section')}}</p><p>{{task[0]['section']}}</p></div>
+                        <div class="col-md-8"><p class="font-weight-bold mb-0">{{$t('work_location')}}</p><p>{{task[0]['work_location']}}</p></div>
+                    </div>
+                    <div class="col-md-12 mt-2 p-0">
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['mobile_no']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('email')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['email']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['address']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-5 p-0">
+                        <h4>{{$t('personal_info')}}</h4>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('gender')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['gender']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('date_of_birth')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['date_of_birth']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('marital_status')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['marital_status']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('blood_group')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['blood_group']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('joining_date')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{`${task[0]['start_date']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('salary')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['salary']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-5 p-0">
+                        <h4>{{$t('contact_person')}}</h4>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('name')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['contact_name']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['contact_phone']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('relationship')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task[0]['relationship']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task[0]['contact_address']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <template v-slot:modal-footer="">
+                <button @click="editDetails" class="mdb btn btn-outline-default">{{ $t('edit') }}</button>
+                <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -266,7 +393,7 @@ export default {
             employeeList : [],
             roles: [],
             errors : [],
-            task: [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': 'Male', 'date_of_birth': this.convertDate(new Date()), 'marital_status': 'Single', 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': null, 'status': 'active'}],
+            task: [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active'}],
             taskId: null,
             Index: null,
             title: '',
@@ -301,6 +428,7 @@ export default {
         .then(res => {
             this.employeeList = res['EmployeeList'];
             this.totalRows_Role = this.employeeList.length
+            this.isBusy = false
         })
         .catch(err => {
             alert(err.response.data.message);
@@ -328,19 +456,31 @@ export default {
             } return false
         },
 
-        addDetails(){
-            this.taskId = null
-            this.title = this.$t('insert_new_employee')
-            this.task = [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': 'Male', 'date_of_birth': this.convertDate(new Date()), 'marital_status': 'Single', 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': null, 'status': 'active'}]
+        stepper_method(step, task){
+            if (task == 'save') this.save()
+            else if (this.taskId) this.stepper = step
         },
 
-        editDetails(id, index) {
+        viewDetails(id) {
+            this.taskId = id
+            this.noprint = 'noprint'
+            this.task = this.singleTask
+            this.$refs['dataView'].show()
+        },
+
+        addDetails() {
+            this.taskId = null
+            this.title = this.$t('insert_new_employee')
+            this.task = [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active'}]
+        },
+
+        editDetails() {
             this.src = '/images/employee/'
             this.save_image = null
             this.title = this.$t('update_employee_profile')
-            this.taskId = id
-            this.Index = index
             this.task = this.singleTask
+            this.stepper = 1
+            this.$refs['dataEdit'].show()
         },
 
         convertDate(str) {
@@ -358,7 +498,7 @@ export default {
             if(file['size'] <= 262144 &&  file['type'].split('/')[0]=='image' ){          //256 KB ~~ 262144 Byte
                 fileReader.onload = (e) => {
                     this.src = '';
-                    this.task[0]['item_image'] = e.target.result;
+                    this.task[0]['employee_image'] = e.target.result;
                     this.save_image = e.target.result;
                 }
             } else {
@@ -376,15 +516,15 @@ export default {
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
-            this.task[0]['item_image'] = this.save_image
-            this.task[0]['store_id'] = this.store
+            this.task[0]['employee_image'] = this.save_image
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
             if(this.taskId == null){
-                axios.post(`api/inventory`, this.task[0], options)
+                axios.post(`api/employee`, this.task[0], options)
                 .then(({data}) =>{
                     this.errors = ''
                     this.employeeList.unshift(data.employeeList)
+                    this.taskId = this.employeeList[0]['id']
                     this.totalRows = this.employeeList.length;
                     for (let i = 0; i < this.totalRows; i++) {
                         this.employeeList[i]['sn'] = i                
@@ -392,31 +532,33 @@ export default {
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
+                    this.stepper++
                 })
                 .catch(err => {
                     if(err.response.status == 422){
                         this.errors = err.response.data.errors
                         this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    }
+                    } else alert(err.response.data.message) 
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    alert(err.response.data.message)                      
                 })
             } else {
-                axios.patch(`api/inventory/${this.taskId}`, this.task[0], options)
+                axios.patch(`api/employee/${this.taskId}`, this.task[0], options)
                 .then(({data}) => {
                     this.errors = ''
-                    this.src = '/images/item/'
-                    this.task[0]['item_image'] = data.fileName
+                    this.src = '/images/employee/'
+                    console.log(data.fileName)
+                    this.task[0]['employee_image'] = data.fileName
                     this.employeeList[this.Index] = this.task[0];
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
+                    this.stepper++
                 })
                 .catch(err => {
                     if(err.response.status == 422){
                         this.errors = err.response.data.errors
-                    }
+                    } else alert(err.response.data.message) 
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                 });
@@ -462,11 +604,11 @@ export default {
 
     computed: {
         imageName() {
-            if(this.task[0]['item_image'] == null || this.task[0]['item_image'] == 'noimage.jpg') {
-                this.task[0]['item_image'] = null
+            if(this.task[0]['employee_image'] == null || this.task[0]['employee_image'] == 'noimage.jpg') {
+                this.task[0]['employee_image'] = null
                 return 'noimage.jpg'
             }
-            else return this.task[0]['item_image']
+            else return this.task[0]['employee_image']
         },
         
         singleTask() {
@@ -487,20 +629,14 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                // { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'item_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'item', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'grade', label : this.$t('grade'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'stock_master_sheet', label : this.$t('stock_master_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'stock', label : this.$t('stock_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
+                { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'employee_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'blood_group', label : this.$t('blood_group'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
@@ -515,6 +651,6 @@ export default {
 
 <style lang="scss" scoped>
 .border-5{
-    border-width: 5px !important;
+    border-width: 3px !important;
 }
 </style>

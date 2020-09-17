@@ -27,7 +27,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, contact_name, contact_address, contact_phone, relationship, employee_image, status, user_id, deleted_by, created_at, updated_at
-        FROM employees WHERE deleted_by = 0");
+        FROM employees WHERE deleted_by = 0 and status = 'active'");
 
         return compact('EmployeeList');
     }
@@ -54,27 +54,37 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'employee_id' => ['required',
-                                Rule::unique('employees')->ignore(1, 'deleted_by')]
-        ]); 
+            'employee_id'=> 'required|unique:employees,employee_id'
+        ]);
 
-        // $Employee = Employee::create($request->except('image') + [
-        //     'user_id' => Auth::id(),
-        //     'employee_image' => $anyVariable
-        //     ]);
-        
-        $Employee = new Employee;
-        $Employee->employee_id = $request['employee_id'];
-        $Employee->employee_image = 'noimage.jpg';
-        $Employee->user_id = auth()->user()->id;
-        $Employee->save();
+
+        if($request->employee_image){
+            $exploded = explode(',', $request->employee_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/employee/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/employee/'.$fileName;
+    
+            // store new image
+            file_put_contents($path, $decoded);
+            $employeeList = $request->user()->employees()->create($request->except('employee_image') + [
+                'employee_image' => $fileName
+            ]);
+        } else {
+            $employeeList = $request->user()->employees()->create($request->except('employee_image'));
+        }
 
         if(request()->expectsJson()){
             return response()->json([
-                'TableId' => $Employee->id
+                'employeeList' => $employeeList
             ]);
-        }
-        // $request->user()->employees()->create($request->all());
+        } 
     }
 
     /**
@@ -108,41 +118,53 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     { 
-        $id = $employee->id;
         $this->validate($request, [
-            'employee_id' => ['required',
-                                Rule::unique('employees')->where(function ($query) use($id) {
-                                    return $query->where('id', '<>',  $id)
-                                    ->where('deleted_by', 0);
-                                }),]
+            'employee_id'=> 'required|unique:employees,employee_id,'.$employee->id
         ]);
-        
+
         if($request->employee_image){
             $exploded = explode(',', $request->employee_image);
             $decoded = base64_decode($exploded[1]);
     
-            if(str_contains($exploded[0], 'jpeg'))
-                $extesion = 'jpg';
-            else
+            if(str_contains($exploded[0], 'png'))
                 $extesion = 'png';
+            else
+                $extesion = 'jpg';
     
             $fileName = str_random().'.'.$extesion;
-            $path = public_path()."/"."images"."/"."employee"."/".$fileName;
-    
-            file_put_contents($path, $decoded);
+            $path = public_path().'/images/employee/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/employee/'.$fileName;
 
+            // store new image
+            file_put_contents($path, $decoded);
+            
             // delete previous image
             $Employee = Employee::find($employee->id);
 
             if($Employee->employee_image != 'noimage.jpg'){
+                //Delete Image
                 $path = public_path().'/images/employee/'.$Employee->employee_image;
+                // $path = '/home/sustipe/inventory.sustipe.com/images/employee/'.$Employee->employee_image;
                 @unlink($path);
             }
 
-            $employee->update(['employee_image' => $fileName]); 
+            // save Data
+            $employee->update($request->except('employee_image') + [
+                'employee_image' => $fileName
+            ]);
+
+        } else {
+            $employee->update($request->except('employee_image'));
+
+            $image = Employee::select('employee_image')->where('id', $request->id)->get();
+            $fileName = $image[0]['employee_image'];
         }
 
-        else $employee->update($request->all());        
+        if(request()->expectsJson()){
+            return response()->json([
+                'fileName' => $fileName
+            ]);
+        }       
     }
 
     /**
