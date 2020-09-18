@@ -1,4 +1,13 @@
 {
+    "year" : "Year",
+    "casual_leave" : "Casual Leave",
+    "sick_leave" : "Sick Leave",
+    "annual_leave" : "Annual Leave",
+    "maternity_leave" : "Maternity Leave",
+    "paternity_leave" : "Paternity Leave",
+    "compensatory_leave" : "Compensatory leave",
+    "unpaid_leave" : "Unpaid Leave",
+    "half_leave" : "Half Leave",
     "saturday" : "星期六",
     "sunday" : "星期日",
     "monday" : "星期一",
