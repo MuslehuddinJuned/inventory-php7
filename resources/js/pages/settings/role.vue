@@ -228,6 +228,7 @@ export default {
                 {name: this.$t('hrm'), view:{value: false, id: 28}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('employee_profile'), view:{value: false, id: 29}, insert:{value: false, id: 30}, update:{value: false, id: 31}, delete:{value: false, id: 32}},
                 {name: this.$t('holiday_management'), view:{value: false, id: 33}, insert:{value: false, id: 34}, update:{value: false, id: 35}, delete:{value: false, id: 36}},
+                {name: this.$t('leave_management'), view:{value: false, id: 37}, insert:{value: false, id: 38}, update:{value: false, id: 39}, delete:{value: false, id: 40}},
             ]            
             this.totalRows_Role = this.roles.length
             
@@ -273,6 +274,10 @@ export default {
                         case "holiday_management_Insert": this.roles[11]['insert']['value'] = true; break;
                         case "holiday_management_Update": this.roles[11]['update']['value'] = true; break;
                         case "holiday_management_Delete": this.roles[11]['delete']['value'] = true; break;
+                        case "leave_management_View": this.roles[11]['view']['value'] = true; break;
+                        case "leave_management_Insert": this.roles[11]['insert']['value'] = true; break;
+                        case "leave_management_Update": this.roles[11]['update']['value'] = true; break;
+                        case "leave_management_Delete": this.roles[11]['delete']['value'] = true; break;
                     }
                     
                 }

@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Leave;
 use Illuminate\Http\Request;
+use DB;
 
 class LeaveController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +24,9 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        //
+        $LeaveList = Leave::get();
+
+        return compact('LeaveList');
     }
 
     /**
@@ -35,7 +47,13 @@ class LeaveController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $LeaveList = $request->user()->leave()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'LeaveList' => $LeaveList
+            ]);
+        } 
     }
 
     /**
@@ -69,7 +87,7 @@ class LeaveController extends Controller
      */
     public function update(Request $request, Leave $leave)
     {
-        //
+        $leave->update($request->all());
     }
 
     /**

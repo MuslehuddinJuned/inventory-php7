@@ -547,7 +547,6 @@ export default {
                 .then(({data}) => {
                     this.errors = ''
                     this.src = '/images/employee/'
-                    console.log(data.fileName)
                     this.task[0]['employee_image'] = data.fileName
                     this.employeeList[this.Index] = this.task[0];
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})

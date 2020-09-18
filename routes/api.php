@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resource('employee', 'EmployeeController')->middleware('can:employee_profile_View');
     Route::resource('holiday', 'HolidayController')->middleware('can:holiday_management_View');
+    Route::resource('leave', 'LeaveController')->middleware('can:leave_management_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

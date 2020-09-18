@@ -93,9 +93,13 @@
               </router-link>
             </div>
           </li>
-          <li v-if="user && module_no == 2 && (checkRoles('holiday_management_View'))" class="nav-item dropdown">
+          <li v-if="user && module_no == 2 && (checkRoles('holiday_management_View') || checkRoles('leave_management_View'))" class="nav-item dropdown">
             <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="smartwatch"></b-icon> {{ $t('attendance') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">
+              <router-link v-if="checkRoles('leave_management_View')" :to="{ name: 'hr.LeaveManagement' }" class="dropdown-item pl-3">                
+                <b-icon icon="calendar-x-fill"></b-icon>
+                {{ $t('leave_management') }}
+              </router-link>
               <router-link v-if="checkRoles('holiday_management_View')" :to="{ name: 'hr.HolidayManagement' }" class="dropdown-item pl-3">                
                 <b-icon icon="calendar-day-fill"></b-icon>
                 {{ $t('holiday_management') }}
