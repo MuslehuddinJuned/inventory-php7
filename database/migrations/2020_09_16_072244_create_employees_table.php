@@ -37,6 +37,9 @@ class CreateEmployeesTable extends Migration
             $table->string('relationship')->nullable();
             $table->string('employee_image')->default('noimage.jpg');
             $table->string('status')->default('active');
+            $table->string('weekly_holiday')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('deleted_by')->default(0);
             $table->timestamps();

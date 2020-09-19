@@ -274,10 +274,10 @@ export default {
                         case "holiday_management_Insert": this.roles[11]['insert']['value'] = true; break;
                         case "holiday_management_Update": this.roles[11]['update']['value'] = true; break;
                         case "holiday_management_Delete": this.roles[11]['delete']['value'] = true; break;
-                        case "leave_management_View": this.roles[11]['view']['value'] = true; break;
-                        case "leave_management_Insert": this.roles[11]['insert']['value'] = true; break;
-                        case "leave_management_Update": this.roles[11]['update']['value'] = true; break;
-                        case "leave_management_Delete": this.roles[11]['delete']['value'] = true; break;
+                        case "leave_management_View": this.roles[12]['view']['value'] = true; break;
+                        case "leave_management_Insert": this.roles[12]['insert']['value'] = true; break;
+                        case "leave_management_Update": this.roles[12]['update']['value'] = true; break;
+                        case "leave_management_Delete": this.roles[12]['delete']['value'] = true; break;
                     }
                     
                 }

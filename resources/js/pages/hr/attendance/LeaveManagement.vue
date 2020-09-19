@@ -1,18 +1,22 @@
 <template>
     <div class="container">
         <div class="card filterable">
-            <div class="card-header d-flex align-items-center">
-                <h3 class="panel-title float-left">
-                    {{ $t('leave_management') }}
-                    <fa v-if="checkRoles('leave_management_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width />                    
-                </h3>                     
-                <div class="ml-auto input-group col-md-2">
-                    <div class="input-group-prepend">
-                        <div @click="yearWiseDisplay(-1)" class="input-group-text pointer"><b-icon icon="dash"></b-icon></div>
-                    </div>
-                    <input type="text" v-model="year" @change="yearWiseDisplay(year)" class="form-control text-center" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    <div class="input-group-append">
-                        <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="plus"></b-icon></div>
+            <div class="card-header row m-0">
+                <div class="col-md-6">
+                    <h3 class="panel-title float-left">
+                        {{ $t('leave_management') }}
+                        <fa v-if="checkRoles('leave_management_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width />                    
+                    </h3>
+                </div>                     
+                <div class="col-md-6">
+                    <div class="ml-md-auto m-sm-0 input-group col-md-12 col-lg-6 float-md-right">
+                        <div class="input-group-prepend">
+                            <div @click="yearWiseDisplay(-1)" class="input-group-text pointer"><b-icon icon="dash"></b-icon></div>
+                        </div>
+                        <input type="text" v-model="year" @change="yearWiseDisplay(year)" class="form-control text-center" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <div class="input-group-append">
+                            <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="plus"></b-icon></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,6 +158,7 @@ export default {
                 .then(({data}) =>{
                     this.errors = ''
                     this.leaveList.unshift(data.LeaveList)
+                    this.task[0]['id'] = this.leaveList[0]['id']
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')

@@ -26,7 +26,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, contact_name, contact_address, contact_phone, relationship, employee_image, status, user_id, deleted_by, created_at, updated_at
+        $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, 
+        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, 
+        contact_name, contact_address, contact_phone, relationship, employee_image, status, weekly_holiday, start_time, end_time, user_id, deleted_by, created_at, updated_at
         FROM employees WHERE deleted_by = 0 and status = 'active'");
 
         return compact('EmployeeList');
@@ -57,6 +59,9 @@ class EmployeeController extends Controller
             'employee_id'=> 'required|unique:employees,employee_id'
         ]);
 
+        if($request->weekly_holiday){
+            $holiday = json_encode($request->weekly_holiday);
+        }
 
         if($request->employee_image){
             $exploded = explode(',', $request->employee_image);
@@ -73,11 +78,14 @@ class EmployeeController extends Controller
     
             // store new image
             file_put_contents($path, $decoded);
-            $employeeList = $request->user()->employees()->create($request->except('employee_image') + [
-                'employee_image' => $fileName
+            $employeeList = $request->user()->employees()->create($request->except('employee_image', 'weekly_holiday') + [
+                'employee_image' => $fileName,
+                'weekly_holiday' => $holiday
             ]);
         } else {
-            $employeeList = $request->user()->employees()->create($request->except('employee_image'));
+            $employeeList = $request->user()->employees()->create($request->except('employee_image', 'weekly_holiday') + [
+                'weekly_holiday' => $holiday
+            ]);
         }
 
         if(request()->expectsJson()){
@@ -122,6 +130,10 @@ class EmployeeController extends Controller
             'employee_id'=> 'required|unique:employees,employee_id,'.$employee->id
         ]);
 
+        if($request->weekly_holiday){
+            $holiday = json_encode($request->weekly_holiday);
+        }
+
         if($request->employee_image){
             $exploded = explode(',', $request->employee_image);
             $decoded = base64_decode($exploded[1]);
@@ -149,12 +161,15 @@ class EmployeeController extends Controller
             }
 
             // save Data
-            $employee->update($request->except('employee_image') + [
-                'employee_image' => $fileName
+            $employee->update($request->except('employee_image', 'weekly_holiday') + [
+                'employee_image' => $fileName,
+                'weekly_holiday' => $holiday
             ]);
 
         } else {
-            $employee->update($request->except('employee_image'));
+            $employee->update($request->except('employee_image', 'weekly_holiday') + [
+                'weekly_holiday' => $holiday
+            ]);
 
             $image = Employee::select('employee_image')->where('id', $request->id)->get();
             $fileName = $image[0]['employee_image'];
