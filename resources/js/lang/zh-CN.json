@@ -1,4 +1,12 @@
 {
+    "replacing_person" : "休假期间的表演者",
+    "application_date" : "申请日期",
+    "days" : "天",
+    "leave_end" : "离开结束",
+    "leave_start" : "离开开始",
+    "reason" : "原因",
+    "leave_category" : "休假类别",
+    "personal_leave_management" : "个人假期管理",
     "leave_management" : "休假管理",
     "year" : "年",
     "casual_leave" : "休闲假",

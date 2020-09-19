@@ -62,9 +62,12 @@ class LeaveController extends Controller
      * @param  \App\Leave  $leave
      * @return \Illuminate\Http\Response
      */
-    public function show(Leave $leave)
+    public function show($id)
     {
-        //
+        $AllLeaves = DB::SELECT("SELECT id, leave_type, reason, replacing_person, leave_start, leave_end, day_count, employee_id,
+            YEAR(created_at)year, created_at, updated_at FROM usedleaves WHERE employee_id = ?", [$id]);
+
+        return compact('AllLeaves');
     }
 
     /**

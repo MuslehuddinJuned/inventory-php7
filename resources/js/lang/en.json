@@ -1,4 +1,12 @@
 { 
+    "replacing_person" : "Replacing Person",
+    "application_date" : "Application Date",
+    "days" : "Days",
+    "leave_end" : "Leave End",
+    "leave_start" : "Leave Start",
+    "reason" : "Reason",
+    "leave_category" : "Leave Category",
+    "personal_leave_management" : "Personal Leave Management",
     "leave_management" : "Leave Management",
     "year" : "Year",
     "casual_leave" : "Casual Leave",

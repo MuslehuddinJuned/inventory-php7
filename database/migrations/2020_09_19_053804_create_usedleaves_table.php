@@ -17,6 +17,7 @@ class CreateUsedleavesTable extends Migration
             $table->id();
             $table->string('leave_type')->nullable();
             $table->string('reason')->nullable();
+            $table->string('replacing_person')->nullable();
             $table->date('leave_start')->nullable();
             $table->date('leave_end')->nullable();
             $table->integer('day_count')->nullable();
