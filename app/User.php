@@ -184,4 +184,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function leave(){
         return $this->hasMany(Leave::class);
     }
+
+    public function usedleave(){
+        return $this->hasMany(Usedleave::class);
+    }
 }
