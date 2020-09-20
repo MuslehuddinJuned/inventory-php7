@@ -189,7 +189,7 @@
                 </div>                              
             </div>
             <template v-slot:modal-footer="">
-                <button @click="savePersonalLeave" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button v-if="checkRoles('leave_management_Insert')" @click="savePersonalLeave" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>
         </b-modal>
@@ -237,7 +237,7 @@
             <template v-slot:modal-header="">
                 <h3 class="panel-title float-left">{{ $t('personal_leave_management') }}</h3> 
                 <div class="ml-auto">
-                    <button @click="editDetails(null)" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
+                    <button v-if="checkRoles('leave_management_Insert')" @click="editDetails(null)" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                 </div>
             </template>
             <template v-slot:modal-footer="">
