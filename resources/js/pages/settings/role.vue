@@ -101,7 +101,7 @@
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
                     :items="roles"
                     :fields="fieldsRole"
-                    :current-page="currentPage"
+                    :current-page="currentPage_role"
                     :per-page="perPage"
                     :filter="filter"
                     :filterIncludedFields="filterOn"
@@ -137,7 +137,7 @@
                     
                     <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
-                        v-model="currentPage"
+                        v-model="currentPage_role"
                         :total-rows="totalRows_Role"
                         :per-page="perPage"                            
                         first-text="First"
@@ -181,6 +181,7 @@ export default {
             totalRows: 1,
             totalRows_Role: 1,
             currentPage: 1,
+            currentPage_role: 1,
             perPage: 10,
             pageOptions: [10, 25, 50],
             filter: null,
@@ -209,6 +210,7 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+            this.currentPage_role = 1
         },
 
         editDetails(id, name) {
@@ -278,18 +280,13 @@ export default {
                         case "leave_management_Insert": this.roles[12]['insert']['value'] = true; break;
                         case "leave_management_Update": this.roles[12]['update']['value'] = true; break;
                         case "leave_management_Delete": this.roles[12]['delete']['value'] = true; break;
-                    }
-                    
+                    }                    
                 }
 
             })
             .catch(err => {
                 alert(err.response.data.message);
             })
-        },
-
-        saved(val, id) {
-            console.log(val)
         },
 
         save(val, id) {
