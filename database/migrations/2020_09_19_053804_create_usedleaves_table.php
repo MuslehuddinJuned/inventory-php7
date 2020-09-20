@@ -22,6 +22,7 @@ class CreateUsedleavesTable extends Migration
             $table->date('leave_end')->nullable();
             $table->integer('day_count')->nullable();
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('deleted_by')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });

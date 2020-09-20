@@ -82,7 +82,7 @@ class UsedleaveController extends Controller
             SUM(CASE WHEN leave_type = 'half_leave' THEN day_count ELSE 0 END)half_leave,
             SUM(CASE WHEN leave_type = 'compensatory_leave' THEN day_count ELSE 0 END)compensatory_leave,
             SUM(CASE WHEN leave_type = 'unpaid_leave' THEN day_count ELSE 0 END)unpaid_leave
-            FROM(SELECT leave_type,day_count, employee_id, YEAR(created_at)created_at FROM usedleaves
+            FROM(SELECT leave_type,day_count, employee_id, YEAR(created_at)created_at FROM usedleaves WHERE deleted_by = 0
                 )A WHERE created_at = ? GROUP BY employee_id, created_at
             )A  RIGHT JOIN (SELECT id, employee_id, first_name, designation, department FROM employees WHERE status = 'active' and deleted_by = 0
             )B ON A.employee_id = B.id", [$year]);

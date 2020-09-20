@@ -189,8 +189,15 @@
                 </div>                              
             </div>
             <template v-slot:modal-footer="">
-                <button v-if="checkRoles('leave_management_Insert')" @click="savePersonalLeave" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
+                <div class="row m-0 p-0 col-12">
+                    <div class="col-md-4">
+                        <button v-if="checkRoles('leave_management_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                    </div>
+                    <div class="col-md-8">
+                        <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+                        <button v-if="checkRoles('leave_management_Insert')" @click="savePersonalLeave" class="mdb btn btn-outline-default float-right" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                    </div>
+                </div>
             </template>
         </b-modal>
         <!-- End Edit Details Modal -->
@@ -457,6 +464,7 @@ export default {
                 .catch(err => {
                     if(err.response.status == 422){
                         this.errors = err.response.data.errors
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
                     } else alert(err.response.data.message) 
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
@@ -505,6 +513,41 @@ export default {
                     this.buttonTitle = this.$t('save')
                 });
             }
+        },
+
+        destroy() {
+            let oldDayCount = this.taskDetails[0]['day_count']
+            this.$toast.warning('Are you sure to DELETE this?', "Confirm", {
+                timeout: 20000,           
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', (instance, toast) => {
+
+                        axios.delete(`api/usedleave/${this.taskDetails[0]['id']}`)
+                        .then(({data}) => {
+                            this.yearWiseDisplay(this.year)
+                            for (let i = 0; i < this.personalLeave.length; i++) {
+                                if (this.personalLeave[i]['id'] == this.taskDetails[0]['id']) {
+                                    this.personalLeave.splice(i, 1);
+                                    break
+                                }                                
+                            }
+                            let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
+                            count -=  oldDayCount
+                            this.taskHead[this.taskDetails[0]['leave_type']] = count
+                            this.$refs['dataEdit'].hide()
+                        })
+                        .catch(err => {
+                            alert(err.response.data.message);                       
+                        });
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]            
+            });
         },
     },
 
