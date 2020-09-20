@@ -23,7 +23,7 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->orderBy('weekly_holiday', 'asc')->get();
+        $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->get();
         return compact('HolidayList');
     }
 
@@ -45,15 +45,9 @@ class HolidayController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->weekly_holiday != ''){            
-            $this->validate($request, [
-                'weekly_holiday'=> 'unique:holidays,weekly_holiday'
-            ]); 
-        } else {
-            $this->validate($request, [
-                'yearly_holiday'=> 'unique:holidays,yearly_holiday'
-            ]); 
-        }
+        $this->validate($request, [
+            'yearly_holiday'=> 'required|unique:holidays,yearly_holiday'
+        ]);
 
         $NewWeeklyHoliday = $request->user()->holidays()->create($request->all());
 
@@ -95,7 +89,11 @@ class HolidayController extends Controller
      */
     public function update(Request $request, Holiday $holiday)
     {
-        //
+        $this->validate($request, [
+            'yearly_holiday'=> 'required|unique:holidays,yearly_holiday,'.$holiday->id
+        ]);
+
+        $holiday->update($request->all());
     }
 
     /**
@@ -108,7 +106,7 @@ class HolidayController extends Controller
     {
         $holiday->delete();
 
-        $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->orderBy('weekly_holiday', 'asc')->get();
+        $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->get();
         if(request()->expectsJson()){
             return response()->json([
                 'HolidayList' => $HolidayList

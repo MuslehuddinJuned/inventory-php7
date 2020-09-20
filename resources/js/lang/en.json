@@ -1,4 +1,5 @@
 { 
+    "event" : "Event",
     "replacing_person" : "Replacing Person",
     "application_date" : "Application Date",
     "days" : "Days",
