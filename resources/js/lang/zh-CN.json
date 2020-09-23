@@ -1,4 +1,11 @@
 {
+    "status" : "状态",
+    "retirement" : "退休",
+    "terminate" : "终止",
+    "exit_type" : "出口类型",
+    "effective_date" : "有效于",
+    "resign_date" : "辞职日期",
+    "resign" : "辞职",
     "event" : "事件",
     "replacing_person" : "休假期间的表演者",
     "application_date" : "申请日期",

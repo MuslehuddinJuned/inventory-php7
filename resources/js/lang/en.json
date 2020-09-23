@@ -1,4 +1,11 @@
 { 
+    "status" : "Status",
+    "retirement" : "Retirement",
+    "terminate" : "Terminate",
+    "exit_type" : "Exit Type",
+    "effective_date" : "Effective On",
+    "resign_date" : "Date of Resign",
+    "resign" : "Resign",
     "event" : "Event",
     "replacing_person" : "Replacing Person",
     "application_date" : "Application Date",

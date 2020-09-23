@@ -403,10 +403,48 @@
                 </div>
             </div>
             <template v-slot:modal-footer="">
-                <button v-if="checkRoles('employee_profile_Update')" @click="editDetails" class="mdb btn btn-outline-default">{{ $t('edit') }}</button>
-                <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
+                <div class="col-md-12">
+                    <div class="col-md-5 float-left">
+                        <button v-if="checkRoles('employee_profile_Delete')" @click="employeeExit" class="mdb btn btn-outline-danger float-left">{{ $t('employee_exit') }}</button>
+                    </div>
+                    <div class="col-md-7 float-left">
+                        <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
+                        <button v-if="checkRoles('employee_profile_Update')" @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                    </div>
+                </div>
             </template>
         </b-modal>
+        <!-- End view Details Modal -->
+        <!-- Start exit Details Modal -->
+        <b-modal class="b-0" ref="dataExit" id="dataExit" size="lg" :title="$t('employee_exit')" no-close-on-backdrop>
+            <div class="modal-body row m-0 p-0">
+                <div class="form-group col-md-6">
+                    <label for="exit_type" class="col-form-label">{{$t('exit_type')}}</label>
+                    <select class="form-control" id="exit_type" name="exit_type" v-model="exit['exit_type']">
+                        <option>{{$t('resign')}}</option>
+                        <option>{{$t('terminate')}}</option>
+                        <option>{{$t('retirement')}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="reason" class="col-form-label">{{$t('reason')}}</label>
+                    <input type="text" class="form-control" id="reason" name="reason" v-model="exit['reason']">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="resign_date" class="col-form-label">{{$t('resign_date')}}</label>
+                    <input type="date" class="form-control" id="resign_date" name="resign_date" v-model="exit['resign_date']">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="effective_date" class="col-form-label">{{$t('effective_date')}}</label>
+                    <input type="date" class="form-control" id="effective_date" name="effective_date" v-model="exit['effective_date']">
+                </div>
+            </div>
+            <template v-slot:modal-footer="">
+                <button v-if="checkRoles('employee_profile_Delete')" @click="destroy" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }} </button>
+                <button @click="$refs['dataExit'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
+            </template>
+        </b-modal>
+        <!-- End exit Details Modal -->
     </div>
 </template>
 
@@ -423,6 +461,7 @@ export default {
             employeeList : [],
             roles: [],
             errors : [],
+            exit: {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())},
             task: [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}],
             taskId: null,
             Index: null,
@@ -532,6 +571,11 @@ export default {
             this.$refs['dataEdit'].show()
         },
 
+        employeeExit() {
+            this.exit = {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())}
+            this.$refs['dataExit'].show()
+        },
+
         convertDate(str) {
             var date = new Date(str),
                 year = date.getFullYear(),
@@ -618,40 +662,34 @@ export default {
             this.holiday = day.join(', ')
         },
 
-        // destroy(id, index) {
-        //     this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
-        //         timeout: 20000,           
-        //         position: 'center',
-        //         buttons: [
-        //             ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-        //                 axios.delete(`api/inventory/${id}`)
-                        
-        //                 .then(res => {
-        //                     this.employeeList.splice(index, 1);
-        //                     this.totalRows = this.employeeList.length
-
-        //                     for (let i = 0; i < this.totalRows; i++) {
-        //                         this.employeeList[i]['sn'] = i                
-        //                     }
-        //                     for (let i = 0; i < this.employeeListAll.length; i++) {
-        //                         if(this.employeeListAll[i]['id'] == id){
-        //                             this.employeeListAll.splice(i, 1);
-        //                             break
-        //                         }               
-        //                     }
-        //                 })
-        //                 .catch(err => {
-        //                     alert(err.response.data.message);                       
-        //                 });
-
-        //                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        //             }, true],
-        //             ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-        //                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        //             }],
-        //         ]            
-        //     });
-        // },
+        destroy() {
+            this.disable = !this.disable
+            this.buttonTitle = this.$t('saving')
+            this.exit['status'] = this.exit['exit_type']
+            axios.patch(`api/employee/${this.taskId}`, this.exit)
+            .then(({data}) => { 
+                for (let i = 0; i < this.employeeList.length; i++) {
+                    if(this.employeeList[i]['id'] == this.taskId){
+                        this.employeeList.splice(i, 1);                           
+                        break
+                    }   
+                }
+                this.totalRows = this.employeeList.length;
+                this.$refs['dataView'].hide()
+                this.$refs['dataExit'].hide()
+                this.errors = ''
+                this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                this.disable = !this.disable
+                this.buttonTitle = this.$t('save')
+            })
+            .catch(err => {
+                if(err.response.status == 422){
+                    this.errors = err.response.data.errors
+                } else alert(err.response.data.message) 
+                this.disable = !this.disable
+                this.buttonTitle = this.$t('save')
+            });
+        },
 
     },
 

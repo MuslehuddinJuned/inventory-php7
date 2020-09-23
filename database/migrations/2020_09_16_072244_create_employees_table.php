@@ -40,6 +40,10 @@ class CreateEmployeesTable extends Migration
             $table->string('weekly_holiday')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
+            $table->string('exit_type')->nullable();
+            $table->string('reason')->nullable();
+            $table->date('resign_date')->nullable();
+            $table->date('effective_date')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('deleted_by')->default(0);
             $table->timestamps();
