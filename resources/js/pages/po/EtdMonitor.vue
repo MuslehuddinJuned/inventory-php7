@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid justify-content-center">
-       <div class="col-md-12">
+       <div v-if="checkRoles('monitor_etd_View')" class="col-md-12">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('monitor_etd') }}</h3>
@@ -127,6 +127,7 @@ export default {
             inventoryListAll : [],
             etdList : [],
             etdQty : [],
+            roles: [],
             store: 3,
             storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
             json_fields: {
@@ -199,6 +200,12 @@ export default {
         .catch(err => {
             alert(err.response.data.message);
         })
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
     },
 
     methods: {
@@ -206,6 +213,14 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+
+        checkRoles(role) {
+            for (let i = 0; i < this.roles.length; i++) {
+                if (this.roles[i]['name'] == role) {
+                    return true
+                }                
+            } return false
         },
 
         convertDate(str) {
@@ -245,6 +260,7 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             let data = []
+
             data = [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
@@ -265,7 +281,7 @@ export default {
                 this.json_fields[this.convertDate(this.etdList[i]['etd']) + '-Style Code'] = this.etdList[i]['etd'] + '-product_code'
             }
 
-            return data            
+            return data                        
         },
     },
 

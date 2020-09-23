@@ -5,7 +5,7 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('ItemReceive') }}</h3> 
                     <div class="ml-auto">
-                        <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
+                        <button v-if="checkRoles('ItemReceive_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div> 
                 </div>
                 <div class="card-header row m-0">
@@ -167,7 +167,7 @@
                 </div>
             </template>
             <template v-slot:modal-footer="">
-                <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button v-if="checkRoles('ItemReceive_Insert')" @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>
         </b-modal>                    
@@ -235,11 +235,11 @@
                         <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
                     </div>
                     <div class="col-md-5">
-                        <button @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                        <button v-if="checkRoles('ItemReceive_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                     </div>
                     <div class="col-md-7">
                         <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                        <button @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                        <button v-if="checkRoles('ItemReceive_Update')" @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
                     </div>
                 </div>
             </template>

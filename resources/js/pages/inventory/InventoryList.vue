@@ -5,7 +5,7 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('InventoryItem') }}</h3>                     
                     <div class="ml-auto">
-                        <button @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
+                        <button v-if="checkRoles('InventoryItem_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div>
                 <div class="card-header d-flex align-items-center">
@@ -96,8 +96,8 @@
                     <template v-slot:cell(action)="row">
                         <div v-if="etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</div>
                         <div v-else>
-                            <a @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
-                            <a v-if="row.item.stock < 1" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                            <a v-if="checkRoles('InventoryItem_Update')" @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
+                            <a v-if="row.item.stock < 1 && checkRoles('InventoryItem_Delete')" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
                         </div>
                     </template>
                     </b-table>
@@ -537,6 +537,12 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
+            let action = []
+            if ((this.checkRoles('InventoryItem_Update') || this.checkRoles('InventoryItem_Delete')) && this.colTitle == 'Action') {
+                action = { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
+            } else if (this.colTitle != 'Action') {
+                action = { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
+            }
             if(this.store == 3){
                 return [
                     { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -552,7 +558,7 @@ export default {
                     { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
+                    action
                 ]
                 
             } else {
@@ -569,7 +575,7 @@ export default {
                     { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'total_price', label : this.$t('total_price') + '($)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'action', label: this.$t(`${this.colTitle}`),  class: 'text-right  align-middle', thClass: 'border-top border-dark font-weight-bold'}
+                    action
                 ]
             }
             

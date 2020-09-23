@@ -1,6 +1,6 @@
 <template>
   <div class="row m-0 p-0">
-    <div class="col-lg-8 m-auto d-none">
+    <div class="col-lg-8 m-auto">
       <card v-if="mustVerifyEmail" :title="$t('register')">
         <div class="alert alert-success" role="alert">
           {{ $t('verify_email_address') }}
@@ -47,9 +47,9 @@
           <div class="form-group row">
             <div class="col-md-7 offset-md-3 d-flex">
               <!-- Submit Button -->
-              <!-- <v-button :loading="form.busy">
+              <v-button :loading="form.busy">
                 {{ $t('register') }}
-              </v-button> -->
+              </v-button>
 
               <!-- GitHub Register Button -->
               <login-with-github />

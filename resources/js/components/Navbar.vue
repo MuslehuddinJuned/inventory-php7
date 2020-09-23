@@ -13,51 +13,51 @@
       <div id="navbarToggler" class="collapse navbar-collapse">
         <ul class="navbar-nav">
           <locale-dropdown />
-          <li v-if="user && module_no == 1" class="nav-item dropdown">
+          <li v-if="user && module_no == 1 && (checkRoles('InventoryItem_View') || checkRoles('ItemReceive_View') || checkRoles('ItemIssue_View') || checkRoles('requisition_View'))" class="nav-item dropdown">
             <a id="inventory" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="cart4"></b-icon> {{ $t('Inventory') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="inventory">
-              <router-link :to="{ name: 'inventory.InventoryList' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'inventory.InventoryList' }" class="dropdown-item pl-3">                
                 <b-icon icon="cart-check"></b-icon>
                 {{ $t('InventoryItem') }}
               </router-link>
-              <!-- <router-link :to="{ name: 'inventory.InventoryListEtd' }" class="dropdown-item pl-3">                
+              <!-- <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'inventory.InventoryListEtd' }" class="dropdown-item pl-3">                
                 <b-icon icon="cart3"></b-icon>
                 {{ $t('InventoryItem') + ' (ETD)' }}
               </router-link> -->
-              <router-link :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('ItemReceive_View')" :to="{ name: 'inventory.InventoryReceive' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-plus"></b-icon>
                 {{ $t('ItemReceive') }}
               </router-link>
-              <router-link :to="{ name: 'inventory.InventoryIssue' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('ItemIssue_View')" :to="{ name: 'inventory.InventoryIssue' }" class="dropdown-item pl-3">
                 <b-icon icon="cart-dash"></b-icon>
                 {{ $t('ItemIssue') }}
               </router-link>
-              <router-link :to="{ name: 'inventory.RequisitionList' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('requisition_View')" :to="{ name: 'inventory.RequisitionList' }" class="dropdown-item pl-3">
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
               </router-link>
-              <router-link :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'inventory.BalanceSheet' }" class="dropdown-item pl-3">
                 <fa icon="balance-scale-left" fixed-width/>
                 {{ $t('balance_sheet') }}
               </router-link>
             </div>
           </li>
-          <li v-if="user && module_no == 1" class="nav-item dropdown">
+          <li v-if="user && module_no == 1 && (checkRoles('product_details_View') || checkRoles('po_list_View') || checkRoles('monitor_etd_View'))" class="nav-item dropdown">
             <a id="product" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="box-seam"></b-icon> {{ $t('product') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
-              <router-link :to="{ name: 'product.ProductList' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('product_details_View')" :to="{ name: 'product.ProductList' }" class="dropdown-item pl-3">                
                 <fa icon="utensils" fixed-width/>
                 {{ $t('product_list') }}
               </router-link>
-              <router-link :to="{ name: 'po.PoList' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('po_list_View')" :to="{ name: 'po.PoList' }" class="dropdown-item pl-3">                
                 <b-icon icon="alarm"></b-icon>
                 {{ $t('po_list') }}
               </router-link>
-              <router-link :to="{ name: 'po.EtdMonitor' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('monitor_etd_View')" :to="{ name: 'po.EtdMonitor' }" class="dropdown-item pl-3">
                 <b-icon icon="alarm-fill"></b-icon>
                 {{ $t('monitor_etd') }}
               </router-link>
-              <!-- <router-link :to="{ name: 'product.RequisitionList' }" class="dropdown-item pl-3">
+              <!-- <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'product.RequisitionList' }" class="dropdown-item pl-3">
                 <b-icon icon="basket2-fill"></b-icon>
                 {{ $t('requisition') }}
               </router-link> -->
@@ -66,15 +66,15 @@
           <!-- <li v-if="user  && module_no == 1" class="nav-item dropdown">
             <a id="wip" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="hourglass-split"></b-icon> {{ $t('WIP') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
-              <router-link :to="{ name: 'wip.SemifinishedGoods' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.SemifinishedGoods' }" class="dropdown-item pl-3">                
                 <b-icon icon="hourglass-top"></b-icon>
                 {{ $t('semifinished_goods') }}
               </router-link>
-              <router-link :to="{ name: 'wip.FinishedGoods' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.FinishedGoods' }" class="dropdown-item pl-3">
                 <b-icon icon="hourglass-bottom"></b-icon>
                 {{ $t('finished_goods') }}
               </router-link>
-              <router-link :to="{ name: 'wip.GoodsLocation' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.GoodsLocation' }" class="dropdown-item pl-3">
                 <fa icon="map-marked-alt" fixed-width/>
                 {{ $t('goods_location') }}
               </router-link>
@@ -87,7 +87,7 @@
                 <b-icon icon="person-lines-fill"></b-icon>
                 {{ $t('employee_profile') }}
               </router-link>
-              <router-link :to="{ name: 'hr.EmployeeExit' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('employee_profile_View')" :to="{ name: 'hr.EmployeeExit' }" class="dropdown-item pl-3">                
                 <b-icon icon="person-x-fill"></b-icon>
                 {{ $t('employee_exit') }}
               </router-link>
@@ -137,11 +137,11 @@
                 {{ $t('login') }}
               </router-link>
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <router-link :to="{ name: 'register' }" class="nav-link" active-class="active">
                 {{ $t('register') }}
               </router-link>
-            </li> -->
+            </li>
           </template>
         </ul>
       </div>

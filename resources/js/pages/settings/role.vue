@@ -224,7 +224,7 @@ export default {
                 {name: this.$t('ItemReceive'), view:{value: false, id: 6}, insert:{value: false, id: 7}, update:{value: false, id: 8}, delete:{value: false, id: 9}},
                 {name: this.$t('ItemIssue'), view:{value: false, id: 10}, insert:{value: false, id: 11}, update:{value: false, id: 12}, delete:{value: false, id: 13}},
                 {name: this.$t('requisition'), view:{value: false, id: 14}, insert:{value: false, id: 15}, update:{value: false, id: 16}, delete:{value: false, id: 17}},
-                {name: this.$t('product_details'), view:{value: false, id: 18}, insert:{value: false, id: 19}, update:{value: false, id: 20}, delete:{value: false, id: 21}},
+                {name: this.$t('product_list'), view:{value: false, id: 18}, insert:{value: false, id: 19}, update:{value: false, id: 20}, delete:{value: false, id: 21}},
                 {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 24}, delete:{value: false, id: 25}},
                 {name: this.$t('monitor_etd'), view:{value: false, id: 27}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('hrm'), view:{value: false, id: 28}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
