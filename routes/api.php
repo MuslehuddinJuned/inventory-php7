@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('holiday', 'HolidayController')->middleware('can:holiday_management_View');
     Route::resource('leave', 'LeaveController')->middleware('can:leave_management_View');
     Route::resource('usedleave', 'UsedleaveController')->middleware('can:leave_management_View');
+    Route::resource('salary', 'SalaryController')->middleware('can:salary_management_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

@@ -33,7 +33,7 @@ export default [
   { path: '/employee-exit', name: 'hr.EmployeeExit', component: page('hr/profile/EmployeeExit.vue') },
   { path: '/holiday-management', name: 'hr.HolidayManagement', component: page('hr/attendance/HolidayManagement.vue') },
   { path: '/leave-management', name: 'hr.LeaveManagement', component: page('hr/attendance/LeaveManagement.vue') },
-  { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/attendance/SalaryManagement.vue') },
+  { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
 
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },

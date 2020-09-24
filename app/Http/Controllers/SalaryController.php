@@ -4,9 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Salary;
 use Illuminate\Http\Request;
+use DB;
 
 class SalaryController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +25,13 @@ class SalaryController extends Controller
      */
     public function index()
     {
-        //
+        $Salary = DB::SELECT("SELECT B.id, A.employee_id, first_name, designation, department, section, employee_image, basic_pay, 
+            medic_alw, house_rent, ta, da, other_field, other_pay, total_salary, bank_name, acc_no FROM(
+            SELECT id, employee_id, first_name, designation, department, section, employee_image, status, deleted_by FROM employees WHERE deleted_by = 0 and status = 'active'
+            )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, other_field, other_pay, total_salary, bank_name, acc_no, employee_id FROM salaries
+            )B ON A.id = B.employee_id");
+
+        return compact('Salary');
     }
 
     /**

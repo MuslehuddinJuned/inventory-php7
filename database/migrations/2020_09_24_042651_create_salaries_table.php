@@ -27,6 +27,7 @@ class CreateSalariesTable extends Migration
             $table->string('acc_no')->nullable();
 
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
         });

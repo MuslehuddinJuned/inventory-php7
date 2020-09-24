@@ -7,16 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import {
   faUser, faLock, faSignOutAlt, faCog, faTrashAlt, faEdit, faEye, faLanguage, faUserSecret, faUserNinja, faHistory, faPlus, faUtensils,
-  faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog
+  faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog, faMoneyCheckAlt, faFileInvoiceDollar,
+  faHandHoldingUsd, faMoneyBillAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-  faGithub
+  faGithub, faCcAmazonPay
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faUser, faLock, faSignOutAlt, faCog, faGithub, faTrashAlt, faEdit, faEye, faLanguage, faUserSecret, faUserNinja, faHistory, faPlus,
-  faUtensils, faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog
+  faUtensils, faBalanceScaleLeft, faEquals, faGreaterThan, faGreaterThanEqual, faMapMarkedAlt, faUsersCog, faMoneyCheckAlt, faFileInvoiceDollar,
+  faHandHoldingUsd, faMoneyBillAlt, faCcAmazonPay
 )
 
 Vue.component('fa', FontAwesomeIcon)
