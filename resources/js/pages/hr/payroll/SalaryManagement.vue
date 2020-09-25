@@ -42,7 +42,7 @@
                             ></b-form-select>
                         </b-form-group>                        
                     </div>
-                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
+                    <b-table id="table-transition" primary-key="employee_id" :busy="isBusy" show-empty small striped hover stacked="md"
                     :items="employeeList"
                     :fields="fields"
                     :current-page="currentPage"
@@ -91,6 +91,16 @@
         <!-- Start Edit Details Modal -->
         <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="$t('salary_management')" no-close-on-backdrop>            
             <div class="modal-body">
+                <div class="row col-12 m-0 p-0">
+                    <div class="form-group col-md-6">
+                        <label for="bank_name" class="col-form-label">{{$t('bank_name')}}</label>
+                        <input type="text" class="form-control" id="bank_name" name="bank_name" v-model="task['bank_name']">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="acc_no" class="col-form-label">{{$t('acc_no')}}</label>
+                        <input type="text" class="form-control" id="acc_no" name="acc_no" v-model="task['acc_no']">
+                    </div>
+                </div>
                 <b-table-simple hover small caption-top responsive class="text-center">
                     <b-thead class="bg-info font-weight-bolder text-white">
                         <b-tr class="border border-dark">
@@ -123,11 +133,16 @@
                             <b-td class="border border-dark"><input v-model="task['da_percent']" @keyup="da" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                             <b-td class="border border-dark"><input v-model="task['da']" @keyup="da_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                         </b-tr>
+                        <b-tr>
+                            <b-th class="border border-dark align-middle">{{$t('providant_fund')}}</b-th>
+                            <b-td class="border border-dark"><input v-model="task['providant_fund_percent']" @keyup="providant_fund" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['providant_fund']" @keyup="providant_fund_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                        </b-tr>
                     </b-tbody>
                     <b-tfoot>
                         <b-tr>
                             <b-td class="border border-dark" colspan="2" variant="success">{{ $t('total_salary')}}</b-td>
-                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = parseFloat(task['basic_pay']) + parseFloat(task['house_rent']) + parseFloat(task['medic_alw']) + parseFloat(task['ta']) + parseFloat(task['da'])}}</b-td>
+                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = (parseFloat(task['basic_pay']) + parseFloat(task['house_rent']) + parseFloat(task['medic_alw']) + parseFloat(task['ta']) + parseFloat(task['da']) - parseFloat(task['providant_fund'])).toFixed(2)}}</b-td>
                         </b-tr>
                     </b-tfoot>
                 </b-table-simple>
@@ -140,145 +155,91 @@
         <!-- End Edit Details Modal --> 
 
         <!-- Start view Details Modal -->
-        <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('salary_management')" no-close-on-backdrop>
+        <b-modal class="b-0" ref="dataView" id="dataView" size="lg" :title="$t('salary_management')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0">
                 <div class="col-md-4 text-center m-0">
-                    <h4 class="">ID: {{task['employee_id']}}</h4>
+                    <h4 class="">ID: {{task['official_id']}}</h4>
                     <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
                 </div>
                 <div class="col-md-8 m-0">
                     <div class="col-md-12 p-0">
-                        <h2>{{task['name']}}</h2>
+                        <h2>{{task['first_name']}}</h2>
                         <h4>{{task['designation']}}</h4>
                         <h5>{{$t('department')}}: {{task['department']}}</h5>
-                    </div>
-                    <div class="row m-0 p-0 p-0 col-md-12 mt-5">
-                        <div class="col-md-4"><p class="font-weight-bold mb-0">{{$t('section')}}</p><p>{{task['section']}}</p></div>
-                        <div class="col-md-8"><p class="font-weight-bold mb-0">{{$t('work_location')}}</p><p>{{task['work_location']}}</p></div>
-                    </div>
-                    <div class="col-md-12 mt-2 p-0">
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('phone')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['mobile_no']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('email')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['email']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['address']}}</p>
-                            </div>
-                        </div>
+                        <h5>{{$t('section')}}: {{task['section']}}</h5>
                     </div>
                     <div class="col-md-12 mt-5 p-0">
-                        <h4>{{$t('personal_info')}}</h4>
+                        <h4>{{$t('salary_details')}}</h4>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('gender')}}</p>
+                                <p class="my-auto text-white font-weight-bold">{{$t('bank_name')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['gender']}}</p>
+                                <p class="my-auto text-white">{{task['bank_name']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('date_of_birth')}}</p>
+                                <p class="my-auto font-weight-bold">{{$t('acc_no')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['date_of_birth']}}</p>
+                                <p class="my-auto">{{task['acc_no']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('marital_status')}}</p>
+                                <p class="my-auto text-white font-weight-bold">{{$t('basic_pay')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['marital_status']}}</p>
+                                <p class="my-auto text-white">{{task['basic_pay']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('blood_group')}}</p>
+                                <p class="my-auto font-weight-bold">{{$t('house_rent')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['blood_group']}}</p>
+                                <p class="my-auto">{{task['house_rent']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('joining_date')}}</p>
+                                <p class="my-auto text-white font-weight-bold">{{$t('medic_alw')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{`${task['start_date']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 mt-5 p-0">
-                        <h4>{{$t('attendance')}}</h4>
-                        
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('In Time')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['start_time']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('Out Time')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['end_time']}}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 mt-5 p-0">
-                        <h4>{{$t('contact_person')}}</h4>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('name')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['contact_name']}}</p>
+                                <p class="my-auto text-white">{{task['medic_alw']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('phone')}}</p>
+                                <p class="my-auto font-weight-bold">{{$t('ta')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['contact_phone']}}</p>
+                                <p class="my-auto">{{task['ta']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('relationship')}}</p>
+                                <p class="my-auto text-white font-weight-bold">{{$t('da')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['relationship']}}</p>
+                                <p class="my-auto text-white">{{task['da']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('address')}}</p>
+                                <p class="my-auto font-weight-bold">{{$t('providant_fund')}} (-)</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['contact_address']}}</p>
+                                <p class="my-auto">{{task['providant_fund']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('total_salary')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['total_salary']}}</p>
                             </div>
                         </div>
                     </div>
@@ -306,7 +267,7 @@ export default {
             employeeList : [],
             roles: [],
             errors : [],
-            task: {'basic_pay': null, 'medic_alw': null, 'house_rent': null, 'ta': null, 'da': null, 'other_field': null, 'other_pay': null, 'total_salary': null, 'bank_name': null, 'acc_no': null, 'employee_id': null},
+            task: {'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'providant_fund': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
             taskId: null,
             buttonTitle : this.$t('save'),
             disable: false,
@@ -372,6 +333,7 @@ export default {
             this.task['medic_alw_percent'] =  this.task['medic_alw'] * 100 / this.task['basic_pay']
             this.task['ta_percent'] =  this.task['ta'] * 100 / this.task['basic_pay']
             this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay']
+            this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay']
             this.$refs['dataView'].show()
         },
 
@@ -388,6 +350,7 @@ export default {
             this.task['medic_alw'] =  this.task['basic_pay'] * this.task['medic_alw_percent'] / 100
             this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100
             this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100
+            this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100
         },
         house_rent_percent() { this.task['house_rent_percent'] =  this.task['house_rent'] * 100 / this.task['basic_pay'] },
         house_rent() { this.task['house_rent'] =  this.task['basic_pay'] * this.task['house_rent_percent'] / 100 },
@@ -397,25 +360,22 @@ export default {
         ta() { this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100 },
         da_percent() { this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay'] },
         da() { this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100 },
+        providant_fund_percent() { this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay'] },
+        providant_fund() { this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100 },
 
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
-            // basic_pay, house_rent_percent, house_rent, medic_alw_percent, ta_percent, da_percent, total_salary
             if(this.taskId == null){
-                axios.post(`api/employee`, this.task)
+                axios.post(`api/salary`, this.task)
                 .then(({data}) =>{
                     this.errors = ''
-                    this.employeeList.unshift(data.employeeList)
-                    this.taskId = this.employeeList[0]['id']
-                    this.totalRows = this.employeeList.length;
-                    for (let i = 0; i < this.totalRows; i++) {
-                        this.employeeList[i]['sn'] = i                
-                    } 
+                    this.task['id'] = data.SalaryId
+                    this.taskId = data.SalaryId
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.stepper++
+                    this.$refs['dataEdit'].hide()
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -426,16 +386,13 @@ export default {
                     this.buttonTitle = this.$t('save')
                 })
             } else {
-                axios.patch(`api/employee/${this.taskId}`, this.task)
+                axios.patch(`api/salary/${this.taskId}`, this.task)
                 .then(({data}) => {
                     this.errors = ''
-                    this.src = '/images/employee/'
-                    this.task['employee_image'] = data.fileName
-                    this.employeeList[this.Index] = this.task;
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.stepper++
+                    this.$refs['dataEdit'].hide()
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -473,7 +430,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'official_id', label : 'ID', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'employee_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

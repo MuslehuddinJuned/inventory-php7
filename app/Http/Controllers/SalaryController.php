@@ -25,10 +25,16 @@ class SalaryController extends Controller
      */
     public function index()
     {
-        $Salary = DB::SELECT("SELECT B.id, A.employee_id, first_name, designation, department, section, employee_image, basic_pay, 
-            medic_alw, house_rent, ta, da, other_field, other_pay, total_salary, bank_name, acc_no FROM(
+        $Salary = DB::SELECT("SELECT B.id, A.id employee_id, A.employee_id official_id, first_name, designation, department, section, employee_image, 
+            (CASE WHEN basic_pay IS NULL THEN 0 ELSE cast(basic_pay as decimal(12,2)) END)basic_pay, 
+            (CASE WHEN medic_alw IS NULL THEN 0 ELSE cast(medic_alw as decimal(12,2)) END)medic_alw, 
+            (CASE WHEN house_rent IS NULL THEN 0 ELSE cast(house_rent as decimal(12,2)) END)house_rent, 
+            (CASE WHEN ta IS NULL THEN 0 ELSE cast(ta as decimal(12,2)) END)ta, 
+            (CASE WHEN da IS NULL THEN 0 ELSE cast(da as decimal(12,2)) END)da, 
+            (CASE WHEN providant_fund IS NULL THEN 0 ELSE cast(providant_fund as decimal(12,2)) END)providant_fund, 
+            (CASE WHEN total_salary IS NULL THEN 0 ELSE cast(total_salary as decimal(12,2)) END)total_salary,  bank_name, acc_no FROM(
             SELECT id, employee_id, first_name, designation, department, section, employee_image, status, deleted_by FROM employees WHERE deleted_by = 0 and status = 'active'
-            )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, other_field, other_pay, total_salary, bank_name, acc_no, employee_id FROM salaries
+            )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, providant_fund, other_field, other_pay, total_salary, bank_name, acc_no, employee_id FROM salaries
             )B ON A.id = B.employee_id");
 
         return compact('Salary');
@@ -52,7 +58,13 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Salary = $request->user()->salary()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'SalaryId' => $Salary->id
+            ]);
+        }
     }
 
     /**
@@ -86,7 +98,7 @@ class SalaryController extends Controller
      */
     public function update(Request $request, Salary $salary)
     {
-        //
+        $salary->update($request->all());
     }
 
     /**
