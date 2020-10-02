@@ -1,4 +1,5 @@
 { 
+    "tax" : "Tax",
     "salary_details" : "Salary Details",
     "da" : "Dearness Allowance",
     "ta" : "Conveyance Allowance",

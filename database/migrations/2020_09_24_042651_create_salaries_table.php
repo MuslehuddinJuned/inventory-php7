@@ -23,6 +23,7 @@ class CreateSalariesTable extends Migration
             $table->string('other_field')->nullable();
             $table->float('other_pay')->nullable();
             $table->float('providant_fund')->nullable();
+            $table->float('tax')->nullable();
             $table->float('total_salary')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('acc_no')->nullable();
