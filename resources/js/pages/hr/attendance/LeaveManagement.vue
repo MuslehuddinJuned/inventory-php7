@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="card filterable" :class="noprint">
             <div class="card-header row m-0">
                 <div class="col-md-6">
@@ -288,8 +288,8 @@ export default {
             },
             totalRows: 1,
             currentPage: 1,
-            perPage: 10,
-            pageOptions: [10, 25, 50],
+            perPage: 25,
+            pageOptions: [25, 50, 100],
             filter: null,
             filterOn: [],
             isBusy: false,
@@ -315,6 +315,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.Usedleave = res['Usedleave']
+            this.totalRows = this.Usedleave.length
             this.Leave = res['Leave']
             this.isBusy = false
         })
