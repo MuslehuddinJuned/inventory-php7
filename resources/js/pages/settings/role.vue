@@ -232,6 +232,7 @@ export default {
                 {name: this.$t('holiday_management'), view:{value: false, id: 33}, insert:{value: false, id: 34}, update:{value: false, id: 35}, delete:{value: false, id: 36}},
                 {name: this.$t('leave_management'), view:{value: false, id: 37}, insert:{value: false, id: 38}, update:{value: false, id: 39}, delete:{value: false, id: 40}},
                 {name: this.$t('salary_management'), view:{value: false, id: 41}, insert:{value: false, id: 42}, update:{value: false, id: 43}, delete:{value: false, id: 44}},
+                {name: this.$t('upload_attendance'), view:{value: false, id: 45}, insert:{value: false, id: 46}, update:{value: false, id: 47}, delete:{value: false, id: 48}},
             ]            
             this.totalRows_Role = this.roles.length
             
@@ -285,6 +286,10 @@ export default {
                         case "salary_management_Insert": this.roles[13]['insert']['value'] = true; break;
                         case "salary_management_Update": this.roles[13]['update']['value'] = true; break;
                         case "salary_management_Delete": this.roles[13]['delete']['value'] = true; break;
+                        case "upload_attendance_View": this.roles[14]['view']['value'] = true; break;
+                        case "upload_attendance_Insert": this.roles[14]['insert']['value'] = true; break;
+                        case "upload_attendance_Update": this.roles[14]['update']['value'] = true; break;
+                        case "upload_attendance_Delete": this.roles[14]['delete']['value'] = true; break;
                     }                    
                 }
 

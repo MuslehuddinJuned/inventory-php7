@@ -96,6 +96,10 @@
           <li v-if="user && module_no == 2 && (checkRoles('holiday_management_View') || checkRoles('leave_management_View'))" class="nav-item dropdown">
             <a id="leave" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="smartwatch"></b-icon> {{ $t('attendance') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="leave">
+              <router-link v-if="checkRoles('upload_attendance_View')" :to="{ name: 'hr.UploadAttendance' }" class="dropdown-item pl-3">                
+                <b-icon icon="cloud-upload-fill"></b-icon>
+                {{ $t('upload_attendance') }}
+              </router-link>
               <router-link v-if="checkRoles('leave_management_View')" :to="{ name: 'hr.LeaveManagement' }" class="dropdown-item pl-3">                
                 <b-icon icon="calendar-x-fill"></b-icon>
                 {{ $t('leave_management') }}
