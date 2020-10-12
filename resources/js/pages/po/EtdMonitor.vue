@@ -78,11 +78,11 @@
                         <div class="text-nowrap">{{row.item.item_code}}: {{row.item.item}}</div>
                     </template>
                     <template v-slot:cell(stock)="row">
-                        <div v-if="row.item.store_id == 3" class="text-nowrap">{{row.item.stock * row.item.cann_per_sheet}}</div>
+                        <div v-if="row.item.store_id == 3" class="text-nowrap">{{(row.item.stock * row.item.cann_per_sheet).toFixed(2)}}</div>
                         <div v-else class="text-nowrap">{{row.item.stock}}</div>
                     </template>
                     <template v-slot:cell(balance)="row">
-                        {{ row.item.inventory_qty - row.item.total_qty}}
+                        {{ (row.item.inventory_qty - row.item.total_qty).toFixed(2) }}
                     </template>
                     <template v-slot:cell(item_image)="row">
                         <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
@@ -180,14 +180,14 @@ export default {
                 varient = []
                 for (let k = 0; k < this.etdQty.length; k++) {
                     if(this.inventoryListAll[j]['id'] === this.etdQty[k]['inventory_id']){
-                        this.inventoryListAll[j][this.etdQty[k]['etd']] = this.etdQty[k]['quantity']
+                        this.inventoryListAll[j][this.etdQty[k]['etd']] = this.etdQty[k]['quantity'].toFixed(2)
                         this.inventoryListAll[j][this.etdQty[k]['etd'] + '-product_code'] = this.etdQty[k]['product_code']
                         stock -= this.etdQty[k]['quantity']
                         if (stock < 0) {
-                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = stock
+                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = stock.toFixed(2)
                             varient[this.etdQty[k]['etd'] + '-Balance'] = 'danger';
                         } else {
-                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = '+' + stock
+                            this.inventoryListAll[j][this.etdQty[k]['etd'] + '-Balance'] = '+' + stock.toFixed(2)
                         }
 
                     } else { continue }
@@ -274,7 +274,7 @@ export default {
             for (let i = 0; i < this.etdList.length; i++) {
                 data.push({ 'key': this.etdList[i]['etd'], 'label' : this.convertDate(this.etdList[i]['etd']),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
                 data.push({ 'key': this.etdList[i]['etd'] + '-Balance', 'label' : this.$t('balance'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
-                data.push({ 'key': this.etdList[i]['etd'] + '-product_code', 'label' : this.$t('style') + ' ' + this.$t('code'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
+                // data.push({ 'key': this.etdList[i]['etd'] + '-product_code', 'label' : this.$t('style') + ' ' + this.$t('code'),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
 
                 this.json_fields[this.convertDate(this.etdList[i]['etd'])] = this.etdList[i]['etd']
                 this.json_fields[this.convertDate(this.etdList[i]['etd']) + '-Balance'] = this.etdList[i]['etd'] + '-Balance'
