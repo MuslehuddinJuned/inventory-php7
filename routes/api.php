@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('leave', 'LeaveController')->middleware('can:leave_management_View');
     Route::resource('usedleave', 'UsedleaveController')->middleware('can:leave_management_View');
     Route::resource('salary', 'SalaryController')->middleware('can:salary_management_View');
+    Route::resource('attendance', 'AttendanceController')->middleware('can:upload_attendance_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

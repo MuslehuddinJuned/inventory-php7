@@ -3,75 +3,52 @@
         <div class="card filterable" :class="noprint">
             <div class="card-header row m-0">
                 <div class="col-md-6">
-                    <h3 class="panel-title float-left">
-                        {{ $t('leave_management') }}
-                        <fa v-if="checkRoles('leave_management_Insert')" @click="addDetails" icon="edit" class="ml-2 pointer" fixed-width />                    
-                    </h3>
+                    <h3 class="panel-title float-left">{{ $t('upload_attendance') }}</h3>
                 </div>                     
                 <div class="col-md-6">
                     <div class="ml-md-auto m-sm-0 input-group col-md-12 col-lg-6 float-md-right">
-                        <div class="input-group-prepend">
-                            <div @click="yearWiseDisplay(-1)" class="input-group-text pointer"><b-icon icon="dash"></b-icon></div>
-                        </div>
-                        <input type="text" v-model="year" @change="yearWiseDisplay(year)" class="form-control text-center" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <input type="date" v-model="attendance_date" class="form-control">
                         <div class="input-group-append">
-                            <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="plus"></b-icon></div>
+                            <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="search"></b-icon></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row m-0 p-0">
-                    <div class="col-md-4 my-1">
-                        {{$t('casual_leave')}}:
-                        <input type="text" v-model="task[0]['casual_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            <div class="card-body my-3">
+                <form class="was-validated">
+                    <div class="input-group is-invalid">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')">{{$t('choose_file')}}</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button">{{$t('save')}}</button>
+                        </div>
                     </div>
-                    <div class="col-md-4 my-1">
-                        {{$t('sick_leave')}}:
-                        <input type="text" v-model="task[0]['sick_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    </div>
-                    <div class="col-md-4 my-1">
-                        {{$t('annual_leave')}}:
-                        <input type="text" v-model="task[0]['annual_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    </div>
-                    <div class="col-md-4 my-1">
-                        {{$t('maternity_leave')}}:
-                        <input type="text" v-model="task[0]['maternity_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    </div>
-                    <div class="col-md-4 my-1">
-                        {{$t('paternity_leave')}}:
-                        <input type="text" v-model="task[0]['paternity_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    </div>
-                    <div class="col-md-4 my-1">
-                        {{$t('half_leave')}}:
-                        <input type="text" v-model="task[0]['half_leave']" :class="reportClass" class="ml-1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                    </div>
-                </div>
-                <div class="col-12 mt-5 text-center">
-                    <button v-if="checkRoles('leave_management_Insert') && reportEdit" @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                    <button v-if="reportEdit" @click="addDetails" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
-                </div>
+                </form>
             </div>
             <div class="card-header">
                 <h3 class="panel-title float-left">
-                    {{ $t('personal_leave_management') }}
+                    {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}})
+                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width /> 
+                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width /> 
                 </h3>
             </div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
-                    <!-- <download-excel
+                    <download-excel
                         id="tooltip-target-1"
                         class="btn btn-outline-default btn-sm mr-3"
-                        :title="storeName"
-                        :data="inventoryList"
+                        :title="attendance_date"
+                        :data="Usedleave"
                         :fields="json_fields"
-                        worksheet="Inventory Item"
-                        name="Inventory Item.xls">
+                        worksheet="Daily Attendance"
+                        name="Daily Attendance.xls">
                         <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
                     </download-excel> 
                     <b-tooltip target="tooltip-target-1" triggers="hover">
                         Save this table to Excel
-                    </b-tooltip> -->
+                    </b-tooltip>
                     <b-form-group class="mb-0 mr-auto">
                         <b-input-group size="sm">
                             <b-form-input
@@ -116,24 +93,6 @@
                 <template v-slot:cell(index)="row">
                     {{ row.index+1 }}
                 </template>
-                <template v-slot:cell(casual_leave)="row">
-                    {{row.item.casual_leave}}  ({{Leave[0]['casual_leave'] - row.item.casual_leave}})
-                </template>
-                <template v-slot:cell(sick_leave)="row">
-                    {{row.item.sick_leave}}  ({{Leave[0]['sick_leave'] - row.item.sick_leave}})
-                </template>
-                <template v-slot:cell(annual_leave)="row">
-                    {{row.item.annual_leave}}  ({{Leave[0]['annual_leave'] - row.item.annual_leave}})
-                </template>
-                <template v-slot:cell(maternity_leave)="row">
-                    {{row.item.maternity_leave}}  ({{Leave[0]['maternity_leave'] - row.item.maternity_leave}})
-                </template>
-                <template v-slot:cell(paternity_leave)="row">
-                    {{row.item.paternity_leave}}  ({{Leave[0]['paternity_leave'] - row.item.paternity_leave}})
-                </template>
-                <template v-slot:cell(half_leave)="row">
-                    {{row.item.half_leave}}  ({{Leave[0]['half_leave'] - row.item.half_leave}})
-                </template>
                 </b-table>
                 
                 <div class="col-12 mx-auto p-0 noprint">
@@ -154,104 +113,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Start Edit Details Modal -->
-        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop>            
-            <div v-if="taskHeadId" class="modal-body row m-0 p-0 mb-2">
-                <div class="col-md-4">
-                    <label for="leave_category" class="col-form-label mr-2">{{ $t('leave_category')}}</label>
-                    <select v-model="taskDetails[0]['leave_type']" class="form-control" id="leave_category">
-                        <option value="casual_leave">{{$t('casual_leave')}}</option>
-                        <option value="sick_leave">{{$t('sick_leave')}}</option>
-                        <option value="annual_leave">{{$t('annual_leave')}}</option>
-                        <option value="maternity_leave">{{$t('maternity_leave')}}</option>
-                        <option value="paternity_leave">{{$t('paternity_leave')}}</option>
-                        <option value="compensatory_leave">{{$t('compensatory_leave')}}</option>
-                        <option value="unpaid_leave">{{$t('unpaid_leave')}}</option>
-                        <option value="half_leave">{{$t('half_leave')}}</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('reason')}}</label>
-                    <input type="text" class="form-control" v-model="taskDetails[0]['reason']">
-                </div>
-                <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('replacing_person')}}</label>
-                    <input type="text" class="form-control" v-model="taskDetails[0]['replacing_person']">
-                </div> 
-                <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('leave_start')}}</label>
-                    <input type="date" class="form-control" v-model="taskDetails[0]['leave_start']">
-                </div> 
-                <div class="col-md-4">
-                    <label class="col-form-label">{{ $t('leave_end')}}</label>
-                    <input type="date" class="form-control" v-model="taskDetails[0]['leave_end']">
-                </div>                              
-            </div>
-            <template v-slot:modal-footer="">
-                <div class="row m-0 p-0 col-12">
-                    <div class="col-md-4">
-                        <button v-if="checkRoles('leave_management_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
-                    </div>
-                    <div class="col-md-8">
-                        <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                        <button v-if="checkRoles('leave_management_Insert')" @click="savePersonalLeave" class="mdb btn btn-outline-default float-right" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
-                    </div>
-                </div>
-            </template>
-        </b-modal>
-        <!-- End Edit Details Modal -->
-
-        <!-- Start view Details Modal -->
-        <b-modal ref="dataView" id="dataView" size="xl" :title="$t('personal_leave_management')" no-close-on-backdrop>
-            <div class="modal-body row m-0 p-0 mb-2" >
-                <div class="col-md-6">
-                    <span class="font-weight-bold">{{ $t('ID')}}:</span> {{taskHead['employee_id']}} <br>
-                    <span class="font-weight-bold">{{ $t('name')}}:</span> {{taskHead['first_name']}}
-                </div>
-                <div class="col-md-6">                                
-                    <span class="font-weight-bold">{{ $t('designation')}}:</span> {{taskHead['designation']}}<br>
-                    <span class="font-weight-bold">{{ $t('department')}}:</span> {{taskHead['department']}}
-                </div>
-            </div>
-            <div class="modal-body row m-0 p-0 mb-2 border-top border-secondary" >
-                <div v-if="taskHeadId" class="row col-12 m-0 p-0">
-                    <div class="col-md-3">{{$t('casual_leave')}}: {{taskHead['casual_leave']}} ({{Leave[0]['casual_leave'] - taskHead['casual_leave']}})</div>
-                    <div class="col-md-3">{{$t('sick_leave')}}: {{taskHead['sick_leave']}} ({{Leave[0]['sick_leave'] - taskHead['sick_leave']}})</div>
-                    <div class="col-md-3">{{$t('annual_leave')}}: {{taskHead['annual_leave']}} ({{Leave[0]['annual_leave'] - taskHead['annual_leave']}})</div>
-                    <div class="col-md-3">{{$t('maternity_leave')}}: {{taskHead['maternity_leave']}} ({{Leave[0]['maternity_leave'] - taskHead['maternity_leave']}})</div>
-                    <div class="col-md-3">{{$t('paternity_leave')}}: {{taskHead['paternity_leave']}} ({{Leave[0]['paternity_leave'] - taskHead['paternity_leave']}})</div>
-                    <div class="col-md-3">{{$t('compensatory_leave')}}: {{taskHead['compensatory_leave']}} ({{Leave[0]['compensatory_leave'] - taskHead['compensatory_leave']}})</div>
-                    <div class="col-md-3">{{$t('unpaid_leave')}}: {{taskHead['unpaid_leave']}} ({{Leave[0]['unpaid_leave'] - taskHead['unpaid_leave']}})</div>
-                    <div class="col-md-3">{{$t('half_leave')}}: {{taskHead['half_leave']}} ({{Leave[0]['half_leave'] - taskHead['half_leave']}})</div>
-                </div>
-            </div>
-            <div class="modal-body row m-0 p-0 mb-2 border-top border-secondary" >
-                <div class="col-md-12 m-0 p-0 mt-3">
-                    <b-table @row-clicked="(item) => editDetails(item.id)" style="cursor : pointer" show-empty small striped hover stacked="md" :items="personalLeave" :fields="taskDetailsfieldsView">
-                        <template v-slot:cell(index)="row">
-                            {{ row.index+1 }}
-                        </template>                                    
-                        <!-- <template v-slot:cell(issue_etd)="row">
-                            {{`${row.item.issue_etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
-                        </template>                                    -->
-                        <template v-slot:cell(leave_type)="row">
-                            {{ $t(row.item.leave_type) }}
-                        </template>
-                    </b-table>
-                </div>                              
-            </div>
-            <template v-slot:modal-header="">
-                <h3 class="panel-title float-left">{{ $t('personal_leave_management') }}</h3> 
-                <div class="ml-auto">
-                    <button v-if="checkRoles('leave_management_Insert')" @click="editDetails(null)" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
-                </div>
-            </template>
-            <template v-slot:modal-footer="">
-                <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-            </template>
-        </b-modal>
-        <!-- End view Details Modal -->
     </div>
 </template>
 
@@ -260,7 +121,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('leave_management') }
+        return { title: this.$t('upload_attendance') }
     },
 
     data() {
@@ -275,10 +136,22 @@ export default {
             taskDetailsId: null,
             personalLeave: [],
             roles: [],
-            year: new Date().getFullYear(),
+            attendance_date: this.convertDate(new Date()),
             reportEdit: false,
             buttonTitle : this.$t('save'),
             disable: false,
+            json_fields: {
+                'Material No': 'item_code',
+                'Material': 'item',
+                'Description': 'specification',
+                'Grade': 'grade',
+                'Stock': 'stock',
+                'Unit': 'unit',
+                'Weight': 'weight',
+                'Total Weight': 'total_weight',
+                'Unit Price': 'unit_price',
+                'Total Price': 'total_price',
+            },
 
             noprint: '',
 
@@ -315,6 +188,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.Usedleave = res['Usedleave']
+            this.totalRows = this.Usedleave.length
             this.Leave = res['Leave']
             this.isBusy = false
         })

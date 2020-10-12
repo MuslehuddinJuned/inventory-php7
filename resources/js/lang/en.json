@@ -1,4 +1,6 @@
 { 
+    "choose_file" : "Choose file...",
+    "daily_attendance" : "Daily Attendance",
     "upload_attendance" : "Upload Attendance",
     "tax" : "Tax",
     "salary_details" : "Salary Details",

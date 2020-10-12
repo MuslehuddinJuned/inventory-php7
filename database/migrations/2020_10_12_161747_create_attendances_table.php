@@ -19,7 +19,10 @@ class CreateAttendancesTable extends Migration
             $table->string('name')->nullable();
             $table->string('department')->nullable();
             $table->date('date')->nullable();
-            $table->string('time')->nullable();
+            $table->time('in_time_1')->nullable();
+            $table->time('in_time_2')->nullable();
+            $table->time('out_time_1')->nullable();
+            $table->time('out_time_2')->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
