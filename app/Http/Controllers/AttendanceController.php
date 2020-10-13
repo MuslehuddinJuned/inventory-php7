@@ -25,7 +25,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        return 'hi';
     }
 
     /**
@@ -46,7 +46,24 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $exploded = explode(',', $request->name);
+        $decoded = base64_decode($exploded[1]);
+
+        // if(str_contains($exploded[0], 'xls'))
+        //     $extesion = 'xls';
+        // else
+        //     $extesion = 'xlsx';
+
+        $fileName = str_random().'.xlsx';
+        // $fileName = str_random().'.xlsx'.$extesion;
+        $path = public_path().'/file/attendance/'.$fileName;
+        // $path = '/home/sustipe/inventory.sustipe.com/file/attendance/'.$fileName;
+
+        // store new image
+        // file_put_contents($path, $decoded);
+        // $productHead = $request->user()->producthead()->create($request->except('product_image') + [
+        //     'product_image' => $fileName
+        // ]);
     }
 
     /**

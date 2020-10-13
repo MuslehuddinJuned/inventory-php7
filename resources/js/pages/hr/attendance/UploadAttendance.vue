@@ -18,7 +18,7 @@
                 <form class="was-validated" >
                     <div class="input-group is-invalid">
                         <div class="custom-file">
-                            <input type="file" @change="handleFileUpload" ref="fileInput" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                            <input type="file" @change="handleFileUpload" v-if="uploadReady" class="custom-file-input" id="validatedInputGroupCustomFile" required>
                             <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')">{{fileName}}</label>
                         </div>
                         <div class="input-group-append">
@@ -129,6 +129,7 @@ export default {
             Leave: [],
             uploadFile: null,
             fileName: this.$t('choose_file'),
+            uploadReady: true,
             roles: [],
             attendance_date: this.convertDate(new Date()),
             reportEdit: false,
@@ -295,8 +296,12 @@ export default {
                 }
                 fileReader.readAsDataURL(e.target.files[0]);
             } else {
-                this.$refs.fileInput.type='text';
-                this.$refs.fileInput.type='file';
+                this.uploadReady = false
+                this.$nextTick(() => {
+                    this.uploadReady = true
+                })
+                // this.$refs.fileInput.type='text';
+                // this.$refs.fileInput.type='file';
                 this.fileName = this.$t('choose_file')
                 this.$toast.warning('.xlsx or .xls format only', this.$t('error_alert_title'), {
                     timeout: 10000,          
@@ -310,42 +315,26 @@ export default {
             this.buttonTitle = this.$t('saving')
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
-            if(this.task[0]['id'] == null){
-                axios.post(`api/leave`, this.task[0], options)
-                .then(({data}) =>{
-                    this.errors = ''
-                    this.leaveList.unshift(data.LeaveList)
-                    this.task[0]['id'] = this.leaveList[0]['id']
-                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    } else alert(err.response.data.message) 
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                })
-            } else {
-                axios.patch(`api/leave/${this.task[0]['id']}`, this.task[0])
-                .then(({data}) => {
-                    this.errors = ''
-                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                    } else alert(err.response.data.message) 
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                });
-            }
+            axios.post(`api/attendance`, {
+                'name' : this.uploadFile
+            }, options)
+            .then(({data}) =>{
+                this.errors = ''
+                // this.leaveList.unshift(data.LeaveList)
+                // this.task[0]['id'] = this.leaveList[0]['id']
+                this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
+                this.disable = !this.disable
+                this.buttonTitle = this.$t('save')
+                this.reportEdit = !this.reportEdit
+            })
+            .catch(err => {
+                if(err.response.status == 422){
+                    this.errors = err.response.data.errors
+                    this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                } else alert(err.response.data.message) 
+                this.disable = !this.disable
+                this.buttonTitle = this.$t('save')
+            })
         },
 
         destroy() {

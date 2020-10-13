@@ -14,8 +14,9 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
-        "tymon/jwt-auth": "^1.0.0",
-        "laravelcollective/html": "^6.1"
+        "laravelcollective/html": "^6.1",
+        "maatwebsite/excel": "^3.1",
+        "tymon/jwt-auth": "^1.0.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
