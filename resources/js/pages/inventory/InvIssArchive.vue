@@ -83,6 +83,7 @@
                 <div class="col-md-6">
                     <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{task.store_name}}<br>
                     <span class="font-weight-bold">{{ $t('ETD')}}:</span><br>
+                    <span class="font-weight-bold">{{ $t('requisition_by')}}:</span> {{task.requisition_by}}<br>
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{task.remarks}}
                 </div>
                 <div class="col-md-6 text-right">                                
@@ -265,6 +266,7 @@ export default {
                 // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'requisition_by', label : this.$t('requisition_by'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'updated_at', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'decision', label : this.$t('Action'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

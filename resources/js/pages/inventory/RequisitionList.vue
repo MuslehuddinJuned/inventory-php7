@@ -93,7 +93,11 @@
                     <label class="col-form-label">{{ $t('requisition_no')}}</label>
                     <input type="text" class="form-control" v-model="taskHead[0]['requisition_no']" disabled>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
+                    <label class="col-form-label">{{ $t('requisition_by')}}</label>
+                    <input type="text" class="form-control" v-model="taskHead[0]['requisition_by']">
+                </div>
+                <div class="col-md-6">
                     <label class="col-form-label">{{ $t('remarks')}}</label>
                     <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
                 </div>
@@ -150,14 +154,13 @@
             <div class="modal-body row m-0 p-0 mb-2" >
                 <div class="col-md-6">
                     <span class="font-weight-bold">{{ $t('store_name')}}:</span> {{taskHead[0]['store_name']}} <br>
-                    <span class="font-weight-bold">{{ $t('ETD')}}:</span>
+                    <span class="font-weight-bold">{{ $t('ETD')}}:</span> <br>
+                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
                 </div>
                 <div class="col-md-6 text-right">                                
                     <span class="font-weight-bold">{{ $t('requisition_no')}}:</span> {{taskHead[0]['requisition_no']}}<br>
-                    <span class="font-weight-bold">{{ $t('date')}}:</span> {{`${taskHead[0]['created_at']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}
-                </div>
-                <div class="col-md-12">
-                    <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
+                    <span class="font-weight-bold">{{ $t('date')}}:</span> {{`${taskHead[0]['created_at']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}<br>
+                    <span class="font-weight-bold">{{ $t('requisition_by')}}:</span> {{taskHead[0]['requisition_by']}}
                 </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
                     <b-table show-empty small striped hover stacked="md" :items="taskDetailsCheck" :fields="taskDetailsfieldsView">
@@ -240,7 +243,7 @@ export default {
             storeDisabled: false,
             noprint : '',
             disable: false,
-            taskHead : [{'requisition_no' : null,'remarks' : null, 'accept' : null}],
+            taskHead : [{'requisition_no' : null, 'requisition_by': null, 'remarks' : null, 'accept' : null}],
             taskDetails : [],
             taskHeadId : null,
             taskDetailsId : null,
@@ -328,7 +331,7 @@ export default {
 
         addDetails(){
             this.hideDetails = 'd-none'
-            this.taskHead = [{'requisition_no' : null,'remarks' : null, 'accept' : null}]
+            this.taskHead = [{'requisition_no' : null, 'requisition_by': null, 'remarks' : null, 'accept' : null}]
             this.taskHeadId = null
             this.title = this.$t('receive_item')
             this.grand_total = null
@@ -602,6 +605,7 @@ export default {
                 // { key: 'store_name', label : this.$t('store_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'requisition_no', label : this.$t('requisition_no'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'requisition_by', label : this.$t('requisition_by'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'created_at', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]

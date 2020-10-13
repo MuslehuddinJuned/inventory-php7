@@ -27,15 +27,15 @@ class InventoryissueController extends Controller
      */
     public function index()
     {
-        $Inventoryissue = DB::SELECT("SELECT A.id, requisition_no, GROUP_CONCAT(po_no SEPARATOR ' | ')po_no, remarks, accept, updated_at, created_at, store_name, store_id FROM (
-            SELECT id, requisition_no, remarks, accept, updated_at, created_at FROM recheads WHERE accept IS NULL
+        $Inventoryissue = DB::SELECT("SELECT A.id, requisition_no, requisition_by, GROUP_CONCAT(po_no SEPARATOR ' | ')po_no, remarks, accept, updated_at, created_at, store_name, store_id FROM (
+            SELECT id, requisition_no, requisition_by, remarks, accept, updated_at, created_at FROM recheads WHERE accept IS NULL
             )A LEFT JOIN (
             SELECT inventory_id,polist_id, rechead_id FROM recdetails
             )B ON A.id = B.rechead_id LEFT JOIN(
             SELECT id, store_id FROM inventories
             )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores
 			)D ON C.store_id = D.id LEFT JOIN ( SELECT id, po_no FROM polists
-			)E ON B.polist_id = E.id GROUP BY A.id, requisition_no, remarks, accept, updated_at, created_at, store_name, store_id ORDER BY updated_at DESC");
+			)E ON B.polist_id = E.id GROUP BY A.id, requisition_no, requisition_by, remarks, accept, updated_at, created_at, store_name, store_id ORDER BY updated_at DESC");
             
         return compact ('Inventoryissue');
     }
@@ -83,15 +83,15 @@ class InventoryissueController extends Controller
      */
     public function show($id)
     {
-        $Inventoryissue = DB::SELECT("SELECT A.id, requisition_no, GROUP_CONCAT(po_no SEPARATOR ' | ')po_no, remarks, issue_etd, (CASE WHEN accept=-1 THEN 'Rejected' ELSE 'Accepted' END)decision, updated_at, created_at, store_name, store_id FROM (
-            SELECT id, requisition_no, remarks, accept, updated_at, created_at FROM recheads WHERE accept IS  NOT NULL
+        $Inventoryissue = DB::SELECT("SELECT A.id, requisition_no, requisition_by, GROUP_CONCAT(po_no SEPARATOR ' | ')po_no, remarks, issue_etd, (CASE WHEN accept=-1 THEN 'Rejected' ELSE 'Accepted' END)decision, updated_at, created_at, store_name, store_id FROM (
+            SELECT id, requisition_no, requisition_by, remarks, accept, updated_at, created_at FROM recheads WHERE accept IS  NOT NULL
             )A LEFT JOIN (
             SELECT inventory_id, polist_id, rechead_id, issue_etd FROM recdetails
             )B ON A.id = B.rechead_id LEFT JOIN(
             SELECT id, store_id FROM inventories
             )C ON B.inventory_id = C.id LEFT JOIN ( SELECT id, name store_name FROM stores
 			)D ON C.store_id = D.id LEFT JOIN ( SELECT id, po_no FROM polists
-			)E ON B.polist_id = E.id GROUP BY A.id, requisition_no, remarks, issue_etd, decision, updated_at, created_at, store_name, store_id ORDER BY updated_at DESC");
+			)E ON B.polist_id = E.id GROUP BY A.id, requisition_no, requisition_by, remarks, issue_etd, decision, updated_at, created_at, store_name, store_id ORDER BY updated_at DESC");
             
         return compact ('Inventoryissue');
     }

@@ -16,6 +16,7 @@ class CreateRecheadsTable extends Migration
         Schema::create('recheads', function (Blueprint $table) {
             $table->id();
             $table->string('requisition_no')->nullable();
+            $table->string('requisition_by')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('accept')->nullable();
             $table->unsignedBigInteger('user_id');

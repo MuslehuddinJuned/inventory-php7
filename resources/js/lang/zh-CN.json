@@ -1,4 +1,5 @@
 {
+    "requisition_by" : "要求者",
     "choose_file" : "选择文件...",
     "daily_attendance" : "日常出勤",
     "upload_attendance" : "上载出席",
