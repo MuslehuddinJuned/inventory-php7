@@ -438,9 +438,11 @@ export default {
                         if(this.requisitionList.length > 0){
                             this.requisitionList.unshift(this.taskHead[0])
                         }
+
                         this.disable = !this.disable
                         this.buttonTitle = this.$t('save')
                         this.hideDetails = ''
+                        this.taskHead[0]['created_at'] = this.convertDate(new Date())
                         this.taskDetails = [{'quantity' : 0, 'polist_id': null, 'po_qty': 0, 'issue_etd' : this.today, 'master_sheet' : 0, 'remarks' : null, 'rechead_id' : this.taskHeadId, 'inventory_id' : null}]
                     })
                     .catch(err => {
@@ -470,9 +472,10 @@ export default {
                         }
 
                         if(this.requisitionList.length > 0){
-                            for (let i = 0; i < this.requisitionList.length; i++) {
+                            for (let i = this.requisitionList.length - 1; i >= 0; i--) {
                                 if(this.requisitionList[i]['id'] == this.taskHead[0]['id']){
                                     this.requisitionList[i] = this.taskHead[0]
+                                    break
                                 }   
                             }
                         }
