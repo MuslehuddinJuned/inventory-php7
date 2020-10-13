@@ -15,14 +15,14 @@
                 </div>
             </div>
             <div class="card-body my-3">
-                <form class="was-validated">
+                <form class="was-validated" >
                     <div class="input-group is-invalid">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
-                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')">{{$t('choose_file')}}</label>
+                            <input type="file" @change="handleFileUpload" ref="fileInput" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')">{{fileName}}</label>
                         </div>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button">{{$t('save')}}</button>
+                            <button @click.prevent="save" class="btn btn-outline-secondary" type="button">{{$t('save')}}</button>
                         </div>
                     </div>
                 </form>
@@ -30,8 +30,8 @@
             <div class="card-header">
                 <h3 class="panel-title float-left">
                     {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}})
-                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width /> 
-                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width /> 
+                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
+                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
                 </h3>
             </div>
             <div class="card-body m-0 p-0">
@@ -80,9 +80,7 @@
                 :filterIncludedFields="filterOn"
                 :tbody-transition-props="transProps"
                 @filtered="onFiltered"
-                @row-clicked="(item) => viewDetails(item.id)"
                 class="table-transition"
-                style="cursor : pointer"
                 >
                 <template v-slot:table-busy>
                     <div class="text-center text-success my-2">
@@ -129,12 +127,8 @@ export default {
             leaveList : [],
             Usedleave: [],
             Leave: [],
-            task: [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}],
-            taskHead: [],
-            taskHeadId: null,
-            taskDetails: [{'leave_type': null, 'reason': null, 'replacing_person': null, 'leave_start': this.convertDate(new Date()), 'leave_end': this.convertDate(new Date()), 'day_count': 1, 'employee_id': this.taskHeadId}],
-            taskDetailsId: null,
-            personalLeave: [],
+            uploadFile: null,
+            fileName: this.$t('choose_file'),
             roles: [],
             attendance_date: this.convertDate(new Date()),
             reportEdit: false,
@@ -161,8 +155,8 @@ export default {
             },
             totalRows: 1,
             currentPage: 1,
-            perPage: 10,
-            pageOptions: [10, 25, 50],
+            perPage: 25,
+            pageOptions: [25, 50, 100],
             filter: null,
             filterOn: [],
             isBusy: false,
@@ -289,70 +283,35 @@ export default {
             } return array
         },
 
-        savePersonalLeave() {
-            //need to add checking for leaves in current month
-            this.disable = !this.disable
-            this.buttonTitle = this.$t('saving')
+        handleFileUpload(e) {
+            let file = e.target.files[0];
+            this.fileName = file.name
+            let check = this.fileName.slice(this.fileName.length - 4)
 
-            let oldDayCount = this.taskDetails[0]['day_count'], start = new Date(this.taskDetails[0]['leave_start']), end = new Date(this.taskDetails[0]['leave_end'])
-            this.taskDetails[0]['day_count'] = (end.getTime() - start.getTime())/(1000 * 3600 * 24)
-            this.taskDetails[0]['day_count'] += 1
-
-            if(this.taskDetails[0]['id'] == null){
-                axios.post(`api/usedleave`, this.taskDetails[0])
-                .then(({data}) =>{
-                    this.errors = ''
-                    this.personalLeave.unshift(data.Usedleave)
-                    this.yearWiseDisplay(this.year)
-                    let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
-                    count += this.taskDetails[0]['day_count']
-                    this.taskHead[this.taskDetails[0]['leave_type']] = count
-                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
-                    this.$refs['dataEdit'].hide()
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    } else alert(err.response.data.message) 
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                })
+            if (check == 'xlsx' || check == '.xls') {  
+                var fileReader = new FileReader()
+                fileReader.onload = (e) => {
+                    this.uploadFile = e.target.result;
+                }
+                fileReader.readAsDataURL(e.target.files[0]);
             } else {
-                axios.patch(`api/usedleave/${this.taskDetails[0]['id']}`, this.taskDetails[0])
-                .then(({data}) => {
-                    this.yearWiseDisplay(this.year)
-                    let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
-                    count += (this.taskDetails[0]['day_count'] - oldDayCount)
-                    this.taskHead[this.taskDetails[0]['leave_type']] = count
-                    this.errors = ''
-                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
-                    this.$refs['dataEdit'].hide()
+                this.$refs.fileInput.type='text';
+                this.$refs.fileInput.type='file';
+                this.fileName = this.$t('choose_file')
+                this.$toast.warning('.xlsx or .xls format only', this.$t('error_alert_title'), {
+                    timeout: 10000,          
+                    position: 'center',
                 })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    } else alert(err.response.data.message) 
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                });
             }
         },
 
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
-            this.task[0]['year'] = this.year
+            let options = { headers: {'enctype': 'multipart/form-data'} };
 
             if(this.task[0]['id'] == null){
-                axios.post(`api/leave`, this.task[0])
+                axios.post(`api/leave`, this.task[0], options)
                 .then(({data}) =>{
                     this.errors = ''
                     this.leaveList.unshift(data.LeaveList)
