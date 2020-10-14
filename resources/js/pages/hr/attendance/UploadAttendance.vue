@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="card filterable" :class="noprint">
             <div class="card-header row m-0">
                 <div class="col-md-6">
@@ -19,10 +19,10 @@
                     <div class="input-group is-invalid">
                         <div class="custom-file">
                             <input type="file" @change="handleFileUpload" v-if="uploadReady" class="custom-file-input" id="validatedInputGroupCustomFile" required>
-                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')">{{fileName}}</label>
+                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')"> {{fileName}}</label>
                         </div>
                         <div class="input-group-append">
-                            <button @click.prevent="save" class="btn btn-outline-secondary" type="button">{{$t('save')}}</button>
+                            <button @click.prevent="save" class="btn btn-outline-secondary" type="button" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon>{{ buttonTitle }}</button>
                         </div>
                     </div>
                 </form>
@@ -36,19 +36,6 @@
             </div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
-                    <download-excel
-                        id="tooltip-target-1"
-                        class="btn btn-outline-default btn-sm mr-3"
-                        :title="attendance_date"
-                        :data="Usedleave"
-                        :fields="json_fields"
-                        worksheet="Daily Attendance"
-                        name="Daily Attendance.xls">
-                        <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
-                    </download-excel> 
-                    <b-tooltip target="tooltip-target-1" triggers="hover">
-                        Save this table to Excel
-                    </b-tooltip>
                     <b-form-group class="mb-0 mr-auto">
                         <b-input-group size="sm">
                             <b-form-input
@@ -72,7 +59,7 @@
                     </b-form-group>                        
                 </div>
                 <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                :items="Usedleave"
+                :items="attendanceList"
                 :fields="fields"
                 :current-page="currentPage"
                 :per-page="perPage"
@@ -91,6 +78,29 @@
                 <template v-slot:cell(index)="row">
                     {{ row.index+1 }}
                 </template>
+                <template v-slot:cell(in_time_1)="row">
+                    {{ in_time_1(row.item.time, row.item.in_time_1) }}
+                </template>
+                <template v-slot:cell(out_time_1)="row">
+                    {{ out_time_1(row.item.time, row.item.out_time_1) }}
+                </template>
+                <template v-slot:cell(in_time_2)="row">
+                    {{ in_time_2(row.item.time, row.item.in_time_2) }}
+                </template>
+                <template v-slot:cell(out_time_2)="row">
+                    {{ out_time_2(row.item.time, row.item.out_time_2) }}
+                </template>
+                <template v-slot:cell(total_hours)="row">
+                    {{ total_hours(row.item.in_time_1, row.item.out_time_2) }}
+                </template>
+                <template v-slot:cell(ot)="row">
+                    {{ ot(row.item.in_time_1, row.item.out_time_2) }}
+                </template>
+                <template v-slot:cell(ot_extra)="row">
+                    {{ ot_extra(row.item.in_time_1, row.item.out_time_2) }}
+                </template>
+                
+            <!-- 'ac_no', 'name', 'department', 'date', 'time', 'in_time_1', 'in_time_2', 'out_time_1', 'out_time_2', 'ot', 'ot_extra' -->
                 </b-table>
                 
                 <div class="col-12 mx-auto p-0 noprint">
@@ -124,29 +134,16 @@ export default {
 
     data() {
         return{
-            leaveList : [],
+            attendanceList : [],
             Usedleave: [],
             Leave: [],
             uploadFile: null,
             fileName: this.$t('choose_file'),
             uploadReady: true,
             roles: [],
-            attendance_date: this.convertDate(new Date()),
-            reportEdit: false,
+            attendance_date: this.convertDate(new Date('2020-09-05')),
             buttonTitle : this.$t('save'),
             disable: false,
-            json_fields: {
-                'Material No': 'item_code',
-                'Material': 'item',
-                'Description': 'specification',
-                'Grade': 'grade',
-                'Stock': 'stock',
-                'Unit': 'unit',
-                'Weight': 'weight',
-                'Total Weight': 'total_weight',
-                'Unit Price': 'unit_price',
-                'Total Price': 'total_price',
-            },
 
             noprint: '',
 
@@ -166,26 +163,15 @@ export default {
 
     mounted() {
         this.isBusy = true
-        fetch(`api/leave`)
+        fetch(`api/attendance/${this.attendance_date}`)
         .then(res => res.json())
         .then(res => {
-            this.leaveList = res['LeaveList'];
-            this.task = this.singleTask
-            if (this.task.length < 1) {
-                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
-            }
+            this.attendanceList = res['Attendance']
+            this.totalRows = this.attendanceList.length
+            this.isBusy = false
         })
         .catch(err => {
             alert(err.response.data.message);
-        })
-
-        fetch(`api/usedleave/${this.year}`)
-        .then(res => res.json())
-        .then(res => {
-            this.Usedleave = res['Usedleave']
-            this.totalRows = this.Usedleave.length
-            this.Leave = res['Leave']
-            this.isBusy = false
         })
 
         fetch(`api/settings/roles`)
@@ -218,47 +204,6 @@ export default {
             return [year, mnth, day].join("-");
         },
 
-        yearWiseDisplay(year) {
-            this.isBusy = true
-            if(year > 1){ this.year = year }
-            else { this.year = parseInt(this.year) + year }
-            fetch(`api/usedleave/${this.year}`)
-            .then(res => res.json())
-            .then(res => {
-                this.Usedleave = res['Usedleave']
-                this.Leave = res['Leave']
-                this.isBusy = false
-            })
-            this.task = this.singleTask
-            if (this.task.length < 1) {
-                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
-            }
-        },
-
-        viewDetails(id) {
-            this.taskHeadId = id
-            this.noprint = 'noprint'
-            this.taskDetailsId = null
-            this.taskHead = this.taskHeadSingle
-
-            fetch(`api/leave/${id}`)
-            .then(res => res.json())
-            .then(res => {
-                this.taskDetailsAll = res['AllLeaves']
-                this.personalLeave = this.taskDetailsSingle('read')
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
-
-            this.$refs['dataView'].show()
-        },
-
-        addDetails() {
-            this.reportEdit = !this.reportEdit            
-            this.noprint = ''
-        },
-
         editDetails(id) {
             this.taskDetailsId = id
             this.taskDetails = this.taskDetailsSingle('edit')
@@ -268,22 +213,70 @@ export default {
             this.$refs['dataEdit'].show()
         },
         
-        taskDetailsSingle(view) {
-            let array = []
-            for (let i = 0; i < this.taskDetailsAll.length; i++) {
-                if (view == 'edit') {
-                    if (this.taskDetailsAll[i]['id'] == this.taskDetailsId) {
-                        array[0] = this.taskDetailsAll[i]
-                        break
-                    }
-                } else {
-                    if (this.taskDetailsAll[i]['year'] == this.year) {
-                        array[i] = this.taskDetailsAll[i]
-                    }
-                }                
-            } return array
+        in_time_1(time, time1) {
+            if (time.length > 0) return time1
+            return '00:00'
         },
 
+        out_time_1(time, time1) {
+            if (time.length > 12) return time1
+            return '00:00'
+        },
+        
+        in_time_2(time, time1) {
+            if (time.length > 18) return time1
+            return '00:00'
+        },
+        
+        out_time_2(time, time1) {
+            if (time.length > 6) return time1
+            return '00:00'
+        },
+
+        total_hours(start, end) {
+            if (start.length < 2) return '0:00'
+
+            start = start.split(":");
+            end = end.split(":");
+            var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+            var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+            var diff = endDate.getTime() - startDate.getTime();
+            var hours = Math.floor(diff / 1000 / 60 / 60);
+            diff -= hours * 1000 * 60 * 60;
+            var minutes = Math.floor(diff / 1000 / 60);
+
+            // If using time pickers with 24 hours format, add the below line get exact hours
+            if (hours < 0)
+            hours = hours + 24;
+
+            return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
+        },
+
+        ot(start, end) {
+            start = start.split(":");
+            end = end.split(":");
+            var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+            var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+            var diff = endDate.getTime() - startDate.getTime();
+            var hours = Math.floor(diff / 1000 / 60 / 60);
+            if (hours < 0) hours = hours + 24;
+            if ((hours - 9) > 0 && (hours - 9)< 3) return hours - 9 + ':00'
+            else if ((hours - 9) > 2) return '2:00'
+            return '0:00'
+        },
+
+        ot_extra(start, end) {
+            start = start.split(":");
+            end = end.split(":");
+            var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+            var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+            var diff = endDate.getTime() - startDate.getTime();
+            var hours = Math.floor(diff / 1000 / 60 / 60);
+            if (hours < 0) hours = hours + 24;
+            if ((hours - 9) > 2) return hours - 11 + ':00'
+            return '0:00'
+        },
+        
         handleFileUpload(e) {
             let file = e.target.files[0];
             this.fileName = file.name
@@ -321,12 +314,21 @@ export default {
                 }, options)
                 .then(({data}) =>{
                     this.errors = ''
+                    this.isBusy = true
                     // this.leaveList.unshift(data.LeaveList)
                     // this.task[0]['id'] = this.leaveList[0]['id']
+                    this.attendanceList = data.attendance
+                    this.totalRows = this.attendanceList.length
+                    console.log(this.attendanceList)
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
+                    this.isBusy = false
+                    this.uploadReady = false
+                    this.$nextTick(() => {
+                        this.uploadReady = true
+                    })
+                    this.fileName = this.$t('choose_file')
                 })
                 .catch(err => {
                     if(err.response.status == 422){
@@ -376,22 +378,6 @@ export default {
     },
 
     computed: {
-        singleTask() {
-            let year = this.year
-            return this.leaveList.filter(function (item) {
-            return item['year'] == year
-            })
-        },
-
-        taskHeadSingle() {
-            let array = []
-            for (let i = 0; i < this.Usedleave.length; i++) {
-                if (this.Usedleave[i]['id'] == this.taskHeadId) {
-                    array = this.Usedleave[i]
-                    break
-                }                
-            } return array
-        },
 
         loading(){
             return[ 
@@ -417,31 +403,18 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'employee_id', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'casual_leave', label : this.$t('casual_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'sick_leave', label : this.$t('sick_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'annual_leave', label : this.$t('annual_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'maternity_leave', label : this.$t('maternity_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'paternity_leave', label : this.$t('paternity_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'compensatory_leave', label : this.$t('compensatory_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unpaid_leave', label : this.$t('unpaid_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'half_leave', label : this.$t('half_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-            ]            
-        },
-
-        taskDetailsfieldsView() {
-            const lang = this.$i18n.locale
-            if (!lang) { return [] }
-            this.buttonTitle = this.$t('save')
-            return [
-                { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'leave_type', label : this.$t('leave_category'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'reason', label : this.$t('reason'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'leave_start', label : this.$t('leave_start'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'leave_end', label : this.$t('leave_end'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'day_count', label : this.$t('days'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'created_at', label : this.$t('application_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ac_no', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'date', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'in_time_1', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'out_time_1', label : this.$t('out') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'in_time_2', label : this.$t('in') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'out_time_2', label : this.$t('out'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_hours', label : this.$t('total_hours'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ot', label : this.$t('OT'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ot_extra', label : this.$t('OT (Extra)'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]            
         },
     }

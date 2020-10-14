@@ -32,6 +32,8 @@ Vue.use(IconsPlugin)
 import JsonExcel from 'vue-json-excel'
 Vue.component('downloadExcel', JsonExcel)
 
+//---------------------Import from Excel and save to mySQL https://docs.laravel-excel.com/ -------------------------//
+
 //----------For searchable select option: https://www.npmjs.com/package/vue-search-select -----//
 import 'vue-search-select/dist/VueSearchSelect.css'
 

@@ -52,10 +52,10 @@ class AttendanceController extends Controller
         $exploded = explode(',', $request->uploadFile);
         $decoded = base64_decode($exploded[1]);
 
-        if(str_contains($exploded[0], 'xls'))
-            $extesion = 'xls';
-        else
+        if(str_contains($exploded[0], 'spreadsheetml'))
             $extesion = 'xlsx';
+        else
+            $extesion = 'xls';
 
         $fileName = str_random().'.'.$extesion;
         $path = public_path().'/file/attendance/'.$fileName;
@@ -63,9 +63,16 @@ class AttendanceController extends Controller
         // $path = '/home/sustipe/inventory.sustipe.com/file/attendance/'.$fileName;
 
         $data = Excel::import(new AttendanceImport, $path);
+        $myArray = Excel::toArray(new AttendanceImport, $path);
         
         // @unlink('/storage/framework/laravel-excel/laravel-excel-'.$fileName);
         @unlink($path);
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'attendance' => $myArray[0]
+            ]);
+        }
     }
 
     /**
@@ -74,9 +81,12 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    public function show(Attendance $attendance)
+    public function show($attendance)
     {
-        //
+        $date = date_create($attendance);
+        $Attendance = Attendance::where('date', $date)->get();
+
+        return compact('Attendance');
     }
 
     /**

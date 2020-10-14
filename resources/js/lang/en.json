@@ -1,4 +1,6 @@
 { 
+    "total_hours" : "Total Hours",
+    "time" : "Time",
     "requisition_by" : "Requisition By",
     "choose_file" : "Choose file...",
     "daily_attendance" : "Daily Attendance",

@@ -24,6 +24,10 @@ class AttendanceImport implements ToModel, WithHeadingRow
             'department'=> $row['Department'],
             'date'      => date_create($row['Date']),
             'time'      => $row['Time'],
+            'in_time_1' => substr($row['Time'],0,5),
+            'out_time_1' => substr($row['Time'],6,5),
+            'in_time_2'=> substr($row['Time'],12,5),
+            'out_time_2'=> substr($row['Time'],strrpos($row['Time']," "),6),
         ]);
     }
 }
