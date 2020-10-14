@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Attendance;
+use App\Imports\AttendanceImport;
 use DB;
+use Excel;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -46,24 +48,24 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        $exploded = explode(',', $request->name);
+        
+        $exploded = explode(',', $request->uploadFile);
         $decoded = base64_decode($exploded[1]);
 
-        // if(str_contains($exploded[0], 'xls'))
-        //     $extesion = 'xls';
-        // else
-        //     $extesion = 'xlsx';
+        if(str_contains($exploded[0], 'xls'))
+            $extesion = 'xls';
+        else
+            $extesion = 'xlsx';
 
-        $fileName = str_random().'.xlsx';
-        // $fileName = str_random().'.xlsx'.$extesion;
+        $fileName = str_random().'.'.$extesion;
         $path = public_path().'/file/attendance/'.$fileName;
+        file_put_contents($path, $decoded);
         // $path = '/home/sustipe/inventory.sustipe.com/file/attendance/'.$fileName;
 
-        // store new image
-        // file_put_contents($path, $decoded);
-        // $productHead = $request->user()->producthead()->create($request->except('product_image') + [
-        //     'product_image' => $fileName
-        // ]);
+        $data = Excel::import(new AttendanceImport, $path);
+        
+        // @unlink('/storage/framework/laravel-excel/laravel-excel-'.$fileName);
+        @unlink($path);
     }
 
     /**

@@ -24,8 +24,10 @@ class CreateAttendancesTable extends Migration
             $table->time('in_time_2')->nullable();
             $table->time('out_time_1')->nullable();
             $table->time('out_time_2')->nullable();
+            $table->float('ot')->nullable();
+            $table->float('ot_extra')->nullable();
 
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

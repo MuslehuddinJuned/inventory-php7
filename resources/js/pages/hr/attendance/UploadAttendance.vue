@@ -315,26 +315,28 @@ export default {
             this.buttonTitle = this.$t('saving')
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
-            axios.post(`api/attendance`, {
-                'name' : this.uploadFile
-            }, options)
-            .then(({data}) =>{
-                this.errors = ''
-                // this.leaveList.unshift(data.LeaveList)
-                // this.task[0]['id'] = this.leaveList[0]['id']
-                this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
-                this.disable = !this.disable
-                this.buttonTitle = this.$t('save')
-                this.reportEdit = !this.reportEdit
-            })
-            .catch(err => {
-                if(err.response.status == 422){
-                    this.errors = err.response.data.errors
-                    this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                } else alert(err.response.data.message) 
-                this.disable = !this.disable
-                this.buttonTitle = this.$t('save')
-            })
+            if (this.uploadFile) {                
+                axios.post(`api/attendance`, {
+                    'uploadFile' : this.uploadFile
+                }, options)
+                .then(({data}) =>{
+                    this.errors = ''
+                    // this.leaveList.unshift(data.LeaveList)
+                    // this.task[0]['id'] = this.leaveList[0]['id']
+                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                    this.reportEdit = !this.reportEdit
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                    } else alert(err.response.data.message) 
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')
+                })
+            }
         },
 
         destroy() {
