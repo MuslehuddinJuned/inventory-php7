@@ -62,17 +62,40 @@ class AttendanceController extends Controller
         file_put_contents($path, $decoded);
         // $path = '/home/sustipe/inventory.sustipe.com/file/attendance/'.$fileName;
 
-        $data = Excel::import(new AttendanceImport, $path);
-        $myArray = Excel::toArray(new AttendanceImport, $path);
+        // $data = Excel::import(new AttendanceImport, $path);
+        $data = Excel::toArray(new AttendanceImport, $path);
+        if(count($data) > 0) {
+            foreach($data as $key => $value)
+            {
+                foreach($value as $row)
+                {
+                    $insert_data[] = array(
+                        'ac_no'     => $row['AC-No'],
+                        'name'      => $row['Name'],
+                        'department'=> $row['Department'],
+                        'date'      => date_create($row['Date']),
+                        'time'      => $row['Time'],
+                        'in_time_1' => substr($row['Time'],0,5),
+                        'out_time_1'=> substr($row['Time'],6,5),
+                        'in_time_2' => substr($row['Time'],12,5),
+                        'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
+                    );
+                }
+            }
+        }
+
+        if(!empty($insert_data)) {
+            DB::table('attendances')->insert($insert_data);
+        }
         
         // @unlink('/storage/framework/laravel-excel/laravel-excel-'.$fileName);
         @unlink($path);
 
-        if(request()->expectsJson()){
-            return response()->json([
-                'attendance' => $myArray[0]
-            ]);
-        }
+        // if(request()->expectsJson()){
+        //     return response()->json([
+        //         'attendance' => $myArray[0]
+        //     ]);
+        // }
     }
 
     /**

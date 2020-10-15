@@ -9,27 +9,32 @@
                     <div class="ml-md-auto m-sm-0 input-group col-md-12 col-lg-6 float-md-right">
                         <input type="date" v-model="attendance_date" class="form-control">
                         <div class="input-group-append">
-                            <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="search"></b-icon></div>
+                            <div @click="fetchData" class="input-group-text pointer"><b-icon icon="search"></b-icon></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-body my-3">
-                <form class="was-validated" >
-                    <div class="input-group is-invalid">
+                <form class="was-validated row m-0 p-0" >
+                    <div class="form-group is-invalid col-md-4">
+                        <!-- <label>{{ $t('date') }}</label> -->
+                        <input type="date" v-model="savingDate" class="form-control" required>
+                    </div>
+                    <div class="input-group is-invalid col-md-6">
+                        <!-- <label>{{ $t('choose_file') }}</label> -->
                         <div class="custom-file">
                             <input type="file" @change="handleFileUpload" v-if="uploadReady" class="custom-file-input" id="validatedInputGroupCustomFile" required>
                             <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')"> {{fileName}}</label>
                         </div>
-                        <div class="input-group-append">
-                            <button @click.prevent="save" class="btn btn-outline-secondary" type="button" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon>{{ buttonTitle }}</button>
-                        </div>
+                    </div>
+                    <div class="col-md-2 py-0">
+                        <button @click.prevent="save" class="mdb btn btn-outline-primary col-md-12 my-0 py-2" type="button" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon>{{ buttonTitle }}</button>
                     </div>
                 </form>
             </div>
             <div class="card-header">
                 <h3 class="panel-title float-left">
-                    {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}})
+                    {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})
                     <fa v-if="checkRoles('upload_attendance_Update') && !dataEdit" @click="dataEdit = true" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
                     <b-icon icon="circle-fill" animation="throb" class="text-success" :class="loading"></b-icon>
                     <fa v-if="checkRoles('upload_attendance_Update') && dataEdit" @click="dataEdit = false" icon="save" class="ml-2 pointer text-success" fixed-width v-b-tooltip.hover :title="$t('save')"/> 
@@ -147,14 +152,13 @@ export default {
     data() {
         return{
             attendanceList : [],
-            Usedleave: [],
-            Leave: [],
             uploadFile: null,
             fileName: this.$t('choose_file'),
             uploadReady: true,
             dataEdit: false,
             roles: [],
-            attendance_date: this.convertDate(new Date('2020-09-05')),
+            attendance_date: this.convertDate(new Date()),
+            savingDate: null,
             buttonTitle : this.$t('save'),
             disable: false,
 
@@ -334,26 +338,22 @@ export default {
             }
         },
 
-        save() {
-            this.disable = !this.disable
-            this.buttonTitle = this.$t('saving')
+        save() {            
             let options = { headers: {'enctype': 'multipart/form-data'} };
 
-            if (this.uploadFile) {                
+            if (this.uploadFile && this.savingDate) {  
+                this.disable = !this.disable
+                this.buttonTitle = this.$t('saving')              
                 axios.post(`api/attendance`, {
                     'uploadFile' : this.uploadFile
                 }, options)
                 .then(({data}) =>{
                     this.errors = ''
-                    this.isBusy = true
-                    // this.leaveList.unshift(data.LeaveList)
-                    // this.task[0]['id'] = this.leaveList[0]['id']
-                    this.attendanceList = data.attendance
-                    this.totalRows = this.attendanceList.length
+                    this.attendance_date = this.savingDate
+                    this.fetchData()
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.isBusy = false
                     this.uploadReady = false
                     this.$nextTick(() => {
                         this.uploadReady = true
