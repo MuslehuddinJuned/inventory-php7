@@ -84,7 +84,7 @@ class AttendanceController extends Controller
     public function show($attendance)
     {
         $date = date_create($attendance);
-        $Attendance = Attendance::where('date', $date)->get();
+        $Attendance = Attendance::where('date', $date)->orderBy('ac_no', 'asc')->get();
 
         return compact('Attendance');
     }
@@ -109,7 +109,7 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, Attendance $attendance)
     {
-        //
+        $attendance->update($request->all());
     }
 
     /**

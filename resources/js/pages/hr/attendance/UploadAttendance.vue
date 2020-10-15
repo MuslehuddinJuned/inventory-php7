@@ -30,8 +30,10 @@
             <div class="card-header">
                 <h3 class="panel-title float-left">
                     {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}})
-                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="editDetails" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
-                    <fa v-if="checkRoles('upload_attendance_Insert')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
+                    <fa v-if="checkRoles('upload_attendance_Update') && !dataEdit" @click="dataEdit = true" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
+                    <b-icon icon="circle-fill" animation="throb" class="text-success" :class="loading"></b-icon>
+                    <fa v-if="checkRoles('upload_attendance_Update') && dataEdit" @click="dataEdit = false" icon="save" class="ml-2 pointer text-success" fixed-width v-b-tooltip.hover :title="$t('save')"/> 
+                    <fa v-if="checkRoles('upload_attendance_Delete')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
                 </h3>
             </div>
             <div class="card-body m-0 p-0">
@@ -79,28 +81,36 @@
                     {{ row.index+1 }}
                 </template>
                 <template v-slot:cell(in_time_1)="row">
-                    {{ in_time_1(row.item.time, row.item.in_time_1) }}
+                    <span v-if="!dataEdit" v-html="row.item.in_time_1"></span>
+                    <input v-if="dataEdit" type="time" v-model="row.item.in_time_1"
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
                 </template>
                 <template v-slot:cell(out_time_1)="row">
-                    {{ out_time_1(row.item.time, row.item.out_time_1) }}
+                    <span v-if="!dataEdit" v-html="row.item.out_time_1"></span>
+                    <input v-if="dataEdit" type="time" v-model="row.item.out_time_1"
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
                 </template>
                 <template v-slot:cell(in_time_2)="row">
-                    {{ in_time_2(row.item.time, row.item.in_time_2) }}
+                    <span v-if="!dataEdit" v-html="row.item.in_time_2"></span>
+                    <input v-if="dataEdit" type="time" v-model="row.item.in_time_2"
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
                 </template>
                 <template v-slot:cell(out_time_2)="row">
-                    {{ out_time_2(row.item.time, row.item.out_time_2) }}
+                    <span v-if="!dataEdit" v-html="row.item.out_time_2"></span>
+                    <input v-if="dataEdit" type="time" v-model="row.item.out_time_2"
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
                 </template>
                 <template v-slot:cell(total_hours)="row">
-                    {{ total_hours(row.item.in_time_1, row.item.out_time_2) }}
+                    {{ total_hours(row.item.time, row.item.in_time_1, row.item.out_time_2) }}
                 </template>
                 <template v-slot:cell(ot)="row">
-                    {{ ot(row.item.in_time_1, row.item.out_time_2) }}
+                    <span v-if="!dataEdit" v-html="row.item.ot"></span>
+                    <input v-if="dataEdit" type="text" @keyup="updating(row.item.id, 'ot', row.item.ot)" v-model="row.item.ot" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                 </template>
                 <template v-slot:cell(ot_extra)="row">
-                    {{ ot_extra(row.item.in_time_1, row.item.out_time_2) }}
+                    <span v-if="!dataEdit" v-html="row.item.ot_extra"></span>
+                    <input v-if="dataEdit" type="text" @keyup="updating(row.item.id, 'ot_extra', row.item.ot_extra)" v-model="row.item.ot_extra" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                 </template>
-                
-            <!-- 'ac_no', 'name', 'department', 'date', 'time', 'in_time_1', 'in_time_2', 'out_time_1', 'out_time_2', 'ot', 'ot_extra' -->
                 </b-table>
                 
                 <div class="col-12 mx-auto p-0 noprint">
@@ -140,6 +150,7 @@ export default {
             uploadFile: null,
             fileName: this.$t('choose_file'),
             uploadReady: true,
+            dataEdit: false,
             roles: [],
             attendance_date: this.convertDate(new Date('2020-09-05')),
             buttonTitle : this.$t('save'),
@@ -167,6 +178,14 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.attendanceList = res['Attendance']
+            for (let i = 0; i < this.attendanceList.length; i++) {
+                this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
+                this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
+                this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
+                this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
+                this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot'])
+                this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])                
+            }
             this.totalRows = this.attendanceList.length
             this.isBusy = false
         })
@@ -233,8 +252,8 @@ export default {
             return '00:00'
         },
 
-        total_hours(start, end) {
-            if (start.length < 2) return '0:00'
+        total_hours(time, start, end) {
+            if (time.length < 7) return '0:00'
 
             start = start.split(":");
             end = end.split(":");
@@ -252,7 +271,10 @@ export default {
             return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
         },
 
-        ot(start, end) {
+        ot(time, start, end, ot) {
+            if (ot) return ot
+            if (time.length < 7) return null
+
             start = start.split(":");
             end = end.split(":");
             var startDate = new Date(0, 0, 0, start[0], start[1], 0);
@@ -260,12 +282,15 @@ export default {
             var diff = endDate.getTime() - startDate.getTime();
             var hours = Math.floor(diff / 1000 / 60 / 60);
             if (hours < 0) hours = hours + 24;
-            if ((hours - 9) > 0 && (hours - 9)< 3) return hours - 9 + ':00'
-            else if ((hours - 9) > 2) return '2:00'
-            return '0:00'
+            if ((hours - 9) > 0 && (hours - 9) < 3) return hours - 9
+            else if ((hours - 9) > 2) return 2
+            return null
         },
 
-        ot_extra(start, end) {
+        ot_extra(time, start, end, ot) {
+            if (ot) return ot
+            if (time.length < 7) return null
+
             start = start.split(":");
             end = end.split(":");
             var startDate = new Date(0, 0, 0, start[0], start[1], 0);
@@ -273,8 +298,8 @@ export default {
             var diff = endDate.getTime() - startDate.getTime();
             var hours = Math.floor(diff / 1000 / 60 / 60);
             if (hours < 0) hours = hours + 24;
-            if ((hours - 9) > 2) return hours - 11 + ':00'
-            return '0:00'
+            if ((hours - 9) > 2) return hours - 11
+            return null
         },
         
         handleFileUpload(e) {
@@ -319,7 +344,6 @@ export default {
                     // this.task[0]['id'] = this.leaveList[0]['id']
                     this.attendanceList = data.attendance
                     this.totalRows = this.attendanceList.length
-                    console.log(this.attendanceList)
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
@@ -339,6 +363,28 @@ export default {
                     this.buttonTitle = this.$t('save')
                 })
             }
+        },
+
+        updating(id, in_time_1, out_time_1, in_time_2, out_time_2) {
+            this.buttonTitle = this.$t('saving')
+
+            axios.patch(`api/attendance/${id}`, {
+                'in_time_1' : in_time_1,
+                'out_time_1' : out_time_1,
+                'in_time_2' : in_time_2,
+                'out_time_2' : out_time_2,
+                'time' : in_time_1+' '+out_time_1+' '+in_time_2+' '+out_time_2
+            })
+            .then(({data}) => {
+                this.errors = ''
+                this.buttonTitle = this.$t('save')
+            })
+            .catch(err => {
+                if(err.response.status == 422){
+                    this.errors = err.response.data.errors
+                } else alert(err.response.data.message) 
+                this.buttonTitle = this.$t('save')
+            });
         },
 
         destroy() {
@@ -385,10 +431,17 @@ export default {
             ]
         },
 
-        reportClass(){
-            return[ 
-                this.reportEdit == true ? 'w-100' : 'border-0 bg-transparent rounded-0'
-            ]
+        attendanceListCustomise(){
+            for (let i = 0; i < this.attendanceList.length; i++) {
+                this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
+                this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
+                this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
+                this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
+                this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'])
+                this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'])                
+            }
+
+            return this.attendanceList
         },
 
         TypetoSearch() {
@@ -407,7 +460,7 @@ export default {
                 { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'date', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'in_time_1', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'out_time_1', label : this.$t('out') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'in_time_2', label : this.$t('in') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
