@@ -118,8 +118,8 @@ class AttendanceController extends Controller
      * @param  \App\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Attendance $attendance)
+    public function destroy($date)
     {
-        //
+        DB::SELECT('DELETE FROM attendances WHERE date = ?', [$date]);
     }
 }

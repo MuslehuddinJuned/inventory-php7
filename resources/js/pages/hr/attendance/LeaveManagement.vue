@@ -518,11 +518,11 @@ export default {
 
         destroy() {
             let oldDayCount = this.taskDetails[0]['day_count']
-            this.$toast.warning('Are you sure to DELETE this?', "Confirm", {
+            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
                 timeout: 20000,           
                 position: 'center',
                 buttons: [
-                    ['<button><b>YES</b></button>', (instance, toast) => {
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
 
                         axios.delete(`api/usedleave/${this.taskDetails[0]['id']}`)
                         .then(({data}) => {
@@ -544,7 +544,7 @@ export default {
 
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }, true],
-                    ['<button>NO</button>', function (instance, toast) {
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }],
                 ]            

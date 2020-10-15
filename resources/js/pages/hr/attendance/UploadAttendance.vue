@@ -83,33 +83,35 @@
                 <template v-slot:cell(in_time_1)="row">
                     <span v-if="!dataEdit" v-html="row.item.in_time_1"></span>
                     <input v-if="dataEdit" type="time" v-model="row.item.in_time_1"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
                 </template>
                 <template v-slot:cell(out_time_1)="row">
                     <span v-if="!dataEdit" v-html="row.item.out_time_1"></span>
                     <input v-if="dataEdit" type="time" v-model="row.item.out_time_1"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
                 </template>
                 <template v-slot:cell(in_time_2)="row">
                     <span v-if="!dataEdit" v-html="row.item.in_time_2"></span>
                     <input v-if="dataEdit" type="time" v-model="row.item.in_time_2"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
                 </template>
                 <template v-slot:cell(out_time_2)="row">
                     <span v-if="!dataEdit" v-html="row.item.out_time_2"></span>
                     <input v-if="dataEdit" type="time" v-model="row.item.out_time_2"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2)">
+                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
                 </template>
                 <template v-slot:cell(total_hours)="row">
                     {{ total_hours(row.item.time, row.item.in_time_1, row.item.out_time_2) }}
                 </template>
                 <template v-slot:cell(ot)="row">
                     <span v-if="!dataEdit" v-html="row.item.ot"></span>
-                    <input v-if="dataEdit" type="text" @keyup="updating(row.item.id, 'ot', row.item.ot)" v-model="row.item.ot" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    <input v-if="dataEdit" type="text" v-model="row.item.ot"
+                    @keyup="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                 </template>
                 <template v-slot:cell(ot_extra)="row">
                     <span v-if="!dataEdit" v-html="row.item.ot_extra"></span>
-                    <input v-if="dataEdit" type="text" @keyup="updating(row.item.id, 'ot_extra', row.item.ot_extra)" v-model="row.item.ot_extra" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    <input v-if="dataEdit" type="text" v-model="row.item.ot_extra"
+                    @keyup="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                 </template>
                 </b-table>
                 
@@ -173,26 +175,8 @@ export default {
     },
 
     mounted() {
-        this.isBusy = true
-        fetch(`api/attendance/${this.attendance_date}`)
-        .then(res => res.json())
-        .then(res => {
-            this.attendanceList = res['Attendance']
-            for (let i = 0; i < this.attendanceList.length; i++) {
-                this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
-                this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
-                this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
-                this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
-                this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot'])
-                this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])                
-            }
-            this.totalRows = this.attendanceList.length
-            this.isBusy = false
-        })
-        .catch(err => {
-            alert(err.response.data.message);
-        })
 
+        this.fetchData()
         fetch(`api/settings/roles`)
         .then(res => res.json())
         .then(res => {
@@ -232,6 +216,28 @@ export default {
             this.$refs['dataEdit'].show()
         },
         
+        fetchData() {
+            this.isBusy = true
+            fetch(`api/attendance/${this.attendance_date}`)
+            .then(res => res.json())
+            .then(res => {
+                this.attendanceList = res['Attendance']
+                for (let i = 0; i < this.attendanceList.length; i++) {
+                    this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
+                    this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
+                    this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
+                    this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
+                    this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot'])
+                    this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])                
+                }
+                this.totalRows = this.attendanceList.length
+                this.isBusy = false
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })
+        },
+
         in_time_1(time, time1) {
             if (time.length > 0) return time1
             return '00:00'
@@ -365,7 +371,7 @@ export default {
             }
         },
 
-        updating(id, in_time_1, out_time_1, in_time_2, out_time_2) {
+        updating(id, in_time_1, out_time_1, in_time_2, out_time_2, ot, ot_extra) {
             this.buttonTitle = this.$t('saving')
 
             axios.patch(`api/attendance/${id}`, {
@@ -373,6 +379,8 @@ export default {
                 'out_time_1' : out_time_1,
                 'in_time_2' : in_time_2,
                 'out_time_2' : out_time_2,
+                'ot' : ot,
+                'ot_extra' : ot_extra,
                 'time' : in_time_1+' '+out_time_1+' '+in_time_2+' '+out_time_2
             })
             .then(({data}) => {
@@ -388,26 +396,15 @@ export default {
         },
 
         destroy() {
-            let oldDayCount = this.taskDetails[0]['day_count']
-            this.$toast.warning('Are you sure to DELETE this?', "Confirm", {
+            this.$toast.warning(this.$t('sure_to_delete'), this.attendance_date, {
                 timeout: 20000,           
                 position: 'center',
                 buttons: [
-                    ['<button><b>YES</b></button>', (instance, toast) => {
-
-                        axios.delete(`api/usedleave/${this.taskDetails[0]['id']}`)
-                        .then(({data}) => {
-                            this.yearWiseDisplay(this.year)
-                            for (let i = 0; i < this.personalLeave.length; i++) {
-                                if (this.personalLeave[i]['id'] == this.taskDetails[0]['id']) {
-                                    this.personalLeave.splice(i, 1);
-                                    break
-                                }                                
-                            }
-                            let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
-                            count -=  oldDayCount
-                            this.taskHead[this.taskDetails[0]['leave_type']] = count
-                            this.$refs['dataEdit'].hide()
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
+                        axios.delete(`api/attendance/${this.attendance_date}`)
+                        
+                        .then(res => {
+                            this.fetchData()
                         })
                         .catch(err => {
                             alert(err.response.data.message);                       
@@ -415,7 +412,7 @@ export default {
 
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }, true],
-                    ['<button>NO</button>', function (instance, toast) {
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                     }],
                 ]            
