@@ -27,7 +27,7 @@
                             <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')"> {{fileName}}</label>
                         </div>
                     </div>
-                    <div class="col-md-2 py-0">
+                    <div class="col-md-2 py-md-0 py-sm-3">
                         <button @click.prevent="save" class="mdb btn btn-outline-primary col-md-12 my-0 py-2" type="button" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon>{{ buttonTitle }}</button>
                     </div>
                 </form>
@@ -232,7 +232,11 @@ export default {
                     this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
                     this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
                     this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot'])
-                    this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])                
+                    this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])  
+                    
+                    if (this.attendanceList[i]['out_time_2'] == '00:00') {
+                        this.attendanceList[i]['_rowVariant'] = 'danger'
+                    }
                 }
                 this.totalRows = this.attendanceList.length
                 this.isBusy = false
