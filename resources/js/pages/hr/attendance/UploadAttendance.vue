@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body my-3">
+            <div v-if="checkRoles('upload_attendance_Insert')" class="card-body my-3">
                 <form class="was-validated row m-0 p-0" >
                     <div class="form-group is-invalid col-md-4">
                         <!-- <label>{{ $t('date') }}</label> -->
