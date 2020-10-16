@@ -112,6 +112,25 @@ class AttendanceController extends Controller
         return compact('Attendance');
     }
 
+    public function daily($attendance)
+    {
+        $date = date_create($attendance);
+        $Attendance = DB::SELECT("SELECT employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0
+            )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
+            )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
+
+        return compact('Attendance');
+    }
+
+    public function personnel($id, $attendance)
+    {
+        $date = date_create($attendance);
+        $Attendance = Attendance::where('date', $date)->orderBy('ac_no', 'asc')->get();
+
+        return compact('Attendance');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

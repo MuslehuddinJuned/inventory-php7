@@ -100,6 +100,10 @@
                 <b-icon icon="cloud-upload-fill"></b-icon>
                 {{ $t('upload_attendance') }}
               </router-link>
+              <router-link v-if="checkRoles('upload_attendance_View')" :to="{ name: 'hr.DailyAttendance' }" class="dropdown-item pl-3">                
+                <b-icon icon="journal-text"></b-icon>
+                {{ $t('daily_attendance') }}
+              </router-link>
               <router-link v-if="checkRoles('leave_management_View')" :to="{ name: 'hr.LeaveManagement' }" class="dropdown-item pl-3">                
                 <b-icon icon="calendar-x-fill"></b-icon>
                 {{ $t('leave_management') }}

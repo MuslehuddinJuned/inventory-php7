@@ -3,43 +3,19 @@
         <div class="card filterable" :class="noprint">
             <div class="card-header row m-0">
                 <div class="col-md-6">
-                    <h3 class="panel-title float-left">{{ $t('upload_attendance') }}</h3>
+                    <h3 class="panel-title float-left">{{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})</h3>
                 </div>                     
                 <div class="col-md-6">
-                    <div class="ml-md-auto m-sm-0 input-group col-md-12 col-lg-6 float-md-right">
+                    <div class="m-sm-0 input-group col-md-12 float-md-right float-sm-left">
                         <input type="date" v-model="attendance_date" class="form-control">
                         <div class="input-group-append">
-                            <div @click="fetchData" class="input-group-text pointer"><b-icon icon="search"></b-icon></div>
+                            <div @click="fetchData(false)" class="input-group-text pointer"><b-icon icon="search"></b-icon></div>
+                        </div>
+                        <div class="input-group-append">
+                            <div @click="fetchData(true)" class="input-group-text pointer"><b-icon icon="zoom-in"></b-icon></div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body my-3">
-                <form class="was-validated row m-0 p-0" >
-                    <div class="form-group is-invalid col-md-4">
-                        <!-- <label>{{ $t('date') }}</label> -->
-                        <input type="date" v-model="savingDate" class="form-control" required>
-                    </div>
-                    <div class="input-group is-invalid col-md-6">
-                        <!-- <label>{{ $t('choose_file') }}</label> -->
-                        <div class="custom-file">
-                            <input type="file" @change="handleFileUpload" v-if="uploadReady" class="custom-file-input" id="validatedInputGroupCustomFile" required>
-                            <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')"> {{fileName}}</label>
-                        </div>
-                    </div>
-                    <div class="col-md-2 py-md-0 py-sm-3">
-                        <button @click.prevent="save" class="mdb btn btn-outline-primary col-md-12 my-0 py-2" type="button" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon>{{ buttonTitle }}</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card-header">
-                <h3 class="panel-title float-left">
-                    {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})
-                    <fa v-if="checkRoles('upload_attendance_Update') && !dataEdit" @click="dataEdit = true" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
-                    <b-icon icon="circle-fill" animation="throb" class="text-success" :class="loading"></b-icon>
-                    <fa v-if="checkRoles('upload_attendance_Update') && dataEdit" @click="dataEdit = false" icon="save" class="ml-2 pointer text-success" fixed-width v-b-tooltip.hover :title="$t('save')"/> 
-                    <fa v-if="checkRoles('upload_attendance_Delete')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
-                </h3>
             </div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
@@ -85,39 +61,6 @@
                 <template v-slot:cell(index)="row">
                     {{ row.index+1 }}
                 </template>
-                <template v-slot:cell(in_time_1)="row">
-                    <span v-if="!dataEdit" v-html="row.item.in_time_1"></span>
-                    <input v-if="dataEdit" type="time" v-model="row.item.in_time_1"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
-                </template>
-                <template v-slot:cell(out_time_1)="row">
-                    <span v-if="!dataEdit" v-html="row.item.out_time_1"></span>
-                    <input v-if="dataEdit" type="time" v-model="row.item.out_time_1"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
-                </template>
-                <template v-slot:cell(in_time_2)="row">
-                    <span v-if="!dataEdit" v-html="row.item.in_time_2"></span>
-                    <input v-if="dataEdit" type="time" v-model="row.item.in_time_2"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
-                </template>
-                <template v-slot:cell(out_time_2)="row">
-                    <span v-if="!dataEdit" v-html="row.item.out_time_2"></span>
-                    <input v-if="dataEdit" type="time" v-model="row.item.out_time_2"
-                    @blur="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)">
-                </template>
-                <template v-slot:cell(total_hours)="row">
-                    {{ total_hours(row.item.time, row.item.in_time_1, row.item.out_time_2) }}
-                </template>
-                <template v-slot:cell(ot)="row">
-                    <span v-if="!dataEdit" v-html="row.item.ot"></span>
-                    <input v-if="dataEdit" type="text" v-model="row.item.ot"
-                    @keyup="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                </template>
-                <template v-slot:cell(ot_extra)="row">
-                    <span v-if="!dataEdit" v-html="row.item.ot_extra"></span>
-                    <input v-if="dataEdit" type="text" v-model="row.item.ot_extra"
-                    @keyup="updating(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra)" style="width : 30px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                </template>
                 </b-table>
                 
                 <div class="col-12 mx-auto p-0 noprint">
@@ -156,6 +99,7 @@ export default {
             fileName: this.$t('choose_file'),
             uploadReady: true,
             dataEdit: false,
+            audit: false,
             roles: [],
             attendance_date: this.convertDate(new Date()),
             savingDate: null,
@@ -179,7 +123,6 @@ export default {
     },
 
     mounted() {
-
         this.fetchData()
         fetch(`api/settings/roles`)
         .then(res => res.json())
@@ -211,9 +154,10 @@ export default {
             return [year, mnth, day].join("-");
         },
         
-        fetchData() {
+        fetchData(check) {
             this.isBusy = true
-            fetch(`api/attendance/${this.attendance_date}`)
+            this.audit = check
+            fetch(`api/dailyattend/${this.attendance_date}`)
             .then(res => res.json())
             .then(res => {
                 this.attendanceList = res['Attendance']
@@ -221,13 +165,10 @@ export default {
                     this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
                     this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
                     this.attendanceList[i]['in_time_2'] = this.in_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_2'])
-                    this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_2'])
+                    this.attendanceList[i]['out_time_2'] = this.out_time_2(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'])
+                    this.attendanceList[i]['total_hours'] = this.total_hours(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'])
                     this.attendanceList[i]['ot'] = this.ot(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot'])
                     this.attendanceList[i]['ot_extra'] = this.ot_extra(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'], this.attendanceList[i]['out_time_2'], this.attendanceList[i]['ot_extra'])  
-                    
-                    if (this.attendanceList[i]['out_time_2'] == '00:00') {
-                        this.attendanceList[i]['_rowVariant'] = 'danger'
-                    }
                 }
                 this.totalRows = this.attendanceList.length
                 this.isBusy = false
@@ -238,26 +179,59 @@ export default {
         },
 
         in_time_1(time, time1) {
-            if (time.length > 0) return time1
+            if(!time) return '00:00'
+            if (time.length > 0) {
+                let times = []
+                times = time1.split(":");
+                let ms = new Date(0, 0, 0, times[0], times[1], 0)
+                if(ms > -2209078400000 && ms < -2209075700000) return '05:45'
+                if(ms > -2209071200000 && ms < -2209068500000) return '07:45'
+                if(ms > -2209049600000 && ms < -2209046900000) return '13:45'
+                if(ms > -2209028000000 && ms < -2209025300000) return '19:45'
+                if(ms > -2209020800000 && ms < -2209018100000) return '21:45'
+                return time1
+            }
             return '00:00'
         },
 
         out_time_1(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 12) return time1
             return '00:00'
         },
         
         in_time_2(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 18) return time1
             return '00:00'
         },
         
-        out_time_2(time, time1) {
-            if (time.length > 6) return time1
+        out_time_2(time, start, end) {
+            if(!time) return '00:00'
+            if (time.length > 6) {
+                if(!this.audit) return end
+                let start1 = start.split(":");
+                let end1 = end.split(":");
+                var startDate = new Date(0, 0, 0, start1[0], start1[1], 0);
+                var endDate = new Date(0, 0, 0, end1[0], end1[1], 0);
+                var diff = endDate.getTime() - startDate.getTime();
+                var hours = Math.floor(diff / 1000 / 60 / 60);
+                diff -= hours * 1000 * 60 * 60;
+                var minutes = Math.floor(diff / 1000 / 60);
+                if (hours < 0) hours = hours + 24;
+
+                if(hours > 11) {
+                    end1[0] = parseInt(end1[0]) - (hours - 11)
+                    if (end1[0] < 0) end1[0] = end1[0] + 24;
+                    return end1[0] + ':' + end1[1]
+                }
+                return end
+            }
             return '00:00'
         },
 
         total_hours(time, start, end) {
+            if(!time) return '00:00'
             if (time.length < 7) return '0:00'
 
             start = start.split(":");
@@ -273,11 +247,14 @@ export default {
             if (hours < 0)
             hours = hours + 24;
 
+            if(this.audit && hours>10) hours = 10
+
             return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
         },
 
         ot(time, start, end, ot) {
             if (ot) return ot
+            if(!time) return 0
             if (time.length < 7) return null
 
             start = start.split(":");
@@ -294,6 +271,7 @@ export default {
 
         ot_extra(time, start, end, ot) {
             if (ot) return ot
+            if(!time) return 0
             if (time.length < 7) return null
 
             start = start.split(":");
@@ -305,113 +283,6 @@ export default {
             if (hours < 0) hours = hours + 24;
             if ((hours - 9) > 2) return hours - 11
             return null
-        },
-        
-        handleFileUpload(e) {
-            let file = e.target.files[0];
-            this.fileName = file.name
-            let check = this.fileName.slice(this.fileName.length - 4)
-
-            if (check == 'xlsx' || check == '.xls') {  
-                var fileReader = new FileReader()
-                fileReader.onload = (e) => {
-                    this.uploadFile = e.target.result;
-                }
-                fileReader.readAsDataURL(e.target.files[0]);
-            } else {
-                this.uploadReady = false
-                this.$nextTick(() => {
-                    this.uploadReady = true
-                })
-                // this.$refs.fileInput.type='text';
-                // this.$refs.fileInput.type='file';
-                this.fileName = this.$t('choose_file')
-                this.$toast.warning('.xlsx or .xls format only', this.$t('error_alert_title'), {
-                    timeout: 10000,          
-                    position: 'center',
-                })
-            }
-        },
-
-        save() {            
-            let options = { headers: {'enctype': 'multipart/form-data'} };
-
-            if (this.uploadFile && this.savingDate) {  
-                this.disable = !this.disable
-                this.buttonTitle = this.$t('saving')              
-                axios.post(`api/attendance`, {
-                    'uploadFile' : this.uploadFile
-                }, options)
-                .then(({data}) =>{
-                    this.errors = ''
-                    this.attendance_date = this.savingDate
-                    this.fetchData()
-                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                    this.uploadReady = false
-                    this.$nextTick(() => {
-                        this.uploadReady = true
-                    })
-                    this.fileName = this.$t('choose_file')
-                })
-                .catch(err => {
-                    if(err.response.status == 422){
-                        this.errors = err.response.data.errors
-                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    } else alert(err.response.data.message) 
-                    this.disable = !this.disable
-                    this.buttonTitle = this.$t('save')
-                })
-            }
-        },
-
-        updating(id, in_time_1, out_time_1, in_time_2, out_time_2, ot, ot_extra) {
-            this.buttonTitle = this.$t('saving')
-
-            axios.patch(`api/attendance/${id}`, {
-                'in_time_1' : in_time_1,
-                'out_time_1' : out_time_1,
-                'in_time_2' : in_time_2,
-                'out_time_2' : out_time_2,
-                'ot' : ot,
-                'ot_extra' : ot_extra,
-                'time' : in_time_1+' '+out_time_1+' '+in_time_2+' '+out_time_2
-            })
-            .then(({data}) => {
-                this.errors = ''
-                this.buttonTitle = this.$t('save')
-            })
-            .catch(err => {
-                if(err.response.status == 422){
-                    this.errors = err.response.data.errors
-                } else alert(err.response.data.message) 
-                this.buttonTitle = this.$t('save')
-            });
-        },
-
-        destroy() {
-            this.$toast.warning(this.$t('sure_to_delete'), this.attendance_date, {
-                timeout: 20000,           
-                position: 'center',
-                buttons: [
-                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {
-                        axios.delete(`api/attendance/${this.attendance_date}`)
-                        
-                        .then(res => {
-                            this.fetchData()
-                        })
-                        .catch(err => {
-                            alert(err.response.data.message);                       
-                        });
-
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }, true],
-                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
-                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    }],
-                ]            
-            });
         },
     },
 
@@ -433,11 +304,14 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
+            let action = { key: 'ot_extra', label : this.$t('OT (Extra)'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'}
+            if(this.audit) action = []
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'ac_no', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'employee_id', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'date', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'in_time_1', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -445,8 +319,9 @@ export default {
                 { key: 'in_time_2', label : this.$t('in') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'out_time_2', label : this.$t('out'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_hours', label : this.$t('total_hours'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'late', label : this.$t('Late'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'ot', label : this.$t('OT'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'ot_extra', label : this.$t('OT (Extra)'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                action
             ]            
         },
     }

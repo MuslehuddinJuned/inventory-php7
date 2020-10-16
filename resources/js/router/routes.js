@@ -34,6 +34,7 @@ export default [
   { path: '/holiday-management', name: 'hr.HolidayManagement', component: page('hr/attendance/HolidayManagement.vue') },
   { path: '/leave-management', name: 'hr.LeaveManagement', component: page('hr/attendance/LeaveManagement.vue') },
   { path: '/upload-attendance', name: 'hr.UploadAttendance', component: page('hr/attendance/UploadAttendance.vue') },
+  { path: '/daily-attendance', name: 'hr.DailyAttendance', component: page('hr/attendance/DailyAttendance.vue') },
   { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
 
 
