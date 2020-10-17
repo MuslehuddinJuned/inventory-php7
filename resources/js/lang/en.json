@@ -1,4 +1,11 @@
 { 
+    "total_days" : "Total Days",
+    "leave" : "Leave",
+    "worked_on_holiday" : "Worked on Holiday",
+    "day" : "Day",
+    "holiday" : "Holiday",
+    "absent" : "Absent",
+    "present" : "Present",
     "personnel_attendance" : "Personnel Attendance",
     "total_hours" : "Total Hours",
     "time" : "Time",

@@ -115,20 +115,30 @@ class AttendanceController extends Controller
     public function daily($attendance)
     {
         $date = date_create($attendance);
-        $Attendance = DB::SELECT("SELECT employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
-            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0
+        $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
             )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
             )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
 
         return compact('Attendance');
     }
 
-    public function personnel($id, $attendance)
+    public function personnel($id, $start, $end)
     {
-        $date = date_create($attendance);
-        $Attendance = Attendance::where('date', $date)->orderBy('ac_no', 'asc')->get();
+        $start = date_create($start);
+        $end = date_create($end);
+        $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, employee_image, weekly_holiday, null status,
+            date, DAYNAME(date)day, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+            SELECT id, employee_id, first_name, last_name, designation, department, employee_image, weekly_holiday FROM employees WHERE id = ?
+            )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date BETWEEN ? AND ?
+            )B ON A.employee_id = B.ac_no", [$id, $start, $end]);
+            
+        $Leave = DB::SELECT("SELECT leave_type, leave_start, leave_end, day_count, employee_id 
+            FROM usedleaves WHERE employee_id = ? AND leave_start BETWEEN ? AND ?", [$id, $start, $end]);
 
-        return compact('Attendance');
+        $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);
+
+        return compact('Attendance', 'Leave', 'Holiday');
     }
 
     /**

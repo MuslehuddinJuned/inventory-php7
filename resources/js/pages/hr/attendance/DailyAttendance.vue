@@ -5,7 +5,7 @@
                 <div class="col-md-6">
                     <h3 class="panel-title float-left">{{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})</h3>
                 </div>                     
-                <div class="col-md-6">
+                <div class="col-md-6 noprint">
                     <div class="m-sm-0 input-group col-md-12 float-md-right float-sm-left">
                         <input type="date" v-model="attendance_date" class="form-control">
                         <div class="input-group-append">
@@ -51,6 +51,8 @@
                 :tbody-transition-props="transProps"
                 @filtered="onFiltered"
                 class="table-transition"
+                @row-clicked="(item) => viewDetails(item.id)"
+                style="cursor : pointer"
                 >
                 <template v-slot:table-busy>
                     <div class="text-center text-success my-2">
@@ -81,6 +83,46 @@
                 </div>
             </div>
         </div>
+        <!-- Start view Details Modal -->
+        <b-modal ref="dataView" id="dataView" size="xxl" :title="$t('personnel_attendance')" no-close-on-backdrop>
+            <div v-if="perAttendanceList.length > 0" class="modal-body m-0 p-0 mb-2">
+                <div class="col-md-12 border-bottom">
+                    <span class="font-weight-bold mr-4">{{ $t('name')}}: {{perAttendanceList[0]['first_name']}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('department')}}: {{perAttendanceList[0]['department']}}</span>
+                    <span class="font-weight-bold mr-4 mb-3">{{ $t('designation')}}: {{perAttendanceList[0]['designation']}}</span>
+                </div>
+                <div class="col-md-12 ">
+                    <span class="font-weight-bold mr-4">{{ $t('total_days')}}: {{perAttendanceList.length}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('present')}}: {{n_present}}</span>
+                    <span class="font-weight-bold mr-4 mb-3">{{ $t('absent')}}: {{n_absent}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('yearly_holidays')}}: {{n_holiday}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('weekly_holidays')}}: {{n_weeklyholiday}}</span>
+                    <span class="font-weight-bold mr-4 mb-3">{{ $t('worked_on_holiday')}}: {{worked_on_holiday}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('leave')}}: {{n_leave}}</span>
+                    <span class="font-weight-bold mr-4">OT: {{n_ot}}</span>
+                </div>
+                <div class="col-md-12 m-0 p-0 mt-3">
+                    <b-table show-empty small striped hover stacked="md" :items="perAttendanceList" :fields="perAttendanceFields">                                   
+                        <template v-slot:cell(status)="row">
+                            {{ $t(row.item.status) }}
+                        </template> 
+                    </b-table>
+                </div>                              
+            </div>
+            <template v-slot:modal-footer="">
+                <div class="onlyprint fixed-bottom">
+                    <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
+                    <div class="mt-3 float-left col-1"></div>
+                    <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
+                    <div class="mt-3 float-left col-1"></div>
+                    <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
+                    <div class="mt-3 float-left col-1"></div>
+                    <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
+                </div>
+                <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
+            </template>
+        </b-modal>
+        <!-- End view Details Modal -->
     </div>
 </template>
 
@@ -95,6 +137,17 @@ export default {
     data() {
         return{
             attendanceList : [],
+            perAttendanceList: [],
+            personnelLeave: [],
+            holiday: [],
+            weeklyHoliday: [],
+            n_present: 0,
+            n_absent: 0,
+            n_holiday: 0,
+            n_weeklyholiday: 0,
+            n_leave: 0,
+            n_ot: 0,
+            worked_on_holiday: 0,
             uploadFile: null,
             fileName: this.$t('choose_file'),
             uploadReady: true,
@@ -103,6 +156,7 @@ export default {
             roles: [],
             attendance_date: this.convertDate(new Date()),
             savingDate: null,
+            weekArray: [this.$t('sunday'), this.$t('monday'), this.$t('tuesday'), this.$t('wednesday'), this.$t('thursday'), this.$t('friday'), this.$t('saturday')],
             buttonTitle : this.$t('save'),
             disable: false,
 
@@ -152,6 +206,115 @@ export default {
                 mnth = ("0" + (date.getMonth() + 1)).slice(-2),
                 day = ("0" + date.getDate()).slice(-2)
             return [year, mnth, day].join("-");
+        },
+
+        viewDetails(id) {
+            this.noprint = 'noprint'
+            var date = new Date(this.attendance_date),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2)
+            let start = year + '-' + mnth + '-01'
+            let end = this.convertDate(new Date(year, mnth, 0))
+            let first = new Date(start)
+            let last = new Date(end)
+            
+            this.isBusy = true
+            fetch(`api/persattend/${id}/${start}/${end}`)
+            .then(res => res.json())
+            .then(res => {
+                // For Holiday
+                this.holiday = res['Holiday']
+                // for leave
+                let leave = res['Leave'], k=0, date = null, date_1 = null, date_2 = null
+                this.personnelLeave = []
+                for (let i = 0; i < leave.length; i++) {
+                    for (let j = 0; j < leave[i]['day_count']; j++) {
+                        this.personnelLeave[k] = JSON.parse( JSON.stringify( leave[i] ) );
+                        date =  new Date(this.personnelLeave[k]['leave_start'])
+                        date.setDate(date.getDate() + j)
+                        this.personnelLeave[k]['leave_start'] = this.convertDate(date)
+                        k++                  
+                    }
+                }
+                // console.log(id, start, end, this.personnelLeave, this.holiday)
+
+                // for attendance
+                let perAttendanceList = res['Attendance']
+                for (let i = 0; i < perAttendanceList.length; i++) {
+                    perAttendanceList[i]['in_time_1'] = this.in_time_1(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_1'])
+                    perAttendanceList[i]['out_time_1'] = this.out_time_1(perAttendanceList[i]['time'], perAttendanceList[i]['out_time_1'])
+                    perAttendanceList[i]['in_time_2'] = this.in_time_2(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_2'])
+                    perAttendanceList[i]['out_time_2'] = this.out_time_2(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_1'], perAttendanceList[i]['out_time_2'])
+                    perAttendanceList[i]['total_hours'] = this.total_hours(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_1'], perAttendanceList[i]['out_time_2'])
+                    perAttendanceList[i]['ot'] = this.ot(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_1'], perAttendanceList[i]['out_time_2'], perAttendanceList[i]['ot'])
+                    perAttendanceList[i]['ot_extra'] = this.ot_extra(perAttendanceList[i]['time'], perAttendanceList[i]['in_time_1'], perAttendanceList[i]['out_time_2'], perAttendanceList[i]['ot_extra'])  
+                }
+
+                // Fro weekly holiday
+                this.weeklyHoliday = perAttendanceList[0]['weekly_holiday']
+
+                let sn = 0, check = null, date_i = null
+                this.n_present = 0
+                this.n_absent = 0
+                this.n_holiday = 0
+                this.n_weeklyholiday = 0
+                this.n_leave = 0
+                this.n_ot = 0
+                for (let i = first; i <= last; i.setDate(i.getDate() + 1)) {
+                    check = false
+                    for (let j = 0; j < perAttendanceList.length; j++) {
+                        date_i = i
+                        if(perAttendanceList[j]['date'] == this.convertDate(i)) {
+                            this.perAttendanceList[sn] = perAttendanceList[j]
+                            if (this.perAttendanceList[sn]['in_time_1'].length > 0 && this.perAttendanceList[sn]['in_time_1'] != '00:00') {
+                                this.perAttendanceList[sn]['status'] = 'present'
+                                this.n_present++
+                                if(this.perAttendanceList[sn]['ot']) this.n_ot += parseInt(this.perAttendanceList[sn]['ot'])
+                            } else {
+                                this.perAttendanceList[sn]['status'] = 'absent'
+                                this.n_absent++
+                            }
+                                
+                            check = true
+                        }                        
+                    } if(!check) {
+                        this.perAttendanceList[sn] = {id: perAttendanceList[0]['id'], employee_id: perAttendanceList[0]['employee_id'], first_name: perAttendanceList[0]['first_name'], last_name: perAttendanceList[0]['last_name'], designation: perAttendanceList[0]['designation'], department: perAttendanceList[0]['department'], 
+                            employee_image: perAttendanceList[0]['employee_image'], weekly_holiday: perAttendanceList[0]['weekly_holiday'], status: null, date: this.convertDate(i), day: this.weekArray[i.getDay()],
+                            time: '00:00', in_time_1: '00:00', in_time_2: '00:00', out_time_1: '00:00', out_time_2: '00:00', ot: null, ot_extra: null} 
+                    }
+                    
+                    for (let k = 0; k < this.weeklyHoliday.length; k++) {
+                        if(this.perAttendanceList[sn]['day'] == this.weekArray[this.weeklyHoliday[k]]) {
+                            this.perAttendanceList[sn]['status'] = 'holiday'
+                            this.n_weeklyholiday++
+                        }                        
+                    }
+
+                    for (let l = 0; l < this.holiday.length; l++) {
+                        if(this.perAttendanceList[sn]['date'] == this.holiday[l]['yearly_holiday']) {
+                            this.perAttendanceList[sn]['status'] = this.holiday[l]['event']
+                            this.n_holiday++
+                            if (this.perAttendanceList[sn]['status'] == 'holiday')  this.n_weeklyholiday--
+                        }                        
+                    }
+
+                    for (let m = 0; m < this.personnelLeave.length; m++) {
+                        if(this.perAttendanceList[sn]['date'] == this.personnelLeave[m]['leave_start']) {
+                            this.perAttendanceList[sn]['status'] = this.personnelLeave[m]['leave_type']
+                            this.n_leave++
+                        }                        
+                    }
+
+                    sn++
+                }
+                this.worked_on_holiday = this.n_present+this.n_absent+this.n_holiday+this.n_weeklyholiday+this.n_leave-this.perAttendanceList.length
+                if(this.worked_on_holiday < 0) this.worked_on_holiday = 0
+                this.isBusy = false
+                this.$refs['dataView'].show()
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })            
         },
         
         fetchData(check) {
@@ -304,11 +467,11 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
-            let action = { key: 'ot_extra', label : this.$t('OT (Extra)'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'}
+            let action = { key: 'ot_extra', label : 'OT (Extra)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'}
             if(this.audit) action = []
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'employee_id', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -320,9 +483,31 @@ export default {
                 { key: 'out_time_2', label : this.$t('out'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total_hours', label : this.$t('total_hours'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 // { key: 'late', label : this.$t('Late'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'ot', label : this.$t('OT'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ot', label : 'OT', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 action
             ]            
+        },
+
+        perAttendanceFields() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            this.buttonTitle = this.$t('save')
+            let action = { key: 'ot_extra', label : 'OT (Extra)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'}
+            if(this.audit) action = []
+            return [
+                { key: 'date', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'day', label : this.$t('day'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'status', label : this.$t('status'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'in_time_1', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'out_time_1', label : this.$t('out') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'in_time_2', label : this.$t('in') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'out_time_2', label : this.$t('out'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_hours', label : this.$t('total_hours'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'late', label : this.$t('Late'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ot', label : 'OT', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                action
+            ] 
         },
     }
 }

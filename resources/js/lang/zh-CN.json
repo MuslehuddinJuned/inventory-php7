@@ -1,4 +1,11 @@
 {
+    "total_days" : "总天数",
+    "leave" : "假期",
+    "worked_on_holiday" : "假期工作",
+    "day" : "天",
+    "holiday" : "假日",
+    "absent" : "缺席",
+    "present" : "当下",
     "personnel_attendance" : "人员出勤",
     "total_hours" : "总时数",
     "time" : "时间",
