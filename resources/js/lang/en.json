@@ -1,4 +1,6 @@
 { 
+    "increment_file" : "Increment File",
+    "personnel_file" : "Personnel File",
     "total_days" : "Total Days",
     "leave" : "Leave",
     "worked_on_holiday" : "Worked on Holiday",

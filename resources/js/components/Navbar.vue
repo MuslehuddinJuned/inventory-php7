@@ -87,6 +87,14 @@
                 <b-icon icon="person-lines-fill"></b-icon>
                 {{ $t('employee_profile') }}
               </router-link>
+              <router-link v-if="checkRoles('personnel_file_View')" :to="{ name: 'hr.PersonnelFile' }" class="dropdown-item pl-3">                
+                <b-icon icon="briefcase-fill"></b-icon>
+                {{ $t('personnel_file') }}
+              </router-link>
+              <router-link v-if="checkRoles('increment_file_View')" :to="{ name: 'hr.IncrementFile' }" class="dropdown-item pl-3">                
+                <b-icon icon="journal-arrow-up"></b-icon>
+                {{ $t('increment_file') }}
+              </router-link>
               <router-link v-if="checkRoles('employee_profile_View')" :to="{ name: 'hr.EmployeeExit' }" class="dropdown-item pl-3">                
                 <b-icon icon="person-x-fill"></b-icon>
                 {{ $t('employee_exit') }}
