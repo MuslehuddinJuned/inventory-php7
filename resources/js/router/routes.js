@@ -31,12 +31,12 @@ export default [
 
   { path: '/employee-profile', name: 'hr.EmployeeProfile', component: page('hr/profile/EmployeeProfile.vue') },
   { path: '/employee-exit', name: 'hr.EmployeeExit', component: page('hr/profile/EmployeeExit.vue') },
+  { path: '/personnel-file', name: 'hr.PersonnelFile', component: page('hr/profile/PersonnelFile.vue') },
+  { path: '/increment-file', name: 'hr.IncrementFile', component: page('hr/profile/IncrementFile.vue') },
   { path: '/holiday-management', name: 'hr.HolidayManagement', component: page('hr/attendance/HolidayManagement.vue') },
   { path: '/leave-management', name: 'hr.LeaveManagement', component: page('hr/attendance/LeaveManagement.vue') },
   { path: '/upload-attendance', name: 'hr.UploadAttendance', component: page('hr/attendance/UploadAttendance.vue') },
   { path: '/daily-attendance', name: 'hr.DailyAttendance', component: page('hr/attendance/DailyAttendance.vue') },
-  { path: '/personnel-file', name: 'hr.PersonnelFile', component: page('hr/attendance/PersonnelFile.vue') },
-  { path: '/increment-file', name: 'hr.IncrementFile', component: page('hr/attendance/IncrementFile.vue') },
   { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
 
 

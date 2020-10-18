@@ -131,7 +131,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('upload_attendance') }
+        return { title: this.$t('daily_attendance') }
     },
 
     data() {
