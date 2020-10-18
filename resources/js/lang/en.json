@@ -1,4 +1,6 @@
 { 
+    "file_link" : "File Link",
+    "activity" : "Activity",
     "increment_file" : "Increment File",
     "personnel_file" : "Personnel File",
     "total_days" : "Total Days",

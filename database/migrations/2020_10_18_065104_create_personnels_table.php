@@ -21,6 +21,7 @@ class CreatePersonnelsTable extends Migration
             $table->string('remarks')->nullable();
             $table->string('file_link')->nullable();
 
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });

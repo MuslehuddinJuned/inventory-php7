@@ -45,7 +45,13 @@ class PersonnelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Personnel = $request->user()->personnel()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'Personnel' => $Personnel
+            ]);
+        }
     }
 
     /**
@@ -54,9 +60,10 @@ class PersonnelController extends Controller
      * @param  \App\Personnel  $personnel
      * @return \Illuminate\Http\Response
      */
-    public function show(Personnel $personnel)
+    public function show($id)
     {
-        //
+        $Personnel = Personnel::where('employee_id', $id)->orderBy('date', 'desc')->get();
+        return compact('Personnel');
     }
 
     /**
@@ -79,7 +86,7 @@ class PersonnelController extends Controller
      */
     public function update(Request $request, Personnel $personnel)
     {
-        //
+        $personnel->update($request->all());
     }
 
     /**
@@ -90,6 +97,6 @@ class PersonnelController extends Controller
      */
     public function destroy(Personnel $personnel)
     {
-        //
+        $personnel->delete();
     }
 }
