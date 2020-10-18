@@ -114,8 +114,12 @@
                         <div class="form-group col-md-3">                        
                             <label for="first_name" class="col-form-label">{{$t('name')}}</label>
                             <input type="text" class="form-control" id="first_name" name="Name" v-model="task['first_name']">
+                        </div>                      
+                        <div class="form-group col-md-3">                        
+                            <label for="last_name" class="col-form-label">নাম (বাংলা)</label>
+                            <input type="text" class="form-control" id="last_name" name="Name" v-model="task['last_name']">
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label for="email" class="col-form-label">{{$t('email')}}</label>
                             <input type="email" class="form-control" id="email" name="email" v-model="task['email']">
                         </div>
