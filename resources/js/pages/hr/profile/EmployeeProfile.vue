@@ -248,7 +248,7 @@
                 </div>                                                
             </div>                        
             <template v-slot:modal-footer="">
-                <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
+                <button @click="saveExit" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
         </b-modal>        
@@ -610,6 +610,13 @@ export default {
             fileReader.readAsDataURL(e.target.files[0]);
         },
 
+        saveExit() {
+            this.save()
+            this.$nextTick(() => {
+                this.$refs['dataEdit'].hide()
+            })
+        },
+
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
@@ -664,6 +671,9 @@ export default {
                 day[i] = this.weekArray[this.task['weekly_holiday'][i]]                
             }
             this.holiday = day.join(', ')
+            if(this.task['first_name'] && this.task['last_name']) this.task['name'] = this.task['last_name'] + ', ' + this.task['first_name']
+            else if (this.task['first_name']) this.task['name'] = this.task['first_name']
+            else if (this.task['last_name']) this.task['name'] = this.task['last_name']
         },
 
         destroy() {
