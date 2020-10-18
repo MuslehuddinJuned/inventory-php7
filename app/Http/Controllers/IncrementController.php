@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Personnel;
+use App\Increment;
 use DB;
 use Illuminate\Http\Request;
 
-class PersonnelController extends Controller
+class IncrementController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -51,10 +51,10 @@ class PersonnelController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Personnel  $personnel
+     * @param  \App\Increment  $increment
      * @return \Illuminate\Http\Response
      */
-    public function show(Personnel $personnel)
+    public function show(Increment $increment)
     {
         //
     }
@@ -62,10 +62,10 @@ class PersonnelController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Personnel  $personnel
+     * @param  \App\Increment  $increment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Personnel $personnel)
+    public function edit(Increment $increment)
     {
         //
     }
@@ -74,10 +74,10 @@ class PersonnelController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Personnel  $personnel
+     * @param  \App\Increment  $increment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Personnel $personnel)
+    public function update(Request $request, Increment $increment)
     {
         //
     }
@@ -85,10 +85,10 @@ class PersonnelController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Personnel  $personnel
+     * @param  \App\Increment  $increment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Personnel $personnel)
+    public function destroy(Increment $increment)
     {
         //
     }
