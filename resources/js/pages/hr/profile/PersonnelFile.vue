@@ -104,9 +104,9 @@
             <template v-slot:modal-footer="">
                 <div class="col-md-12">
                     <div class="col-md-5 float-left">
-                        <button v-if="checkRoles('personnel_file_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                        <button v-if="checkRoles('personnel_file_Delete') && taskId" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                     </div>
-                    <div class="col-md-7 float-left">
+                    <div class="col-md-7 float-right">
                         <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
                         <button v-if="checkRoles('personnel_file_Insert')" @click="save" class="mdb btn btn-outline-default float-right" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                     </div>

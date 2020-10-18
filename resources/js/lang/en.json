@@ -1,4 +1,6 @@
 { 
+    "next_increment" : "Next Increment",
+    "increment" : "Increment",
     "file_link" : "File Link",
     "activity" : "Activity",
     "increment_file" : "Increment File",

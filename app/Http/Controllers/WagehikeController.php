@@ -24,7 +24,20 @@ class WagehikeController extends Controller
      */
     public function index()
     {
-        //
+        $Increment = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, section, work_location, start_date, salary, 
+            employee_image, effective_date, amount, remarks, file_link, next_increment FROM (
+            SELECT A.id, A.employee_id, first_name, last_name, designation, department, section, work_location, start_date, salary, 
+            employee_image, effective_date, amount, remarks, file_link, 
+            (CASE WHEN effective_date IS null THEN (CASE WHEN department != 'Management' THEN DATE_ADD(start_date, INTERVAL 6 MONTH) ELSE DATE_ADD(start_date, INTERVAL 12 MONTH) END) ELSE DATE_ADD(effective_date, INTERVAL 12 MONTH) END)next_increment FROM (
+                SELECT id, employee_id, first_name, last_name, designation, department, section, work_location, start_date, salary, employee_image FROM employees WHERE deleted_by = 0 AND status = 'active'
+                )A LEFT JOIN (SELECT A.effective_date, A.employee_id, next_increment, amount, remarks, file_link FROM (
+                    SELECT MAX(effective_date)effective_date, employee_id FROM wagehikes GROUP BY employee_id
+                    )A LEFT JOIN (SELECT effective_date, employee_id, next_increment, amount, remarks, file_link FROM wagehikes
+                    )B ON A.effective_date = B.effective_date AND A.employee_id = B.employee_id
+                )B ON A.id = B.employee_id
+            )A ORDER BY next_increment");
+
+        return compact('Increment');
     }
 
     /**
@@ -45,7 +58,13 @@ class WagehikeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Wagehike = $request->user()->wagehike()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'Wagehike' => $Wagehike
+            ]);
+        }
     }
 
     /**
@@ -54,9 +73,10 @@ class WagehikeController extends Controller
      * @param  \App\Wagehike  $wagehike
      * @return \Illuminate\Http\Response
      */
-    public function show(Wagehike $wagehike)
+    public function show($id)
     {
-        //
+        $Wagehike = Wagehike::where('employee_id', $id)->orderBy('effective_date', 'desc')->get();
+        return compact('Wagehike');
     }
 
     /**
@@ -79,7 +99,7 @@ class WagehikeController extends Controller
      */
     public function update(Request $request, Wagehike $wagehike)
     {
-        //
+        $wagehike->update($request->all());
     }
 
     /**
@@ -90,6 +110,6 @@ class WagehikeController extends Controller
      */
     public function destroy(Wagehike $wagehike)
     {
-        //
+        $wagehike->delete();
     }
 }
