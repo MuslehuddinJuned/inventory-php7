@@ -19,6 +19,7 @@ class CreatePersonnelsTable extends Migration
             $table->string('activity')->nullable();
             $table->double('amount')->nullable();
             $table->string('remarks')->nullable();
+            $table->string('file_link')->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();

@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('persattend/{id}/{start}/{end}', 'AttendanceController@personnel')->middleware('can:upload_attendance_View');
     Route::resource('attendance', 'AttendanceController')->middleware('can:upload_attendance_View');
     Route::resource('personnel', 'PersonnelController')->middleware('can:personnel_file_View');
-    Route::resource('increment', 'IncrementController')->middleware('can:increment_file_View');
+    Route::resource('increment', 'WagehikeController')->middleware('can:increment_file_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

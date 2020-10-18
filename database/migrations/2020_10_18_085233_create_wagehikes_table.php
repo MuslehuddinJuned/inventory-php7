@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIncrementsTable extends Migration
+class CreateWagehikesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateIncrementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('increments', function (Blueprint $table) {
+        Schema::create('wagehikes', function (Blueprint $table) {
             $table->id();
             $table->date('effective_date')->nullable();
             $table->date('next_increment')->nullable();
             $table->double('amount')->nullable();
             $table->string('remarks')->nullable();
+            $table->string('file_link')->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
@@ -32,6 +33,6 @@ class CreateIncrementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('increments');
+        Schema::dropIfExists('wagehikes');
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Increment;
+use App\Wagehike;
 use DB;
 use Illuminate\Http\Request;
 
-class IncrementController extends Controller
+class WagehikeController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -51,10 +51,10 @@ class IncrementController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Increment  $increment
+     * @param  \App\Wagehike  $wagehike
      * @return \Illuminate\Http\Response
      */
-    public function show(Increment $increment)
+    public function show(Wagehike $wagehike)
     {
         //
     }
@@ -62,10 +62,10 @@ class IncrementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Increment  $increment
+     * @param  \App\Wagehike  $wagehike
      * @return \Illuminate\Http\Response
      */
-    public function edit(Increment $increment)
+    public function edit(Wagehike $wagehike)
     {
         //
     }
@@ -74,10 +74,10 @@ class IncrementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Increment  $increment
+     * @param  \App\Wagehike  $wagehike
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Increment $increment)
+    public function update(Request $request, Wagehike $wagehike)
     {
         //
     }
@@ -85,10 +85,10 @@ class IncrementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Increment  $increment
+     * @param  \App\Wagehike  $wagehike
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Increment $increment)
+    public function destroy(Wagehike $wagehike)
     {
         //
     }
