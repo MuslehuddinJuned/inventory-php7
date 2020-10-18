@@ -15,7 +15,7 @@ class CreateWipreceivesTable extends Migration
     {
         Schema::create('wipreceives', function (Blueprint $table) {
             $table->id();
-            $table->float('receive_qty')->nullable();
+            $table->double('receive_qty')->nullable();
             $table->string('etd')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');

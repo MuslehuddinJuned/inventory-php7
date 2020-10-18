@@ -15,9 +15,9 @@ class CreateInvenrecallsTable extends Migration
     {
         Schema::create('invenrecalls', function (Blueprint $table) {
             $table->id();
-            $table->float('quantity')->nullable();
-            $table->float('master_sheet')->nullable();
-            $table->float('price')->nullable();
+            $table->double('quantity')->nullable();
+            $table->double('master_sheet')->nullable();
+            $table->double('price')->nullable();
             $table->date('receive_etd')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');

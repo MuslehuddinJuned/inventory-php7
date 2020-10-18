@@ -15,16 +15,16 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
-            $table->float('basic_pay')->nullable();
-            $table->float('medic_alw')->nullable();
-            $table->float('house_rent')->nullable();
-            $table->float('ta')->nullable();
-            $table->float('da')->nullable();
+            $table->double('basic_pay')->nullable();
+            $table->double('medic_alw')->nullable();
+            $table->double('house_rent')->nullable();
+            $table->double('ta')->nullable();
+            $table->double('da')->nullable();
             $table->string('other_field')->nullable();
-            $table->float('other_pay')->nullable();
-            $table->float('providant_fund')->nullable();
-            $table->float('tax')->nullable();
-            $table->float('total_salary')->nullable();
+            $table->double('other_pay')->nullable();
+            $table->double('providant_fund')->nullable();
+            $table->double('tax')->nullable();
+            $table->double('total_salary')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('acc_no')->nullable();
 

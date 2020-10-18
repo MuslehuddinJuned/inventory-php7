@@ -10,16 +10,6 @@ class CreateStoresTable extends Migration
      * Run the migrations.
      *
      * @return void
-     * Column	Type	Null	Default
-id	bigint(20)	No	
-name	varchar(255)	Yes	NULL
-account_code	varchar(256)	Yes	NULL
-remarks	varchar(255)	Yes	NULL
-user_id	bigint(20)	No	
-created_at	timestamp	Yes	NULL
-updated_at	timestamp	Yes	NULL
-deleted_by	int(11)	No	0
-
      */
     public function up()
     {

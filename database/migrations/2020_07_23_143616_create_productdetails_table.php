@@ -19,8 +19,8 @@ class CreateProductdetailsTable extends Migration
             $table->string('material_number')->nullable();
             $table->string('material_name')->nullable();
             $table->string('description')->nullable();
-            $table->float('unit_weight')->nullable();
-            $table->float('quantity')->nullable();
+            $table->double('unit_weight')->nullable();
+            $table->double('quantity')->nullable();
             $table->string('unit')->nullable();
             $table->string('remarks')->nullable();
             

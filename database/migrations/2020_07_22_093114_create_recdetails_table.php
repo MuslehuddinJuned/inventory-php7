@@ -15,10 +15,10 @@ class CreateRecdetailsTable extends Migration
     {
         Schema::create('recdetails', function (Blueprint $table) {
             $table->id();
-            $table->float('quantity')->nullable();
-            $table->float('po_qty')->nullable();
+            $table->double('quantity')->nullable();
+            $table->double('po_qty')->nullable();
             $table->date('issue_etd')->nullable();
-            $table->float('master_sheet')->nullable();
+            $table->double('master_sheet')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('accept')->nullable();
             $table->unsignedBigInteger('polist_id')->nullable();

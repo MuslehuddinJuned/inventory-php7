@@ -22,8 +22,8 @@ class CreateInventoriesTable extends Migration
             $table->string('unit')->nullable();
             $table->string('unit_price')->nullable();
             $table->string('item_image')->default('noimage.jpg');
-            $table->float('cann_per_sheet')->nullable();
-            $table->float('weight')->nullable();
+            $table->double('cann_per_sheet')->nullable();
+            $table->double('weight')->nullable();
             $table->string('grade')->nullable();
             $table->string('accounts_code')->nullable();
             $table->unsignedBigInteger('store_id');

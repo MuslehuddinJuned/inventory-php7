@@ -15,7 +15,7 @@ class CreatePolistsTable extends Migration
     {
         Schema::create('polists', function (Blueprint $table) {
             $table->id();
-            $table->float('quantity')->nullable();
+            $table->double('quantity')->nullable();
             $table->string('remarks')->nullable();
             $table->date('po_date')->nullable();
             $table->date('etd')->nullable();
