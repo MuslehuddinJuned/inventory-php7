@@ -5,16 +5,16 @@
                 <div class="col-md-6">
                     <h3 class="panel-title float-left">
                         {{ $t('leave_management') }}
-                        <fa v-if="checkRoles('leave_management_Insert')" @click="addDetails" icon="edit" class="ml-2 pointer" fixed-width />                    
+                        <fa v-if="checkRoles('leave_management_Insert')" @click="addDetails" icon="edit" class="ml-2 pointer noprint" fixed-width />                    
                     </h3>
                 </div>                     
                 <div class="col-md-6">
                     <div class="ml-md-auto m-sm-0 input-group col-md-12 col-lg-6 float-md-right">
-                        <div class="input-group-prepend">
+                        <div class="input-group-prepend noprint">
                             <div @click="yearWiseDisplay(-1)" class="input-group-text pointer"><b-icon icon="dash"></b-icon></div>
                         </div>
                         <input type="text" v-model="year" @change="yearWiseDisplay(year)" class="form-control text-center" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                        <div class="input-group-append">
+                        <div class="input-group-append noprint">
                             <div @click="yearWiseDisplay(1)" class="input-group-text pointer"><b-icon icon="plus"></b-icon></div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@
         <b-modal ref="dataView" id="dataView" size="xl" :title="$t('personal_leave_management')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0 mb-2" >
                 <div class="col-md-6">
-                    <span class="font-weight-bold">{{ $t('ID')}}:</span> {{taskHead['employee_id']}} <br>
+                    <span class="font-weight-bold">ID:</span> {{taskHead['employee_id']}} <br>
                     <span class="font-weight-bold">{{ $t('name')}}:</span> {{taskHead['first_name']}}
                 </div>
                 <div class="col-md-6">                                
@@ -218,11 +218,11 @@
                 <div v-if="taskHeadId" class="row col-12 m-0 p-0">
                     <div class="col-md-3">{{$t('casual_leave')}}: {{taskHead['casual_leave']}} ({{Leave[0]['casual_leave'] - taskHead['casual_leave']}})</div>
                     <div class="col-md-3">{{$t('sick_leave')}}: {{taskHead['sick_leave']}} ({{Leave[0]['sick_leave'] - taskHead['sick_leave']}})</div>
-                    <div class="col-md-3">{{$t('annual_leave')}}: {{taskHead['annual_leave']}} ({{Leave[0]['annual_leave'] - taskHead['annual_leave']}})</div>
+                    <div class="col-md-3">{{$t('earned_leave')}}: {{taskHead['earned_leave']}}</div>
                     <div class="col-md-3">{{$t('maternity_leave')}}: {{taskHead['maternity_leave']}} ({{Leave[0]['maternity_leave'] - taskHead['maternity_leave']}})</div>
                     <div class="col-md-3">{{$t('paternity_leave')}}: {{taskHead['paternity_leave']}} ({{Leave[0]['paternity_leave'] - taskHead['paternity_leave']}})</div>
-                    <div class="col-md-3">{{$t('compensatory_leave')}}: {{taskHead['compensatory_leave']}} ({{Leave[0]['compensatory_leave'] - taskHead['compensatory_leave']}})</div>
-                    <div class="col-md-3">{{$t('unpaid_leave')}}: {{taskHead['unpaid_leave']}} ({{Leave[0]['unpaid_leave'] - taskHead['unpaid_leave']}})</div>
+                    <div class="col-md-3">{{$t('compensatory_leave')}}: {{taskHead['compensatory_leave']}}</div>
+                    <div class="col-md-3">{{$t('unpaid_leave')}}: {{taskHead['unpaid_leave']}}</div>
                     <div class="col-md-3">{{$t('half_leave')}}: {{taskHead['half_leave']}} ({{Leave[0]['half_leave'] - taskHead['half_leave']}})</div>
                 </div>
             </div>
@@ -231,7 +231,7 @@
                     <button v-if="reportType == $t('summary')" @click="reportType = $t('details')" class="mdb btn btn-outline-unique">{{$t('details')}} {{$t('report')}}</button>
                     <button v-if="reportType == $t('details')" @click="reportType = $t('summary')" class="mdb btn btn-outline-unique">{{$t('summary')}} {{$t('report')}}</button>
                 </div>
-                <div class="col-md-12 m-0 p-0 mt-3">
+                <div class="col-md-12 m-0 p-0 mt-3" :class="viewLeaveDetails">
                     <b-table @row-clicked="(item) => editDetails(item.id)" style="cursor : pointer" show-empty small striped hover stacked="md" :items="personalLeave" :fields="taskDetailsfieldsView">
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
@@ -241,6 +241,13 @@
                         </template>                                    -->
                         <template v-slot:cell(leave_type)="row">
                             {{ $t(row.item.leave_type) }}
+                        </template>
+                    </b-table>
+                </div>
+                <div  v-if="reportType == $t('summary')" class="col-md-12 m-0 p-0 mt-3">
+                    <b-table style="cursor : pointer" show-empty small striped hover stacked="md" :items="leaveSummary" :fields="leaveSummaryFilds">
+                        <template v-slot:cell(total)="row">
+                            {{ row.item.casual_leave+row.item.sick_leave+row.item.earned_leave+row.item.unpaid_leave+row.item.other_leave }}
                         </template>
                     </b-table>
                 </div>                              
@@ -271,8 +278,9 @@ export default {
         return{
             leaveList : [],
             Usedleave: [],
+            leaveSummary: [{'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0}],
             Leave: [],
-            task: [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}],
+            task: [{'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}],
             taskHead: [],
             taskHeadId: null,
             taskDetails: [{'leave_type': null, 'reason': null, 'replacing_person': null, 'leave_start': this.convertDate(new Date()), 'leave_end': this.convertDate(new Date()), 'day_count': 1, 'employee_id': this.taskHeadId}],
@@ -309,7 +317,7 @@ export default {
             this.leaveList = res['LeaveList'];
             this.task = this.singleTask
             if (this.task.length < 1) {
-                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
+                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
             }
         })
         .catch(err => {
@@ -350,9 +358,15 @@ export default {
         convertDate(str) {
             var date = new Date(str),
                 year = date.getFullYear(),
-                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                month = ("0" + (date.getMonth() + 1)).slice(-2),
                 day = ("0" + date.getDate()).slice(-2)
-            return [year, mnth, day].join("-");
+            return [year, month, day].join("-");
+        },
+
+        getMonthMethod(str) {
+            var date = new Date(str),
+                month = date.getMonth()
+            return month
         },
 
         yearWiseDisplay(year) {
@@ -368,7 +382,7 @@ export default {
             })
             this.task = this.singleTask
             if (this.task.length < 1) {
-                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
+                this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
             }
         },
 
@@ -383,12 +397,67 @@ export default {
             .then(res => {
                 this.taskDetailsAll = res['AllLeaves']
                 this.personalLeave = this.taskDetailsSingle('read')
+                this.leaveSummaryMethod()
             })
             .catch(err => {
                 alert(err.response.data.message);
             })
 
             this.$refs['dataView'].show()
+        },
+
+        leaveSummaryMethod() {
+            let leaveSummary = [], k=0, date = null
+            for (let i = 0; i < this.personalLeave.length; i++) {
+                for (let j = 0; j < this.personalLeave[i]['day_count']; j++) {
+                    leaveSummary[k] = JSON.parse( JSON.stringify( this.personalLeave[i] ) );
+                    date =  new Date(leaveSummary[k]['leave_start'])
+                    date.setDate(date.getDate() + j)
+                    leaveSummary[k]['leave_start'] = this.convertDate(date)
+                    k++
+                }
+            }
+
+            this.leaveSummary= [
+                {'month' : 'January', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'February', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'March', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'April', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'May', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'June', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'July', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'August', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'September', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'October', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'November', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'December', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : this.$t('total'), 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+            ]
+
+            for (let l = 0; l < leaveSummary.length; l++) {
+                switch(leaveSummary[l]['leave_type']) {
+                    case 'casual_leave':
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['casual_leave']++
+                        this.leaveSummary[12]['casual_leave']++
+                        break;
+                    case 'sick_leave':
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['sick_leave']++
+                        this.leaveSummary[12]['sick_leave']++
+                        break;
+                    case 'earned_leave':
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['earned_leave']++
+                        this.leaveSummary[12]['earned_leave']++
+                        break;
+                    case 'unpaid_leave':
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['unpaid_leave']++
+                        this.leaveSummary[12]['unpaid_leave']++
+                        break;
+                    default:
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['other_leave']++
+                        this.leaveSummary[12]['other_leave']++
+                        break;
+                }
+            }
         },
 
         addDetails() {
@@ -435,10 +504,11 @@ export default {
                 .then(({data}) =>{
                     this.errors = ''
                     this.personalLeave.unshift(data.Usedleave)
-                    this.yearWiseDisplay(this.year)
+                    this.leaveSummaryMethod()
                     let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
                     count += this.taskDetails[0]['day_count']
                     this.taskHead[this.taskDetails[0]['leave_type']] = count
+                    this.yearWiseDisplay(this.year)
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
@@ -460,6 +530,7 @@ export default {
                     let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
                     count += (this.taskDetails[0]['day_count'] - oldDayCount)
                     this.taskHead[this.taskDetails[0]['leave_type']] = count
+                    this.leaveSummaryMethod()
                     this.errors = ''
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
@@ -541,6 +612,7 @@ export default {
                             let count = parseInt(this.taskHead[this.taskDetails[0]['leave_type']])
                             count -=  oldDayCount
                             this.taskHead[this.taskDetails[0]['leave_type']] = count
+                            this.leaveSummaryMethod()
                             this.$refs['dataEdit'].hide()
                         })
                         .catch(err => {
@@ -599,7 +671,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'employee_id', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'casual_leave', label : this.$t('casual_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'casual_leave_remain', label : this.$t('remain'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
@@ -618,7 +690,6 @@ export default {
         taskDetailsfieldsView() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
-            this.buttonTitle = this.$t('save')
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'leave_type', label : this.$t('leave_category'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
@@ -629,6 +700,24 @@ export default {
                 { key: 'created_at', label : this.$t('application_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]            
         },
+
+        leaveSummaryFilds() {
+            const lang = this.$i18n.locale
+            if (!lang) { return [] }
+            return [
+                { key: 'month', label : this.$t('month'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'casual_leave', label : this.$t('casual_leave'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'sick_leave', label : this.$t('sick_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'earned_leave', label : this.$t('earned_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'unpaid_leave', label : this.$t('unpaid_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'other_leave', label : this.$t('other_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total', label : this.$t('total'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+            ]            
+        },
+
+        viewLeaveDetails() {
+            return[ this.reportType == this.$t('details') ? '' : 'd-none' ]
+        }
     }
 }
 </script>

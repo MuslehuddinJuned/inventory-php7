@@ -1,4 +1,7 @@
 {
+    "month" : "月",
+    "other_leave" : "其他请假",
+    "total" : "总",
     "report" : "报告",
     "details" : "细节",
     "summary" : "摘要",

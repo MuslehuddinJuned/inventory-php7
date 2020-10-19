@@ -1,4 +1,7 @@
 { 
+    "month" : "Month",
+    "other_leave" : "Other Leave",
+    "total" : "Total",
     "report" : "Report",
     "details" : "Details",
     "summary" : "Summary",

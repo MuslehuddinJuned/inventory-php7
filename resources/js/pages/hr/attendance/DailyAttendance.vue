@@ -225,7 +225,7 @@ export default {
                 // For Holiday
                 this.holiday = res['Holiday']
                 // for leave
-                let leave = res['Leave'], k=0, date = null, date_1 = null, date_2 = null
+                let leave = res['Leave'], k=0, date = null
                 this.personnelLeave = []
                 for (let i = 0; i < leave.length; i++) {
                     for (let j = 0; j < leave[i]['day_count']; j++) {

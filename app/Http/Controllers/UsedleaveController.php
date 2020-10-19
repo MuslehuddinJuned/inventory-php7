@@ -74,7 +74,7 @@ class UsedleaveController extends Controller
         (CASE WHEN compensatory_leave IS null THEN 0 ELSE compensatory_leave END)compensatory_leave, 
         (CASE WHEN unpaid_leave IS null THEN 0 ELSE unpaid_leave END)unpaid_leave, 
         (CASE WHEN half_leave IS null THEN 0 ELSE half_leave END)half_leave 
-        FROM(SELECT employee_id, created_at,
+        FROM(SELECT employee_id, 
         SUM(CASE WHEN leave_type = 'casual_leave' THEN day_count ELSE 0 END)casual_leave,
         SUM(CASE WHEN leave_type = 'sick_leave' THEN day_count ELSE 0 END)sick_leave,
         SUM(CASE WHEN leave_type = 'annual_leave' THEN day_count ELSE 0 END)annual_leave,
@@ -84,8 +84,8 @@ class UsedleaveController extends Controller
         SUM(CASE WHEN leave_type = 'half_leave' THEN day_count ELSE 0 END)half_leave,
         SUM(CASE WHEN leave_type = 'compensatory_leave' THEN day_count ELSE 0 END)compensatory_leave,
         SUM(CASE WHEN leave_type = 'unpaid_leave' THEN day_count ELSE 0 END)unpaid_leave
-        FROM(SELECT leave_type,day_count, employee_id, YEAR(created_at)created_at FROM usedleaves WHERE deleted_by = 0
-            )A WHERE created_at = ? GROUP BY employee_id, created_at
+        FROM(SELECT leave_type,day_count, employee_id, leave_start FROM usedleaves WHERE deleted_by = 0 AND YEAR(leave_start) = ?
+            )A GROUP BY employee_id
         )A  RIGHT JOIN (SELECT id, employee_id, first_name, designation, department FROM employees WHERE status = 'active' and deleted_by = 0
         )B ON A.employee_id = B.id LEFT JOIN (SELECT ac_no, (CASE WHEN (CHAR_LENGTH(in_time_1) > 0 && in_time_1 != '00:00') THEN COUNT(in_time_1) END)earned_day FROM attendances WHERE YEAR(date) = ? GROUP BY ac_no, in_time_1
         )C ON B.employee_id = C.ac_no", [$year, $year]);
