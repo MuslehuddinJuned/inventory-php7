@@ -116,14 +116,14 @@
                 <template v-slot:cell(index)="row">
                     {{ row.index+1 }}
                 </template>
-                <template v-slot:cell(casual_leave)="row">
-                    {{row.item.casual_leave}}  ({{Leave[0]['casual_leave'] - row.item.casual_leave}})
+                <template v-slot:cell(casual_leave_remain)="row">
+                    {{Leave[0]['casual_leave'] - row.item.casual_leave}}
                 </template>
-                <template v-slot:cell(sick_leave)="row">
-                    {{row.item.sick_leave}}  ({{Leave[0]['sick_leave'] - row.item.sick_leave}})
+                <template v-slot:cell(sick_leave_remain)="row">
+                    {{Leave[0]['sick_leave'] - row.item.sick_leave}}
                 </template>
-                <template v-slot:cell(annual_leave)="row">
-                    {{row.item.annual_leave}}  ({{Leave[0]['annual_leave'] - row.item.annual_leave}})
+                <template v-slot:cell(earned_leave_remain)="row">
+                    {{row.item.earned_day - row.item.earned_leave}}
                 </template>
                 <template v-slot:cell(maternity_leave)="row">
                     {{row.item.maternity_leave}}  ({{Leave[0]['maternity_leave'] - row.item.maternity_leave}})
@@ -163,7 +163,7 @@
                     <select v-model="taskDetails[0]['leave_type']" class="form-control" id="leave_category">
                         <option value="casual_leave">{{$t('casual_leave')}}</option>
                         <option value="sick_leave">{{$t('sick_leave')}}</option>
-                        <option value="annual_leave">{{$t('annual_leave')}}</option>
+                        <option value="earned_leave">{{$t('earned_leave')}}</option>
                         <option value="maternity_leave">{{$t('maternity_leave')}}</option>
                         <option value="paternity_leave">{{$t('paternity_leave')}}</option>
                         <option value="compensatory_leave">{{$t('compensatory_leave')}}</option>
@@ -191,7 +191,7 @@
             <template v-slot:modal-footer="">
                 <div class="row m-0 p-0 col-12">
                     <div class="col-md-4">
-                        <button v-if="checkRoles('leave_management_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
+                        <button v-if="checkRoles('leave_management_Delete') && taskDetailsId" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                     </div>
                     <div class="col-md-8">
                         <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
@@ -214,7 +214,7 @@
                     <span class="font-weight-bold">{{ $t('department')}}:</span> {{taskHead['department']}}
                 </div>
             </div>
-            <div class="modal-body row m-0 p-0 mb-2 border-top border-secondary" >
+            <div class="modal-body row m-0 p-0 mb-4 border-top border-secondary" >
                 <div v-if="taskHeadId" class="row col-12 m-0 p-0">
                     <div class="col-md-3">{{$t('casual_leave')}}: {{taskHead['casual_leave']}} ({{Leave[0]['casual_leave'] - taskHead['casual_leave']}})</div>
                     <div class="col-md-3">{{$t('sick_leave')}}: {{taskHead['sick_leave']}} ({{Leave[0]['sick_leave'] - taskHead['sick_leave']}})</div>
@@ -226,7 +226,11 @@
                     <div class="col-md-3">{{$t('half_leave')}}: {{taskHead['half_leave']}} ({{Leave[0]['half_leave'] - taskHead['half_leave']}})</div>
                 </div>
             </div>
-            <div class="modal-body row m-0 p-0 mb-2 border-top border-secondary" >
+            <div class="modal-body row m-0 p-0 mb-2" >                
+                <div>
+                    <button v-if="reportType == $t('summary')" @click="reportType = $t('details')" class="mdb btn btn-outline-unique">{{$t('details')}} {{$t('report')}}</button>
+                    <button v-if="reportType == $t('details')" @click="reportType = $t('summary')" class="mdb btn btn-outline-unique">{{$t('summary')}} {{$t('report')}}</button>
+                </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
                     <b-table @row-clicked="(item) => editDetails(item.id)" style="cursor : pointer" show-empty small striped hover stacked="md" :items="personalLeave" :fields="taskDetailsfieldsView">
                         <template v-slot:cell(index)="row">
@@ -277,6 +281,7 @@ export default {
             roles: [],
             year: new Date().getFullYear(),
             reportEdit: false,
+            reportType: this.$t('summary'),
             buttonTitle : this.$t('save'),
             disable: false,
 
@@ -597,8 +602,11 @@ export default {
                 { key: 'employee_id', label : this.$t('ID'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'casual_leave', label : this.$t('casual_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'casual_leave_remain', label : this.$t('remain'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'sick_leave', label : this.$t('sick_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'annual_leave', label : this.$t('annual_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'sick_leave_remain', label : this.$t('remain'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'earned_leave', label : this.$t('earned_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'earned_leave_remain', label : this.$t('remain'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'maternity_leave', label : this.$t('maternity_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'paternity_leave', label : this.$t('paternity_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'compensatory_leave', label : this.$t('compensatory_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
