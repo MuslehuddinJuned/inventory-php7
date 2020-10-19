@@ -46,6 +46,10 @@ class UsedleaveController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'leave_type'=> 'required'
+        ]);
+        
         $Usedleave = $request->user()->usedleave()->create($request->all());
 
         if(request()->expectsJson()){

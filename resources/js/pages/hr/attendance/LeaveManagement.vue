@@ -156,7 +156,7 @@
         </div>
 
         <!-- Start Edit Details Modal -->
-        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('requisition')" no-close-on-backdrop>            
+        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="$t('personal_leave_management')" no-close-on-backdrop>            
             <div v-if="taskHeadId" class="modal-body row m-0 p-0 mb-2">
                 <div class="col-md-4">
                     <label for="leave_category" class="col-form-label mr-2">{{ $t('leave_category')}}</label>
@@ -170,6 +170,7 @@
                         <option value="unpaid_leave">{{$t('unpaid_leave')}}</option>
                         <option value="half_leave">{{$t('half_leave')}}</option>
                     </select>
+                    <span v-if="errors.leave_type" class="error text-danger"> {{$t('required_field')}} </span>
                 </div>
                 <div class="col-md-4">
                     <label class="col-form-label">{{ $t('reason')}}</label>
@@ -294,6 +295,7 @@ export default {
             disable: false,
 
             noprint: '',
+            errors: '',
 
             transProps: {
                 // Transition name
@@ -512,7 +514,6 @@ export default {
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
                     this.$refs['dataEdit'].hide()
                 })
                 .catch(err => {
@@ -535,7 +536,6 @@ export default {
                     this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    this.reportEdit = !this.reportEdit
                     this.$refs['dataEdit'].hide()
                 })
                 .catch(err => {
