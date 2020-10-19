@@ -67,7 +67,7 @@ class UsedleaveController extends Controller
      */
     public function show($year)
     {
-        $Usedleave = DB::SELECT("SELECT id, B.employee_id, first_name, designation, department, (earned_day/18)earned_day,
+        $Usedleave = DB::SELECT("SELECT id, B.employee_id, first_name, designation, department, start_date, (earned_day/18)earned_day,
         (CASE WHEN casual_leave IS null THEN 0 ELSE casual_leave END)casual_leave,
         (CASE WHEN sick_leave IS null THEN 0 ELSE sick_leave END)sick_leave,
         (CASE WHEN annual_leave IS null THEN 0 ELSE annual_leave END)annual_leave,
@@ -90,7 +90,7 @@ class UsedleaveController extends Controller
         SUM(CASE WHEN leave_type = 'unpaid_leave' THEN day_count ELSE 0 END)unpaid_leave
         FROM(SELECT leave_type,day_count, employee_id, leave_start FROM usedleaves WHERE deleted_by = 0 AND YEAR(leave_start) = ?
             )A GROUP BY employee_id
-        )A  RIGHT JOIN (SELECT id, employee_id, first_name, designation, department FROM employees WHERE status = 'active' and deleted_by = 0
+        )A  RIGHT JOIN (SELECT id, employee_id, first_name, designation, department, start_date FROM employees WHERE status = 'active' and deleted_by = 0
         )B ON A.employee_id = B.id LEFT JOIN (SELECT ac_no, (CASE WHEN (CHAR_LENGTH(in_time_1) > 0 && in_time_1 != '00:00') THEN COUNT(in_time_1) END)earned_day FROM attendances WHERE YEAR(date) = ? GROUP BY ac_no, in_time_1
         )C ON B.employee_id = C.ac_no", [$year, $year]);
 

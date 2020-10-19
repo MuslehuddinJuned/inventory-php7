@@ -206,13 +206,17 @@
         <!-- Start view Details Modal -->
         <b-modal ref="dataView" id="dataView" size="xl" :title="$t('personal_leave_management')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0 mb-2" >
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <span class="font-weight-bold">ID:</span> {{taskHead['employee_id']}} <br>
                     <span class="font-weight-bold">{{ $t('name')}}:</span> {{taskHead['first_name']}}
                 </div>
-                <div class="col-md-6">                                
+                <div class="col-md-4">                                
                     <span class="font-weight-bold">{{ $t('designation')}}:</span> {{taskHead['designation']}}<br>
                     <span class="font-weight-bold">{{ $t('department')}}:</span> {{taskHead['department']}}
+                </div>
+                <div class="col-md-4">                                
+                    <span class="font-weight-bold">{{ $t('joining_date')}}:</span> {{taskHead['start_date']}}<br>
+                    <span class="font-weight-bold">{{ $t('service_length')}}:</span> {{service_length(taskHead['start_date'])}}
                 </div>
             </div>
             <div class="modal-body row m-0 p-0 mb-4 border-top border-secondary" >
@@ -386,6 +390,21 @@ export default {
             if (this.task.length < 1) {
                 this.task = [{'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'annual_leave': 0, 'maternity_leave': 0, 'paternity_leave': 0, 'half_leave': 0}]
             }
+        },
+
+        service_length(str) {
+            var startDate = new Date(str);
+            var endDate = new Date();
+            var diff = Math.floor(endDate.getTime() - startDate.getTime());
+            var day = 1000 * 60 * 60 * 24;
+
+            var days = Math.floor(diff/day);
+            var months = Math.floor(days/31);
+            var years = Math.floor(months/12);
+
+            var message = days + " days "+ months + " months "+ years + " years"
+
+            return message
         },
 
         viewDetails(id) {

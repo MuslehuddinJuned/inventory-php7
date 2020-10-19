@@ -1,4 +1,5 @@
 { 
+    "service_length" : "Service Length",
     "month" : "Month",
     "other_leave" : "Other Leave",
     "total" : "Total",
