@@ -402,7 +402,7 @@ export default {
             var months = Math.floor(days/31);
             var years = Math.floor(months/12);
 
-            var message = days + " days "+ months + " months "+ years + " years"
+            var message = years + " years" + " months " + days + " days "
 
             return message
         },
@@ -513,12 +513,21 @@ export default {
 
         savePersonalLeave() {
             //need to add checking for leaves in current month
-            this.disable = !this.disable
-            this.buttonTitle = this.$t('saving')
+            
 
-            let oldDayCount = this.taskDetails[0]['day_count'], start = new Date(this.taskDetails[0]['leave_start']), end = new Date(this.taskDetails[0]['leave_end'])
+            let oldDayCount = this.taskDetails[0]['day_count'], 
+                start = new Date(this.taskDetails[0]['leave_start']), 
+                end = new Date(this.taskDetails[0]['leave_end'])
+            
+            if (start.getFullYear() != end.getFullYear()) {
+                this.$toast.error(this.$t('both_date_should_be_in_same_year'), this.$t('required'), {timeout: 3000, position: 'center'})
+                return
+            }
             this.taskDetails[0]['day_count'] = (end.getTime() - start.getTime())/(1000 * 3600 * 24)
             this.taskDetails[0]['day_count'] += 1
+            
+            this.disable = !this.disable
+            this.buttonTitle = this.$t('saving')
 
             if(this.taskDetails[0]['id'] == null){
                 axios.post(`api/usedleave`, this.taskDetails[0])

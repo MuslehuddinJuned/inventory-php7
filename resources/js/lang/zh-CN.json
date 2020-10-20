@@ -1,4 +1,6 @@
 {
+    "required" : "需要",
+    "both_date_should_be_in_same_year" : "两个日期都应该在同一年",
     "service_length" : "服务时长",
     "month" : "月",
     "other_leave" : "其他请假",
