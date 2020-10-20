@@ -80,7 +80,7 @@
               </router-link>
             </div>
           </li> -->
-          <li v-if="user && module_no == 2 && (checkRoles('employee_profile_View'))" class="nav-item dropdown">
+          <li v-if="user && module_no == 2 && (checkRoles('employee_profile_View') || checkRoles('personnel_file_View') || checkRoles('increment_file_View'))" class="nav-item dropdown">
             <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="people-fill"></b-icon> {{ $t('employee_management') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">
               <router-link v-if="checkRoles('employee_profile_View')" :to="{ name: 'hr.EmployeeProfile' }" class="dropdown-item pl-3">                
@@ -101,7 +101,7 @@
               </router-link>
             </div>
           </li>
-          <li v-if="user && module_no == 2 && (checkRoles('holiday_management_View') || checkRoles('leave_management_View'))" class="nav-item dropdown">
+          <li v-if="user && module_no == 2 && (checkRoles('upload_attendance_View') || checkRoles('holiday_management_View') || checkRoles('leave_management_View'))" class="nav-item dropdown">
             <a id="leave" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="smartwatch"></b-icon> {{ $t('attendance') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="leave">
               <router-link v-if="checkRoles('upload_attendance_View')" :to="{ name: 'hr.UploadAttendance' }" class="dropdown-item pl-3">                
@@ -122,22 +122,22 @@
               </router-link>
             </div>
           </li>
-          <li v-if="user && module_no == 2 && (checkRoles('salary_management_View'))" class="nav-item dropdown">
+          <li v-if="user && module_no == 2 && (checkRoles('salary_sheet_View') || checkRoles('salary_management_View'))" class="nav-item dropdown">
             <a id="payroll" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><fa icon="money-check-alt" fixed-width /> {{ $t('payroll') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="paroll">
               <router-link v-if="checkRoles('salary_management_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
                 <fa icon="money-bill-alt" fixed-width /> 
                 {{ $t('salary_management') }}
               </router-link>
-              <router-link v-if="checkRoles('salary_management_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
                 <fa icon="file-invoice-dollar" fixed-width />
                 {{ $t('salary_sheet') }}
               </router-link>
-              <router-link v-if="checkRoles('salary_management_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
                 <fa :icon="['fab', 'cc-amazon-pay']" />
                 {{ $t('pay_slip') }}
               </router-link>
-              <router-link v-if="checkRoles('salary_management_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
                 <fa icon="hand-holding-usd" fixed-width />
                 {{ $t('providant_fund') }}
               </router-link>

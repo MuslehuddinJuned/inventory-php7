@@ -38,6 +38,7 @@ export default [
   { path: '/upload-attendance', name: 'hr.UploadAttendance', component: page('hr/attendance/UploadAttendance.vue') },
   { path: '/daily-attendance', name: 'hr.DailyAttendance', component: page('hr/attendance/DailyAttendance.vue') },
   { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
+  { path: '/salary-sheet', name: 'hr.SalarySheet', component: page('hr/payroll/SalarySheet.vue') },
 
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
