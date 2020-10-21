@@ -28,6 +28,44 @@ class SalarysheetController extends Controller
         //
     }
 
+    public function ot($time, $in_time_1, $out_time_2, $ot) {
+        if ($ot) return $ot + $ot_extra;
+        if(!$time || strlen($out_time_2) < 5 || strlen($in_time_1) < 5) return 0;
+        
+        $diff = floor((strtotime($out_time_2) - strtotime($in_time_1))/3600);
+
+        if(($diff - 9) > 0) return $diff - 9;
+        return 0;
+    }
+
+    public function weeks($weeklyHoliday, $HolidayArray, $mnth, $start_date) {
+        $count = 0;
+        preg_match_all('!\d+!', $weeklyHoliday, $matches);
+        $weeks = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        for ($i=0; $i < count($matches[0]); $i++) { 
+            $offDays = [];
+
+            $offDays[0] = date('d',strtotime("first {$weeks[$matches[0][$i]]} of ".$mnth));
+            $offDays[1] = $offDays[0] + 7;
+            $offDays[2] =  $offDays[0] + 14;
+            $offDays[3] =  $offDays[0] + 21;
+            $offDays[4] = date('d',strtotime("last {$weeks[$matches[0][$i]]} of ".$mnth));
+
+            if($offDays[3] == $offDays[4]){
+                unset($offDays[4]);
+            }
+
+            foreach($offDays as $off){
+                if(strtotime(date('Y-m-d',strtotime(date($mnth."-".$off)))) > strtotime($start_date)
+                    && !in_array(date('Y-m-d',strtotime(date($mnth."-".$off))), $HolidayArray)) {
+                        $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -46,7 +84,80 @@ class SalarysheetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $start = date_create($request->start);
+        $end = date_create($request->end);
+        $date = $request->date;
+        $month_array = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        if(substr($date, 0, 4)%4 == 0) $month_array[1] = 29;
+        $days = $month_array[substr($date, 5, 2)];
+
+        $Salary = DB::SELECT("SELECT A.id employee_id, null year_mnth, basic_pay basic_monthly, medic_alw medic_allowance, house_rent, 
+            ta, da, providant_fund pf, tax, total_salary salary, 82 covert_rate, 0 attendance_bonus, 0 production_bonus, 0 worked_friday_hour, 
+            0 worked_friday_amount, 0 worked_holiday_hour, 0 worked_holiday_amount, (basic_pay*2/208)ot_rate, 0 ot_hour, 0 ot_amount, 
+            0 attendance_allowance, 0 present_days, 0 holidays, 0 absent_days, 0 absent_amount, 0 leave_days, 0 not_for_join_days, 0 not_for_join_amount, 0 gross_pay, 0 total_deduction, 0 net_pay FROM(SELECT id, employee_id, weekly_holiday, start_date FROM employees WHERE deleted_by = 0 and status = 'active'
+            )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, other_field, other_pay, providant_fund, tax, total_salary, bank_name, acc_no, employee_id FROM salaries
+            )B ON A.id = B.employee_id");
+
+        $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);        
+
+        for ($i=0; $i < count($Salary); $i++) { 
+            $Attendance = DB::SELECT("SELECT A.id, weekly_holiday, start_date, date, time, in_time_1, out_time_2, ot, ot_extra FROM(
+            SELECT id, employee_id, start_date, weekly_holiday FROM employees WHERE id = ?
+            )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date BETWEEN ? AND ?
+            )B ON A.employee_id = B.ac_no", [$Salary[$i]->employee_id, $start, $end]);
+            
+            $Leave = DB::SELECT("SELECT leave_type, leave_start, leave_end, day_count, employee_id 
+            FROM usedleaves WHERE employee_id = ? AND ((leave_start BETWEEN ? AND ?) OR (leave_end BETWEEN ? AND ?))", [$Salary[$i]->employee_id, $start, $end, $start, $end]);
+            
+            //for yearly holiday
+            $HolidayArray = [];
+            for ($j=0; $j < count($Holiday); $j++) { 
+                if(strtotime($Holiday[$j]->yearly_holiday) > strtotime($Attendance[0]->start_date))
+                $HolidayArray[] = $Holiday[$j]->yearly_holiday;
+            }
+
+            //for leave
+            for ($j = 0; $j < count($Leave); $j++) {
+                for ($k = 0; $k < $Leave[$j]->day_count; $k++) {
+                    $dates = date('Y-m-d', strtotime($Leave[$j]->leave_start .'+'.$k.' day'));
+                    if(substr($request->start, 0, 7) == substr($dates, 0, 7) && $Leave[$j]->leave_type != 'unpaid_leave'){
+                        $Salary[$i]->leave_days++;
+                    }                
+                }
+            }
+
+            // for present_day, absent_day, Over Time            
+            for ($j = 0; $j < count($Attendance); $j++) {
+                if (strlen($Attendance[$j]->in_time_1) > 0 && $Attendance[$j]->in_time_1 != '00:00') {
+                    $Salary[$i]->present_days++;
+                    $Salary[$i]->ot_hour += SalarysheetController::ot($Attendance[$j]->time, $Attendance[$j]->in_time_1, $Attendance[$j]->out_time_2, $Attendance[$j]->ot, $Attendance[$j]->ot_extra);
+                }
+            }
+
+            // to calculate  weekly_holiday
+            $weeklyHolidays = SalarysheetController::weeks($Attendance[0]->weekly_holiday, $HolidayArray, substr($request->start, 0, 7), $Attendance[0]->start_date);
+            
+            $Salary[$i]->holidays += (count($HolidayArray) + $weeklyHolidays);
+            $Salary[$i]->not_for_join_days = floor((strtotime($Attendance[0]->start_date) - strtotime($request->start))/(24*3600));
+            if($Salary[$i]->not_for_join_days < 0) $Salary[$i]->not_for_join_days = 0;
+            $Salary[$i]->absent_days = $days - $Salary[$i]->present_days - $Salary[$i]->holidays - $Salary[$i]->not_for_join_days;
+
+            if($days - $Salary[$i]->present_days - $Salary[$i]->holidays == 0) {
+                $Salary[$i]->attendance_bonus = 400;
+                $Salary[$i]->attendance_allowance = 2000;
+            }
+            $Salary[$i]->year_mnth = substr($request->start, 0, 7);
+            $Salary[$i]->ot_amount = $Salary[$i]->ot_hour * $Salary[$i]->ot_rate;
+            $Salary[$i]->absent_amount = $Salary[$i]->absent_days * (($Salary[$i]->basic_monthly/$days) + ($Salary[$i]->ta/$days) + ($Salary[$i]->da/$days));
+            $Salary[$i]->salary = $Salary[$i]->salary - $Salary[$i]->ta - $Salary[$i]->da + $Salary[$i]->pf;
+            $Salary[$i]->gross_pay = $Salary[$i]->salary + $Salary[$i]->ta + $Salary[$i]->da + $Salary[$i]->ot_amount + $Salary[$i]->attendance_bonus + $Salary[$i]->attendance_allowance;
+            $Salary[$i]->not_for_join_amount = $Salary[$i]->not_for_join_days * ($Salary[$i]->gross_pay/$days);
+            $Salary[$i]->total_deduction = $Salary[$i]->pf + $Salary[$i]->absent_amount + $Salary[$i]->not_for_join_amount;
+            $Salary[$i]->net_pay = $Salary[$i]->gross_pay - $Salary[$i]->total_deduction;
+        }
+
+        $data= json_decode( json_encode($Salary), true);
+        DB::table('salarysheets')->insert($data);
     }
 
     /**

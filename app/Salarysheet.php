@@ -14,4 +14,14 @@ class Salarysheet extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function ot($time, $in_time_1, $out_time_2, $ot) {
+        if ($ot) return $ot + $ot_extra;
+        if(!$time || strlen($time) < 7) return 0;
+        
+        $diff = floor((strtotime($out_time_2) - strtotime($in_time_1))/60);
+
+        if(($diff - 9) > 0) return $diff - 9;
+        return 0;
+    }
 }

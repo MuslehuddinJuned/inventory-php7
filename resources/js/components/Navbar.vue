@@ -129,7 +129,7 @@
                 <fa icon="money-bill-alt" fixed-width /> 
                 {{ $t('salary_management') }}
               </router-link>
-              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalarySheet' }" class="dropdown-item pl-3">                
                 <fa icon="file-invoice-dollar" fixed-width />
                 {{ $t('salary_sheet') }}
               </router-link>

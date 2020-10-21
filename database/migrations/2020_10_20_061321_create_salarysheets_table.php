@@ -15,8 +15,7 @@ class CreateSalarysheetsTable extends Migration
     {
         Schema::create('salarysheets', function (Blueprint $table) {
             $table->id();
-            $table->string('year_month')->nullable();
-            $table->date('next_increment')->nullable();
+            $table->string('year_mnth')->nullable();
             $table->double('basic_monthly')->nullable();
             $table->double('house_rent')->nullable();
             $table->double('medic_allowance')->nullable();
@@ -36,7 +35,9 @@ class CreateSalarysheetsTable extends Migration
             $table->double('fixed_allowance')->nullable();
             $table->double('attendance_allowance')->nullable();
             $table->double('present_days')->nullable();
+            $table->double('holidays')->nullable();
             $table->double('absent_days')->nullable();
+            $table->double('absent_amount')->nullable();
             $table->double('leave_days')->nullable();
             $table->double('advance')->nullable();
             $table->double('pf')->nullable();
@@ -48,6 +49,9 @@ class CreateSalarysheetsTable extends Migration
             $table->double('lay_off_amount')->nullable();
             $table->double('suspense_days')->nullable();
             $table->double('suspense_amount')->nullable();
+            $table->double('gross_pay')->nullable();
+            $table->double('total_deduction')->nullable();
+            $table->double('net_pay')->nullable();
 
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();

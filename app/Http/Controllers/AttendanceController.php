@@ -134,7 +134,7 @@ class AttendanceController extends Controller
             )B ON A.employee_id = B.ac_no", [$id, $start, $end]);
             
         $Leave = DB::SELECT("SELECT leave_type, leave_start, leave_end, day_count, employee_id 
-            FROM usedleaves WHERE employee_id = ? AND leave_start BETWEEN ? AND ?", [$id, $start, $end]);
+            FROM usedleaves WHERE employee_id = ? AND ((leave_start BETWEEN ? AND ?) OR (leave_end BETWEEN ? AND ?))", [$id, $start, $end, $start, $end]);
 
         $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);
 

@@ -1,4 +1,5 @@
 {
+    "generate_salary_sheet" : "生成工资表",
     "required" : "需要",
     "both_date_should_be_in_same_year" : "两个日期都应该在同一年",
     "service_length" : "服务时长",
@@ -231,7 +232,7 @@
     "InventoryItem" : "库存项目",
     "Inventory" : "库存",
     "appName" : "顺豪 (孟加拉國)",
-    "software_title" : "企业资源规划",
+    "software_title" : "企业资源规划 (ERP)",
     "ok": "确定",
     "cancel": "取消",
     "error_alert_title": "错误...",

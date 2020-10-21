@@ -1,4 +1,5 @@
 { 
+    "generate_salary_sheet" : "Generate Salary Sheet",
     "required" : "Required",
     "both_date_should_be_in_same_year" : "both dates should be in same year",
     "service_length" : "Service Length",
@@ -232,7 +233,7 @@
     "InventoryItem" : "Inventory Item",
     "Inventory" : "Inventory",
     "appName" : "Shun Ho BD",
-    "software_title" : "Enterprise Resource Planning",
+    "software_title" : "Enterprise Resource Planning (ERP)",
     "ok": "Ok",
     "cancel": "Cancel",
     "error_alert_title": "Oops...",

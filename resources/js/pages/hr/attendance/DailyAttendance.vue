@@ -285,6 +285,7 @@ export default {
                     
                     for (let k = 0; k < this.weeklyHoliday.length; k++) {
                         if(this.perAttendanceList[sn]['day'] == this.weekArray[this.weeklyHoliday[k]]) {
+                            if (this.perAttendanceList[sn]['status'] == 'absent') this.n_absent--
                             this.perAttendanceList[sn]['status'] = 'holiday'
                             this.n_weeklyholiday++
                         }                        
@@ -292,9 +293,10 @@ export default {
 
                     for (let l = 0; l < this.holiday.length; l++) {
                         if(this.perAttendanceList[sn]['date'] == this.holiday[l]['yearly_holiday']) {
+                            if (this.perAttendanceList[sn]['status'] == 'absent') this.n_absent--
+                            if (this.perAttendanceList[sn]['status'] == 'holiday') this.n_weeklyholiday--
                             this.perAttendanceList[sn]['status'] = this.holiday[l]['event']
                             this.n_holiday++
-                            if (this.perAttendanceList[sn]['status'] == 'holiday')  this.n_weeklyholiday--
                         }                        
                     }
 
