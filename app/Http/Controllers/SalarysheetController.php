@@ -25,10 +25,9 @@ class SalarysheetController extends Controller
      */
     public function index()
     {
-        $duplicate = Salarysheet::where('year_mnth', substr('2020-10-01', 0, 7))->count();
+        $Department = DB::SELECT("SELECT DISTINCT department FROM employees WHERE deleted_by = 0 and status = 'Active' ORDER BY department");
 
-        echo "<pre>";
-        \print_r($duplicate);
+        return compact('Department');
     }
 
     public function ot($time, $in_time_1, $out_time_2, $ot) {
@@ -93,7 +92,7 @@ class SalarysheetController extends Controller
             $end = date_create($request->end);
             $date = $request->date;
             $month_array = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            if(substr($date, 0, 4)%4 == 0) $month_array[1] = 29;
+            if(substr($date, 0, 4)%4 == 0) $month_array[2] = 29;
             $days = $month_array[substr($date, 5, 2)];
 
             $Salary = DB::SELECT("SELECT A.id employee_id, null year_mnth, ? no_fo_days, (basic_pay/?) basic_daily, basic_pay basic_monthly, medic_alw medic_allowance, house_rent, 
@@ -165,7 +164,7 @@ class SalarysheetController extends Controller
             DB::table('salarysheets')->insert($data);
         }
 
-        $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (SELECT *  FROM salarysheets WHERE year_mnth = ?
+        $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, (fixed_allowance+attendance_allowance)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (SELECT *  FROM salarysheets WHERE year_mnth = ?
             )A LEFT JOIN employees ON A.employee_id = employees.id", [substr($request->start, 0, 7)]);
 
         if(request()->expectsJson()){
@@ -207,7 +206,7 @@ class SalarysheetController extends Controller
      */
     public function update(Request $request, Salarysheet $salarysheet)
     {
-        //
+        $salarysheet->update($request->except('id', 'employee_id'));
     }
 
     /**
@@ -216,8 +215,8 @@ class SalarysheetController extends Controller
      * @param  \App\Salarysheet  $salarysheet
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Salarysheet $salarysheet)
+    public function destroy($date)
     {
-        //
+        DB::SELECT('DELETE FROM salarysheets WHERE year_mnth = ?', [$date]);
     }
 }
