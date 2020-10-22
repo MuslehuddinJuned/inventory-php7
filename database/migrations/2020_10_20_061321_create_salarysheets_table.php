@@ -15,12 +15,16 @@ class CreateSalarysheetsTable extends Migration
     {
         Schema::create('salarysheets', function (Blueprint $table) {
             $table->id();
+            $table->integer('checked')->nullable();
+            $table->string('no_fo_days')->nullable();
             $table->string('year_mnth')->nullable();
+            $table->double('basic_daily')->nullable();
             $table->double('basic_monthly')->nullable();
             $table->double('house_rent')->nullable();
             $table->double('medic_allowance')->nullable();
             $table->double('salary')->nullable();
             $table->double('covert_rate')->nullable();
+            $table->double('salary_usd')->nullable();
             $table->double('ta')->nullable();
             $table->double('da')->nullable();
             $table->double('attendance_bonus')->nullable();
