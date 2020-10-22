@@ -75,6 +75,8 @@
                 :tbody-transition-props="transProps"
                 :no-border-collapse="noCollapse"
                 @filtered="onFiltered"
+                @row-clicked="(item) => viewDetails(item.id)"
+                style="cursor : pointer"
                 class="table-transition table-bordered"
                 >
                 <template v-slot:table-busy>
@@ -241,6 +243,171 @@
                 </div>
             </div>
         </div>
+        <!-- Start view Details Modal -->
+        <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('employee_profile')" no-close-on-backdrop>
+            <!-- <div class="modal-body row m-0 p-0">
+                <div class="col-md-4 text-center m-0">
+                    <h4 class="">ID: {{task['employee_id']}}</h4>
+                    <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
+                </div>
+                <div class="col-md-8 m-0">
+                    <div class="col-md-12 p-0">
+                        <h2>{{task['name']}}</h2>
+                        <h4>{{task['designation']}}</h4>
+                        <h5>{{$t('department')}}: {{task['department']}}</h5>
+                    </div>
+                    <div class="row m-0 p-0 p-0 col-md-12 mt-5">
+                        <div class="col-md-4"><p class="font-weight-bold mb-0">{{$t('section')}}</p><p>{{task['section']}}</p></div>
+                        <div class="col-md-8"><p class="font-weight-bold mb-0">{{$t('work_location')}}</p><p>{{task['work_location']}}</p></div>
+                    </div>
+                    <div class="col-md-12 mt-2 p-0">
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['mobile_no']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('email')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['email']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['address']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-5 p-0">
+                        <h4>{{$t('personal_info')}}</h4>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('gender')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['gender']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('date_of_birth')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['date_of_birth']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('marital_status')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['marital_status']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('blood_group')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['blood_group']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('joining_date')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{`${task['start_date']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mt-5 p-0">
+                        <h4>{{$t('attendance')}}</h4>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('weekly_holidays')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{holiday}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('In Time')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['start_time']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('Out Time')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['end_time']}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mt-5 p-0">
+                        <h4>{{$t('contact_person')}}</h4>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('name')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['contact_name']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['contact_phone']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info my-auto">
+                                <p class="my-auto text-white font-weight-bold">{{$t('relationship')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['relationship']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['contact_address']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <template v-slot:modal-footer="">
+                <div class="col-md-12">
+                    <div class="col-md-5 float-left">
+                        <button v-if="checkRoles('employee_profile_Delete')" @click="employeeExit" class="mdb btn btn-outline-danger float-left">{{ $t('employee_exit') }}</button>
+                    </div>
+                    <div class="col-md-7 float-left">
+                        <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
+                        <button v-if="checkRoles('employee_profile_Update')" @click="editDetails" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
+                    </div>
+                </div>
+            </template> -->
+        </b-modal>
+        <!-- End view Details Modal -->
     </div>
 </template>
 
@@ -280,53 +447,6 @@ export default {
             filterOn: [],
             isBusy: false,
             noCollapse: true,
-
-            json_fields: {
-                'ID': 'employee_id',
-                'Name': 'first_name',
-                'Designation': 'designation',
-                'Joining Date': 'start_date',
-                'Days': 'no_fo_days',
-                'Basic (Daily)': 'basic_daily',
-                'Basic (Monthly)': 'basic_monthly',
-                'House Rent': 'house_rent',
-                'Medical Allowance': 'medic_allowance',
-                'Salary (৳)': 'salary',
-                'Rate': 'covert_rate',
-                'Salary ($)': 'salary_usd',
-                'T/A': 'ta',
-                'D/A': 'da',
-                'Attendance Bonus': 'attendance_bonus',
-                'Production Bonus': 'production_bonus',
-                'Worked on Friday (hr)': 'worked_friday_hour',
-                'Friday Amount': 'worked_friday_amount',
-                'Worked on Holiday (hr)': 'worked_holiday_hour',
-                'Holiday Amount': 'worked_holiday_amount',
-                'OT Rate': 'ot_rate',
-                'OT Hour': 'ot_hour',
-                'OT Amount': 'ot_amount',
-                'Fixed Allowance': 'fixed_allowance',
-                'Attendance Allowance': 'attendance_allowance',
-                'Total Allowance': 'total_allowance',
-                'Gross Pay': 'gross_pay',
-                'Present Days': 'present_days',
-                'Holidays': 'holidays',
-                'Absent Days': 'absent_days',
-                'Absent Amount': 'absent_amount',
-                'Leave Days': 'leave_days',
-                'Advance': 'advance',
-                'Provident Fund': 'pf',
-                'Income Tax': 'tax',
-                'Deducted Adjustment': 'deducted',
-                'Not for Join Days': 'not_for_join_days',
-                'Not for Join Amount': 'not_for_join_amount',
-                'Lay-off Days': 'lay_off_days',
-                'Lay-off Amount': 'lay_off_amount',
-                'Suspense Days': 'suspense_days',
-                'Suspense Amount': 'suspense_amount',
-                'Total Deduction': 'total_deduction',
-                'Net Payment': 'net_pay',
-            },
         }
     },
 
@@ -369,6 +489,11 @@ export default {
                 mnth = ("0" + (date.getMonth() + 1)).slice(-2),
                 day = ("0" + date.getDate()).slice(-2)
             return [year, mnth, day].join("-");
+        },
+
+        viewDetails(id) {
+            if(this.dataEdit) return
+            this.$refs['dataView'].show()
         },
 
         save() {
@@ -489,11 +614,91 @@ export default {
             return array
         },
 
+        json_fields() {
+            if (this.reportType == this.$t('details'))
+                return {
+                    'ID': 'employee_id',
+                    'Name': 'first_name',
+                    'Designation': 'designation',
+                    'Joining Date': 'start_date',
+                    'Days': 'no_fo_days',
+                    'Basic (Daily)': 'basic_daily',
+                    'Basic (Monthly)': 'basic_monthly',
+                    'House Rent': 'house_rent',
+                    'Medical Allowance': 'medic_allowance',
+                    'Salary (৳)': 'salary',
+                    'Rate': 'covert_rate',
+                    'Salary ($)': 'salary_usd',
+                    'T/A': 'ta',
+                    'D/A': 'da',
+                    'Attendance Bonus': 'attendance_bonus',
+                    'Production Bonus': 'production_bonus',
+                    'Worked on Friday (hr)': 'worked_friday_hour',
+                    'Friday Amount': 'worked_friday_amount',
+                    'Worked on Holiday (hr)': 'worked_holiday_hour',
+                    'Holiday Amount': 'worked_holiday_amount',
+                    'OT Rate': 'ot_rate',
+                    'OT Hour': 'ot_hour',
+                    'OT Amount': 'ot_amount',
+                    'Fixed Allowance': 'fixed_allowance',
+                    'Attendance Allowance': 'attendance_allowance',
+                    'Total Allowance': 'total_allowance',
+                    'Gross Pay': 'gross_pay',
+                    'Present Days': 'present_days',
+                    'Holidays': 'holidays',
+                    'Absent Days': 'absent_days',
+                    'Absent Amount': 'absent_amount',
+                    'Leave Days': 'leave_days',
+                    'Advance': 'advance',
+                    'Provident Fund': 'pf',
+                    'Income Tax': 'tax',
+                    'Deducted Adjustment': 'deducted',
+                    'Not for Join Days': 'not_for_join_days',
+                    'Not for Join Amount': 'not_for_join_amount',
+                    'Lay-off Days': 'lay_off_days',
+                    'Lay-off Amount': 'lay_off_amount',
+                    'Suspense Days': 'suspense_days',
+                    'Suspense Amount': 'suspense_amount',
+                    'Total Deduction': 'total_deduction',
+                    'Net Payment': 'net_pay',
+                }
+
+                return {
+                    'ID': 'employee_id',
+                    'Name': 'first_name',
+                    'Designation': 'designation',
+                    'Basic (Monthly)': 'basic_monthly',
+                    'House Rent': 'house_rent',
+                    'Medical Allowance': 'medic_allowance',
+                    'Salary (৳)': 'salary',
+                    'Salary ($)': 'salary_usd',
+                    'T/A': 'ta',
+                    'D/A': 'da',
+                    'Attendance Bonus': 'attendance_bonus',
+                    'OT Hour': 'ot_hour',
+                    'OT Rate': 'ot_rate',
+                    'OT Amount': 'ot_amount',
+                    'Total Allowance': 'total_allowance',
+                    'Gross Pay': 'gross_pay',
+                    'Present Days': 'present_days',
+                    'Holidays': 'holidays',
+                    'Absent Days': 'absent_days',
+                    'Absent Amount': 'absent_amount',
+                    'Leave Days': 'leave_days',
+                    'Provident Fund': 'pf',
+                    'Income Tax': 'tax',
+                    'Not for Join Days': 'not_for_join_days',
+                    'Not for Join Amount': 'not_for_join_amount',
+                    'Total Deduction': 'total_deduction',
+                    'Net Payment': 'net_pay',
+                }
+            },
+
         fields() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('generate_salary_sheet')
-            
+            if (this.reportType == this.$t('details'))
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'bg-white border-top border-dark font-weight-bold'},
@@ -540,7 +745,55 @@ export default {
                 { key: 'suspense_amount', label : this.$t('suspense_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 { key: 'total_deduction', label : this.$t('total_deduction'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 { key: 'net_pay', label : this.$t('net_pay'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
-            ]            
+            ]  
+            
+            return [
+                { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'first_name', label : this.$t('name'), sortable: true, stickyColumn: true, class: 'text-center align-middle bg-white bg-white', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'no_fo_days', label : this.$t('days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'basic_daily', label : this.$t('basic_daily'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'basic_monthly', label : this.$t('basic_monthly'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'house_rent', label : this.$t('house_rent'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'medic_allowance', label : this.$t('medic_alw'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'salary', label : this.$t('salary_tk'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'covert_rate', label : this.$t('covert_rate'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'salary_usd', label : this.$t('salary_usd'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'ta', label : this.$t('ta'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'da', label : this.$t('da'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'attendance_bonus', label : this.$t('attendance_bonus'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'production_bonus', label : this.$t('production_bonus'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'worked_friday_hour', label : this.$t('worked_friday_hour'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'worked_friday_amount', label : this.$t('worked_friday_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'worked_holiday_hour', label : this.$t('worked_holiday_hour'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'worked_holiday_amount', label : this.$t('worked_holiday_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'ot_hour', label : this.$t('ot_hour'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'ot_rate', label : this.$t('ot_rate'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'ot_amount', label : this.$t('ot_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'fixed_allowance', label : this.$t('fixed_allowance'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'attendance_allowance', label : this.$t('attendance_allowance'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'total_allowance', label : this.$t('total_allowance'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'gross_pay', label : this.$t('gross_pay'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'present_days', label : this.$t('present_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'holidays', label : this.$t('holidays'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'absent_days', label : this.$t('absent_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'absent_amount', label : this.$t('absent_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'leave_days', label : this.$t('leave_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'advance', label : this.$t('advance'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'pf', label : this.$t('providant_fund'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'tax', label : this.$t('tax'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'deducted', label : this.$t('deducted'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'not_for_join_days', label : this.$t('not_for_join_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'not_for_join_amount', label : this.$t('not_for_join_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'lay_off_days', label : this.$t('lay_off_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'lay_off_amount', label : this.$t('lay_off_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'suspense_days', label : this.$t('suspense_days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                // { key: 'suspense_amount', label : this.$t('suspense_amount'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'total_deduction', label : this.$t('total_deduction'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'net_pay', label : this.$t('net_pay'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+            ] 
         },
     },
 
