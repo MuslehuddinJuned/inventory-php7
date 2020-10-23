@@ -17,6 +17,7 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
                     <b-form-group class="mb-0 mr-auto">
@@ -42,7 +43,7 @@
                     </b-form-group>                        
                 </div>
                 <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                :items="attendanceList"
+                :items="attendanceByDepartment"
                 :fields="fields"
                 :current-page="currentPage"
                 :per-page="perPage"
@@ -154,6 +155,8 @@ export default {
             dataEdit: false,
             audit: false,
             roles: [],
+            DepartmentList: [],
+            DepartmentName: 'Management',
             attendance_date: this.convertDate(new Date()),
             savingDate: null,
             weekArray: [this.$t('sunday'), this.$t('monday'), this.$t('tuesday'), this.$t('wednesday'), this.$t('thursday'), this.$t('friday'), this.$t('saturday')],
@@ -177,6 +180,12 @@ export default {
     },
 
     mounted() {
+        fetch(`api/salarysheet`)
+        .then(res => res.json())
+        .then(res => {
+            this.DepartmentList = res['Department'];
+        })
+
         this.fetchData()
         fetch(`api/settings/roles`)
         .then(res => res.json())
@@ -463,6 +472,18 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
             return this.$t('TypetoSearch')
+        },
+
+        attendanceByDepartment() {
+            let array = [], k=0
+            for (let i = 0; i < this.attendanceList.length; i++) {
+                if (this.attendanceList[i]['department'] == this.DepartmentName) {
+                    array[k++] = this.attendanceList[i]
+                }                
+            }
+
+            this.totalRows = array.length
+            return array
         },
 
         fields() {

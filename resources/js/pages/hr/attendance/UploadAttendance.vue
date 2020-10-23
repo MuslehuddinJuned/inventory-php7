@@ -17,11 +17,9 @@
             <div v-if="checkRoles('upload_attendance_Insert')" class="card-body my-3">
                 <form class="was-validated row m-0 p-0" >
                     <div class="form-group is-invalid col-md-4">
-                        <!-- <label>{{ $t('date') }}</label> -->
                         <input type="date" v-model="savingDate" class="form-control" required>
                     </div>
                     <div class="input-group is-invalid col-md-6">
-                        <!-- <label>{{ $t('choose_file') }}</label> -->
                         <div class="custom-file">
                             <input type="file" @change="handleFileUpload" v-if="uploadReady" class="custom-file-input" id="validatedInputGroupCustomFile" required>
                             <label class="custom-file-label" for="validatedInputGroupCustomFile" :data-browse="$t('browse')"> {{fileName}}</label>
@@ -33,13 +31,18 @@
                 </form>
             </div>
             <div class="card-header">
-                <h3 class="panel-title float-left">
-                    {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})
-                    <fa v-if="checkRoles('upload_attendance_Update') && !dataEdit" @click="dataEdit = true" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
-                    <b-icon icon="circle-fill" animation="throb" class="text-success" :class="loading"></b-icon>
-                    <fa v-if="checkRoles('upload_attendance_Update') && dataEdit" @click="dataEdit = false" icon="save" class="ml-2 pointer text-success" fixed-width v-b-tooltip.hover :title="$t('save')"/> 
-                    <fa v-if="checkRoles('upload_attendance_Delete')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
-                </h3>
+                <div class="col-12 row m-0 p-0">
+                    <div class="col-md-8">
+                        <h3 class="panel-title float-left">
+                            {{ $t('daily_attendance') }} ({{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY') }})
+                            <fa v-if="checkRoles('upload_attendance_Update') && !dataEdit" @click="dataEdit = true" icon="edit" class="ml-2 pointer" fixed-width v-b-tooltip.hover :title="$t('edit')"/> 
+                            <b-icon icon="circle-fill" animation="throb" class="text-success" :class="loading"></b-icon>
+                            <fa v-if="checkRoles('upload_attendance_Update') && dataEdit" @click="dataEdit = false" icon="save" class="ml-2 pointer text-success" fixed-width v-b-tooltip.hover :title="$t('save')"/> 
+                            <fa v-if="checkRoles('upload_attendance_Delete')" @click="destroy" icon="trash-alt" class="ml-2 pointer text-danger" fixed-width v-b-tooltip.hover :title="$t('delete')"/> 
+                        </h3>
+                    </div>
+                    <div class="col-md-4 noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
+                </div>
             </div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
@@ -66,7 +69,7 @@
                     </b-form-group>                        
                 </div>
                 <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                :items="attendanceList"
+                :items="attendanceByDepartment"
                 :fields="fields"
                 :current-page="currentPage"
                 :per-page="perPage"
@@ -157,6 +160,8 @@ export default {
             uploadReady: true,
             dataEdit: false,
             roles: [],
+            DepartmentList: [],
+            DepartmentName: 'Management',
             attendance_date: this.convertDate(new Date()),
             savingDate: null,
             buttonTitle : this.$t('save'),
@@ -179,6 +184,11 @@ export default {
     },
 
     mounted() {
+        fetch(`api/salarysheet`)
+        .then(res => res.json())
+        .then(res => {
+            this.DepartmentList = res['Department'];
+        })
 
         this.fetchData()
         fetch(`api/settings/roles`)
@@ -427,6 +437,18 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
             return this.$t('TypetoSearch')
+        },
+
+        attendanceByDepartment() {
+            let array = [], k=0
+            for (let i = 0; i < this.attendanceList.length; i++) {
+                if (this.attendanceList[i]['department'] == this.DepartmentName) {
+                    array[k++] = this.attendanceList[i]
+                }                
+            }
+
+            this.totalRows = array.length
+            return array
         },
 
         fields() {
