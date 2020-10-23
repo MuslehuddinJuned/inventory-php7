@@ -394,17 +394,13 @@ export default {
 
         service_length(str) {
             var startDate = new Date(str);
-            var endDate = new Date();
-            var diff = Math.floor(endDate.getTime() - startDate.getTime());
-            var day = 1000 * 60 * 60 * 24;
-
-            var days = Math.floor(diff/day);
-            var months = Math.floor(days/31);
-            var years = Math.floor(months/12);
-
-            var message = years + " years" + " months " + days + " days "
-
-            return message
+            var endDate = new Date(),
+                year = endDate.getFullYear() - startDate.getFullYear(),
+                mnth = endDate.getMonth() - startDate.getMonth(),
+                day = endDate.getDate() - startDate.getDate()
+                if(day < 0) {day += 30; mnth--}
+                if(mnth < 0) {mnth += 12; year--}
+            return year + " years " + mnth + " months " + day + " days ";
         },
 
         viewDetails(id) {
