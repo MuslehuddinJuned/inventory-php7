@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Wipissue;
+use App\Prodparts;
 use Illuminate\Http\Request;
 
-class WipissueController extends Controller
+class ProdpartsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class WipissueController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Wipissue  $wipissue
+     * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function show(Wipissue $wipissue)
+    public function show(Prodparts $prodparts)
     {
         //
     }
@@ -52,10 +52,10 @@ class WipissueController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Wipissue  $wipissue
+     * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function edit(Wipissue $wipissue)
+    public function edit(Prodparts $prodparts)
     {
         //
     }
@@ -64,10 +64,10 @@ class WipissueController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Wipissue  $wipissue
+     * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Wipissue $wipissue)
+    public function update(Request $request, Prodparts $prodparts)
     {
         //
     }
@@ -75,10 +75,10 @@ class WipissueController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Wipissue  $wipissue
+     * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Wipissue $wipissue)
+    public function destroy(Prodparts $prodparts)
     {
         //
     }

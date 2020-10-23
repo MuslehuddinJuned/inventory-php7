@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWipreceivesTable extends Migration
+class CreateProdpartsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateWipreceivesTable extends Migration
      */
     public function up()
     {
-        Schema::create('wipreceives', function (Blueprint $table) {
+        Schema::create('prodparts', function (Blueprint $table) {
             $table->id();
-            $table->double('receive_qty')->nullable();
-            $table->string('etd')->nullable();
+            $table->float('quantity')->nullable();
             $table->string('remarks')->nullable();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('producthead_id');
-            $table->unsignedBigInteger('deleted_by')->default(0);
-
+            $table->unsignedBigInteger('subpart_id');
+            $table->unsignedBigInteger('polist_id');
+            $table->unsignedBigInteger('prodstore_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateWipreceivesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wipreceives');
+        Schema::dropIfExists('prodparts');
     }
 }

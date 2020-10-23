@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWipissuesTable extends Migration
+class CreateProdstoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreateWipissuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('wipissues', function (Blueprint $table) {
+        Schema::create('prodstores', function (Blueprint $table) {
             $table->id();
-            $table->double('issue_qty')->nullable();
-            $table->string('etd')->nullable();
+            $table->string('name')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('producthead_id');
             $table->unsignedBigInteger('deleted_by')->default(0);
-
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreateWipissuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wipissues');
+        Schema::dropIfExists('prodstores');
     }
 }

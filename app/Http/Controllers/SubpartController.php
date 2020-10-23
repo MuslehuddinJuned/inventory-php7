@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Wipreceive;
+use App\Subpart;
 use Illuminate\Http\Request;
 
-class WipreceiveController extends Controller
+class SubpartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class WipreceiveController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Wipreceive  $wipreceive
+     * @param  \App\Subpart  $subpart
      * @return \Illuminate\Http\Response
      */
-    public function show(Wipreceive $wipreceive)
+    public function show(Subpart $subpart)
     {
         //
     }
@@ -52,10 +52,10 @@ class WipreceiveController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Wipreceive  $wipreceive
+     * @param  \App\Subpart  $subpart
      * @return \Illuminate\Http\Response
      */
-    public function edit(Wipreceive $wipreceive)
+    public function edit(Subpart $subpart)
     {
         //
     }
@@ -64,10 +64,10 @@ class WipreceiveController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Wipreceive  $wipreceive
+     * @param  \App\Subpart  $subpart
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Wipreceive $wipreceive)
+    public function update(Request $request, Subpart $subpart)
     {
         //
     }
@@ -75,10 +75,10 @@ class WipreceiveController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Wipreceive  $wipreceive
+     * @param  \App\Subpart  $subpart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Wipreceive $wipreceive)
+    public function destroy(Subpart $subpart)
     {
         //
     }

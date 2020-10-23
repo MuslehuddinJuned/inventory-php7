@@ -27,7 +27,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        return 'hi';
+        //return 'hi';
     }
 
     /**
@@ -59,8 +59,8 @@ class AttendanceController extends Controller
 
         $fileName = str_random().'.'.$extesion;
         $path = public_path().'/file/attendance/'.$fileName;
-        file_put_contents($path, $decoded);
         // $path = '/home/sustipe/inventory.sustipe.com/file/attendance/'.$fileName;
+        file_put_contents($path, $decoded);
 
         // $data = Excel::import(new AttendanceImport, $path);
         $data = Excel::toArray(new AttendanceImport, $path);
@@ -88,7 +88,6 @@ class AttendanceController extends Controller
             DB::table('attendances')->insert($insert_data);
         }
         
-        // @unlink('/storage/framework/laravel-excel/laravel-excel-'.$fileName);
         @unlink($path);
 
         // if(request()->expectsJson()){

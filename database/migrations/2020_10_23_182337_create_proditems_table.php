@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWipstoresTable extends Migration
+class CreateProditemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateWipstoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('wipstores', function (Blueprint $table) {
+        Schema::create('proditems', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('remarks')->nullable();
+            $table->float('transfer_qty')->nullable();
+            $table->unsignedBigInteger('from_channel_id')->nullable();
+            $table->unsignedBigInteger('to_channel_id')->nullable();
+            $table->unsignedBigInteger('polist_id');
+            $table->unsignedBigInteger('producthead_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('deleted_by')->default(0);
-
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateWipstoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wipstores');
+        Schema::dropIfExists('proditems');
     }
 }
