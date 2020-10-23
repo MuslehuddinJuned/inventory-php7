@@ -147,7 +147,7 @@
                     <b-tfoot>
                         <b-tr>
                             <b-td class="border border-dark" colspan="2" variant="success">{{ $t('total_salary')}}</b-td>
-                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = (parseFloat(task['basic_pay']) + parseFloat(task['house_rent']) + parseFloat(task['medic_alw']) + parseFloat(task['ta']) + parseFloat(task['da']) - parseFloat(task['providant_fund'])- parseFloat(task['tax']))}}</b-td>
+                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = (parseFloat(task['basic_pay'] || 0) + parseFloat(task['house_rent'] || 0) + parseFloat(task['medic_alw'] || 0) + parseFloat(task['ta'] || 0) + parseFloat(task['da'] || 0) - parseFloat(task['providant_fund'] || 0)- parseFloat(task['tax'] || 0))}}</b-td>
                         </b-tr>
                     </b-tfoot>
                 </b-table-simple>
