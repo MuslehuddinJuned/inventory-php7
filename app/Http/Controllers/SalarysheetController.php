@@ -181,9 +181,20 @@ class SalarysheetController extends Controller
      * @param  \App\Salarysheet  $salarysheet
      * @return \Illuminate\Http\Response
      */
-    public function show(Salarysheet $salarysheet)
+    public function show($salarysheet)
     {
-        //
+        $pfSummary = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, pf FROM (
+            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
+            )A LEFT JOIN(SELECT employee_id, SUM(pf)pf FROM salarysheets GROUP BY employee_id
+            )B ON A.id = B.employee_id");
+
+        $pfDetails = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, section, work_location, 
+            start_date, employee_image, year_mnth, pf FROM (SELECT id, employee_id, first_name, last_name, designation, department, 
+            section, work_location, start_date, employee_image FROM employees WHERE deleted_by = 0 and status = 'active'
+            )A LEFT JOIN(SELECT employee_id, year_mnth, pf FROM salarysheets
+            )B ON A.id = B.employee_id");
+
+        return compact('pfSummary', 'pfDetails');
     }
 
     /**

@@ -133,11 +133,7 @@
                 <fa icon="file-invoice-dollar" fixed-width />
                 {{ $t('salary_sheet') }}
               </router-link>
-              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
-                <fa :icon="['fab', 'cc-amazon-pay']" />
-                {{ $t('pay_slip') }}
-              </router-link>
-              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.SalaryManagement' }" class="dropdown-item pl-3">                
+              <router-link v-if="checkRoles('salary_sheet_View')" :to="{ name: 'hr.ProvidantFund' }" class="dropdown-item pl-3">                
                 <fa icon="hand-holding-usd" fixed-width />
                 {{ $t('providant_fund') }}
               </router-link>

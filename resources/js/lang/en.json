@@ -1,4 +1,6 @@
 { 
+    "company_contribution" : "Company Contribution",
+    "Own Contribution" : "Own Contribution",
     "basic_daily" : "Basic (Daily)",
     "basic_monthly" : "Basic (Monthly)",
     "salary_tk" : "Salary (৳)",
