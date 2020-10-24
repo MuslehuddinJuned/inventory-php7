@@ -103,7 +103,7 @@
         <b-modal ref="dataEdit" id="dataView" size="lg" :title="$t('production_monitor')" no-close-on-backdrop ok-only>
             <div class="modal-body row m-0 p-0">
                 <div class="col-md-3 text-center m-0">
-                    <img style="width: 100%; " :src="'/images/employee/' + productionMonitoringById['product_image']" alt="Picture not found">
+                    <img style="width: 100%; " :src="'/images/product/' + productionMonitoringById['product_image']" alt="Picture not found">
                 </div>
                 <div class="col-md-9 row m-0 p-0">
                     <!-- po_no, etd, A.producthead_id, buyer, product_style, product_code, product_image, -->
@@ -118,13 +118,13 @@
                 </div>
                 <div class="col-md-12 m-0 p-0">
                     <div class="card-body m-0 p-0">
-                        <b-table :items="productionByStore" :fields="productionFields" :busy="isBusy" show-empty small striped hover stacked="md">
-                        <template v-slot:table-busy>
+                        <b-table :items="productionByStore" :fields="productionFields" show-empty small striped hover stacked="md">
+                        <!-- <template v-slot:table-busy>
                             <div class="text-center align-middle text-success my-2">
                                 <b-spinner class="align-middle"></b-spinner>
                                 <strong>{{$t('loading')}}</strong>
                             </div>
-                        </template>
+                        </template> -->
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
                         </template>
@@ -183,6 +183,7 @@ export default {
             noprint : '',
             buttonTitle : this.$t('save'),
             disable: false,
+            check: false,
 
             transProps: {
                 // Transition name
@@ -248,6 +249,7 @@ export default {
         editDetails(id) {
             this.poId = id
             this.noprint = 'noprint'
+            this.check = false
             // this.isBusy = true
             fetch(`api/production/${id}`)
             .then(res => res.json())
@@ -266,8 +268,22 @@ export default {
         },
 
         hideModal() {
-            this.noprint = ''
-            this.$refs['dataEdit'].hide()
+            this.isBusy = true
+            if (this.check) {                
+                fetch(`api/production`)
+                .then(res => res.json())
+                .then(res => {
+                    this.productionMonitoring = res['Production']
+                    this.isBusy = false
+                    this.noprint = ''
+                    this.$refs['dataEdit'].hide()
+                })
+            } else {
+                this.isBusy = false
+                this.noprint = ''
+                this.$refs['dataEdit'].hide()
+            }
+            
         },
 
         addRow() {            
@@ -277,28 +293,43 @@ export default {
         save() {
             this.disable = !this.disable;
             this.buttonTitle = this.$t('saving')
-            console.log(this.productionByStore)
             for (let i = 0; i < this.productionByStore.length; i++) {
                 if(this.productionByStore[i]['id']){
                     axios.patch(`api/production/${this.productionByStore[i]['id']}`, this.productionByStore[i])
+                    .then(res => {
+                        if(i == this.productionByStore.length-1) {
+                            this.disable = !this.disable;
+                            this.buttonTitle = this.$t('save')
+                            this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
+                            this.check = true 
+                        }
+                    })
+                    .catch(err => {
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                        alert(err.response.data.message)  
+                    })
                 } else {
                     axios.post(`api/production`, this.productionByStore[i])
-                }                            
+                    .then(res => {
+                        if(i == this.productionByStore.length-1) {
+                            this.disable = !this.disable;
+                            this.buttonTitle = this.$t('save')
+                            this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
+                            this.check = true 
+                        }
+                    })
+                    .catch(err => {
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                        alert(err.response.data.message)  
+                    })
+                }                          
             }
 
-            this.isBusy = true;
-            this.$nextTick(() => {
-                fetch(`api/production`)
-                .then(res => res.json())
-                .then(res => {
-                    this.productionMonitoring = res['Production']
-                    this.isBusy = false
-                    this.disable = !this.disable;
-                    this.buttonTitle = this.$t('save')
-                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.hideModal()
-                })
-            });
+            if (que == this.productionByStore.length) {
+                               
+            }
 
         },
 
