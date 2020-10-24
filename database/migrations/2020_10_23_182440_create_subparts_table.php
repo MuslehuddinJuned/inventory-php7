@@ -17,7 +17,7 @@ class CreateSubpartsTable extends Migration
             $table->id();
             $table->string('parts_name')->nullable();
             $table->string('parts_description')->nullable();
-            $table->float('parts_qty')->nullable();
+            $table->double('parts_qty')->nullable();
             $table->string('unit')->nullable();
             $table->text('remarks')->nullable();
             
@@ -25,7 +25,7 @@ class CreateSubpartsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('producthead_id')->references('id')->on('producthead')->onDelete('cascade');
+            $table->foreign('producthead_id')->references('id')->on('productheads')->onDelete('cascade');
         });
     }
 

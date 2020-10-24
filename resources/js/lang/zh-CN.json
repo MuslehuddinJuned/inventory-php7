@@ -1,4 +1,13 @@
 {
+    "assembly" : "装配",
+    "injection" : "注射",
+    "polish" : "抛光",
+    "cutting" : "裁切",
+    "color_card" : "色卡",
+    "carton" : "纸箱",
+    "daily_production" : "日产量",
+    "production_monitor" : "生产监控",
+    "production" : "生产",
     "company_contribution" : "公司贡献",
     "Own Contribution" : "自己的贡献",
     "basic_daily" : "基本 (每日)",

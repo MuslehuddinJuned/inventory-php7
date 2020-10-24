@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Prodparts;
+use DB;
 use Illuminate\Http\Request;
 
 class ProdpartsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *

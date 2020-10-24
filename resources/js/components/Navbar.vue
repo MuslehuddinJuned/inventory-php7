@@ -63,23 +63,19 @@
               </router-link> -->
             </div>
           </li>
-          <!-- <li v-if="user  && module_no == 1" class="nav-item dropdown">
-            <a id="wip" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="hourglass-split"></b-icon> {{ $t('WIP') }}</a>
+          <li v-if="user  && module_no == 1 && (checkRoles('production_View'))" class="nav-item dropdown">
+            <a id="wip" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="tools"></b-icon> {{ $t('production') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="product">
-              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.SemifinishedGoods' }" class="dropdown-item pl-3">                
-                <b-icon icon="hourglass-top"></b-icon>
-                {{ $t('semifinished_goods') }}
+              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionMonitor' }" class="dropdown-item pl-3">                
+                <b-icon icon="list-check"></b-icon>
+                {{ $t('production_monitor') }}
               </router-link>
-              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.FinishedGoods' }" class="dropdown-item pl-3">
-                <b-icon icon="hourglass-bottom"></b-icon>
-                {{ $t('finished_goods') }}
-              </router-link>
-              <router-link v-if="checkRoles('InventoryItem_View')" :to="{ name: 'wip.GoodsLocation' }" class="dropdown-item pl-3">
-                <fa icon="map-marked-alt" fixed-width/>
-                {{ $t('goods_location') }}
+              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.DailyProduction' }" class="dropdown-item pl-3">
+                <b-icon icon="graph-up"></b-icon>
+                {{ $t('daily_production') }}
               </router-link>
             </div>
-          </li> -->
+          </li>
           <li v-if="user && module_no == 2 && (checkRoles('employee_profile_View') || checkRoles('personnel_file_View') || checkRoles('increment_file_View'))" class="nav-item dropdown">
             <a id="employee" class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b-icon icon="people-fill"></b-icon> {{ $t('employee_management') }}</a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="employee">

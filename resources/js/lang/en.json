@@ -1,4 +1,13 @@
 { 
+    "assembly" : "Assembly",
+    "injection" : "Injection",
+    "polish" : "Polish",
+    "cutting" : "Cutting",
+    "color_card" : "Color Card",
+    "carton" : "Carton",
+    "daily_production" : "Daily Production",
+    "production_monitor" : "Production Monitoring",
+    "production" : "Production",
     "company_contribution" : "Company Contribution",
     "Own Contribution" : "Own Contribution",
     "basic_daily" : "Basic (Daily)",

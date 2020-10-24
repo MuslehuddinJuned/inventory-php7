@@ -15,7 +15,9 @@ class CreateProditemsTable extends Migration
     {
         Schema::create('proditems', function (Blueprint $table) {
             $table->id();
-            $table->float('transfer_qty')->nullable();
+            $table->double('prod_qty')->nullable();
+            $table->string('remarks')->nullable();
+            $table->unsignedBigInteger('prodstore_id')->nullable();
             $table->unsignedBigInteger('from_channel_id')->nullable();
             $table->unsignedBigInteger('to_channel_id')->nullable();
             $table->unsignedBigInteger('polist_id');

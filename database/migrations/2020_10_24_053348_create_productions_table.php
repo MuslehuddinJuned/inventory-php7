@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProdpartsTable extends Migration
+class CreateProductionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateProdpartsTable extends Migration
      */
     public function up()
     {
-        Schema::create('prodparts', function (Blueprint $table) {
+        Schema::create('productions', function (Blueprint $table) {
             $table->id();
-            $table->double('quantity')->nullable();
-            $table->string('remarks')->nullable();
-            $table->unsignedBigInteger('producthead_id');
-            $table->unsignedBigInteger('subpart_id');
+            $table->double('prod_qty')->nullable();
+            $table->date('prod_date')->nullable();
+            $table->text('remarks')->nullable();
             $table->unsignedBigInteger('polist_id');
+            $table->unsignedBigInteger('producthead_id');
             $table->unsignedBigInteger('prodstore_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
@@ -33,6 +33,6 @@ class CreateProdpartsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prodparts');
+        Schema::dropIfExists('productions');
     }
 }

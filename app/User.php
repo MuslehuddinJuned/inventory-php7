@@ -208,4 +208,20 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function salarysheet(){
         return $this->hasMany(Salarysheet::class);
     }
+
+    public function production(){
+        return $this->hasMany(Production::class);
+    }
+
+    // public function prodparts(){
+    //     return $this->hasMany(Prodparts::class);
+    // }
+
+    // public function prodstore(){
+    //     return $this->hasMany(Prodstore::class);
+    // }
+
+    // public function subpart(){
+    //     return $this->hasMany(Subpart::class);
+    // }
 }

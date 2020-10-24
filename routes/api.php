@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('attendance', 'AttendanceController')->middleware('can:upload_attendance_View');
     Route::resource('personnel', 'PersonnelController')->middleware('can:personnel_file_View');
     Route::resource('wagehike', 'WagehikeController')->middleware('can:increment_file_View');
+    Route::resource('production', 'ProductionController')->middleware('can:production_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
