@@ -25,7 +25,9 @@ class ProdstoreController extends Controller
      */
     public function index()
     {
-        //
+        $Prodstore = DB::SELECT("SELECT id, name FROM prodstores WHERE deleted_by = 0");
+
+        return compact('Prodstore');
     }
 
     /**
@@ -55,9 +57,18 @@ class ProdstoreController extends Controller
      * @param  \App\Prodstore  $prodstore
      * @return \Illuminate\Http\Response
      */
-    public function show(Prodstore $prodstore)
+    public function show($date)
     {
-        //
+        $Production = DB::SELECT("SELECT buyer, product_style, product_code, product_image, quantity, po_date, po_no, etd, prod_qty, (total_qty-quantity)remain_qty, prod_date, A.remarks, prodstore_id FROM(
+                SELECT id, prod_qty, SUM(total_qty)total_qty, prod_date, remarks, A.polist_id, A.producthead_id, A.prodstore_id FROM(
+                SELECT id, prod_qty, prod_date, remarks, polist_id, producthead_id, prodstore_id FROM productions WHERE prod_date = ?
+                )A LEFT JOIN(SELECT prod_qty total_qty, polist_id, prodstore_id, producthead_id FROM productions
+                )B ON A.polist_id = B.polist_id AND A.prodstore_id = B.prodstore_id AND A.producthead_id = B.producthead_id GROUP BY id, prod_qty, prod_date, remarks, polist_id, producthead_id, prodstore_id
+            )A LEFT JOIN (SELECT id, quantity, remarks, po_date, po_no, etd FROM polists
+            )B ON A.polist_id = B.id LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads
+            )C ON A.producthead_id = C.id",[$date]);
+
+        return compact('Production');
     }
 
     /**

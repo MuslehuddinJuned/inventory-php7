@@ -106,7 +106,6 @@
                     <img style="width: 100%; " :src="'/images/product/' + productionMonitoringById['product_image']" alt="Picture not found">
                 </div>
                 <div class="col-md-9 row m-0 p-0">
-                    <!-- po_no, etd, A.producthead_id, buyer, product_style, product_code, product_image, -->
                     <div class="col-4 bg-info text-white">{{$t('buyer')}}</div><div class="col-8 bg-info text-white">{{productionMonitoringById['buyer']}}</div>
                     <div class="col-4 bg-light">{{$t('style') + ' ' + $t('name')}}</div><div class="col-8 bg-light">{{productionMonitoringById['product_style']}}</div>
                     <div class="col-4 bg-info text-white">{{$t('style') + ' ' + $t('code')}}</div><div class="col-8 bg-info text-white">{{productionMonitoringById['product_code']}}</div>
@@ -119,12 +118,6 @@
                 <div class="col-md-12 m-0 p-0">
                     <div class="card-body m-0 p-0">
                         <b-table :items="productionByStore" :fields="productionFields" show-empty small striped hover stacked="md">
-                        <!-- <template v-slot:table-busy>
-                            <div class="text-center align-middle text-success my-2">
-                                <b-spinner class="align-middle"></b-spinner>
-                                <strong>{{$t('loading')}}</strong>
-                            </div>
-                        </template> -->
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
                         </template>
@@ -250,7 +243,6 @@ export default {
             this.poId = id
             this.noprint = 'noprint'
             this.check = false
-            // this.isBusy = true
             fetch(`api/production/${id}`)
             .then(res => res.json())
             .then(res => {
@@ -326,11 +318,6 @@ export default {
                     })
                 }                          
             }
-
-            if (que == this.productionByStore.length) {
-                               
-            }
-
         },
 
         destroy(id, index){
@@ -375,7 +362,6 @@ export default {
                     array[k++] = this.productionMonitoring[i]
                 }                
             }
-
             return array
         },
 
