@@ -228,6 +228,7 @@ export default {
                 {name: this.$t('po_list'), view:{value: false, id: 22}, insert:{value: false, id: 23}, update:{value: false, id: 24}, delete:{value: false, id: 25}},
                 {name: this.$t('monitor_etd'), view:{value: false, id: 27}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('production'), view:{value: false, id: 61}, insert:{value: false, id: 62}, update:{value: false, id: 63}, delete:{value: false, id: 64}},
+                {name: this.$t('store'), view:{value: false, id: 65}, insert:{value: false, id: 66}, update:{value: false, id: 67}, delete:{value: false, id: 68}},
                 {name: this.$t('hrm'), view:{value: false, id: 28}, insert:{value: false, id: 0}, update:{value: false, id: 0}, delete:{value: false, id: 0}},
                 {name: this.$t('employee_profile'), view:{value: false, id: 29}, insert:{value: false, id: 30}, update:{value: false, id: 31}, delete:{value: false, id: 32}},
                 {name: this.$t('holiday_management'), view:{value: false, id: 33}, insert:{value: false, id: 34}, update:{value: false, id: 35}, delete:{value: false, id: 36}},
@@ -237,7 +238,7 @@ export default {
                 {name: this.$t('increment_file'), view:{value: false, id: 53}, insert:{value: false, id: 54}, update:{value: false, id: 55}, delete:{value: false, id: 56}},
                 {name: this.$t('salary_management'), view:{value: false, id: 41}, insert:{value: false, id: 42}, update:{value: false, id: 43}, delete:{value: false, id: 44}},
                 {name: this.$t('salary_sheet'), view:{value: false, id: 57}, insert:{value: false, id: 58}, update:{value: false, id: 59}, delete:{value: false, id: 60}},
-                //next start from 65
+                //next start from 69
             ]            
             this.totalRows_Role = this.roles.length
             
@@ -278,39 +279,43 @@ export default {
                         case "production_Insert": this.roles[9]['insert']['value'] = true; break;
                         case "production_Update": this.roles[9]['update']['value'] = true; break;
                         case "production_Delete": this.roles[9]['delete']['value'] = true; break;
-                        case "hrm_View": this.roles[10]['view']['value'] = true; break;
-                        case "employee_profile_View": this.roles[11]['view']['value'] = true; break;
-                        case "employee_profile_Insert": this.roles[11]['insert']['value'] = true; break;
-                        case "employee_profile_Update": this.roles[11]['update']['value'] = true; break;
-                        case "employee_profile_Delete": this.roles[11]['delete']['value'] = true; break;
-                        case "holiday_management_View": this.roles[12]['view']['value'] = true; break;
-                        case "holiday_management_Insert": this.roles[12]['insert']['value'] = true; break;
-                        case "holiday_management_Update": this.roles[12]['update']['value'] = true; break;
-                        case "holiday_management_Delete": this.roles[12]['delete']['value'] = true; break;
-                        case "leave_management_View": this.roles[13]['view']['value'] = true; break;
-                        case "leave_management_Insert": this.roles[13]['insert']['value'] = true; break;
-                        case "leave_management_Update": this.roles[13]['update']['value'] = true; break;
-                        case "leave_management_Delete": this.roles[13]['delete']['value'] = true; break;
-                        case "upload_attendance_View": this.roles[14]['view']['value'] = true; break;
-                        case "upload_attendance_Insert": this.roles[14]['insert']['value'] = true; break;
-                        case "upload_attendance_Update": this.roles[14]['update']['value'] = true; break;
-                        case "upload_attendance_Delete": this.roles[14]['delete']['value'] = true; break;
-                        case "personnel_file_View": this.roles[15]['view']['value'] = true; break;
-                        case "personnel_file_Insert": this.roles[15]['insert']['value'] = true; break;
-                        case "personnel_file_Update": this.roles[15]['update']['value'] = true; break;
-                        case "personnel_file_Delete": this.roles[15]['delete']['value'] = true; break;
-                        case "increment_file_View": this.roles[16]['view']['value'] = true; break;
-                        case "increment_file_Insert": this.roles[16]['insert']['value'] = true; break;
-                        case "increment_file_Update": this.roles[16]['update']['value'] = true; break;
-                        case "increment_file_Delete": this.roles[16]['delete']['value'] = true; break;
-                        case "salary_management_View": this.roles[17]['view']['value'] = true; break;
-                        case "salary_management_Insert": this.roles[17]['insert']['value'] = true; break;
-                        case "salary_management_Update": this.roles[17]['update']['value'] = true; break;
-                        case "salary_management_Delete": this.roles[17]['delete']['value'] = true; break;
-                        case "salary_sheet_View": this.roles[18]['view']['value'] = true; break;
-                        case "salary_sheet_Insert": this.roles[18]['insert']['value'] = true; break;
-                        case "salary_sheet_Update": this.roles[18]['update']['value'] = true; break;
-                        case "salary_sheet_Delete": this.roles[18]['delete']['value'] = true; break;
+                        case "store_View": this.roles[10]['view']['value'] = true; break;
+                        case "store_Insert": this.roles[10]['insert']['value'] = true; break;
+                        case "store_Update": this.roles[10]['update']['value'] = true; break;
+                        case "store_Delete": this.roles[10]['delete']['value'] = true; break;
+                        case "hrm_View": this.roles[11]['view']['value'] = true; break;
+                        case "employee_profile_View": this.roles[12]['view']['value'] = true; break;
+                        case "employee_profile_Insert": this.roles[12]['insert']['value'] = true; break;
+                        case "employee_profile_Update": this.roles[12]['update']['value'] = true; break;
+                        case "employee_profile_Delete": this.roles[12]['delete']['value'] = true; break;
+                        case "holiday_management_View": this.roles[13]['view']['value'] = true; break;
+                        case "holiday_management_Insert": this.roles[13]['insert']['value'] = true; break;
+                        case "holiday_management_Update": this.roles[13]['update']['value'] = true; break;
+                        case "holiday_management_Delete": this.roles[13]['delete']['value'] = true; break;
+                        case "leave_management_View": this.roles[14]['view']['value'] = true; break;
+                        case "leave_management_Insert": this.roles[14]['insert']['value'] = true; break;
+                        case "leave_management_Update": this.roles[14]['update']['value'] = true; break;
+                        case "leave_management_Delete": this.roles[14]['delete']['value'] = true; break;
+                        case "upload_attendance_View": this.roles[15]['view']['value'] = true; break;
+                        case "upload_attendance_Insert": this.roles[15]['insert']['value'] = true; break;
+                        case "upload_attendance_Update": this.roles[15]['update']['value'] = true; break;
+                        case "upload_attendance_Delete": this.roles[15]['delete']['value'] = true; break;
+                        case "personnel_file_View": this.roles[16]['view']['value'] = true; break;
+                        case "personnel_file_Insert": this.roles[16]['insert']['value'] = true; break;
+                        case "personnel_file_Update": this.roles[16]['update']['value'] = true; break;
+                        case "personnel_file_Delete": this.roles[16]['delete']['value'] = true; break;
+                        case "increment_file_View": this.roles[17]['view']['value'] = true; break;
+                        case "increment_file_Insert": this.roles[17]['insert']['value'] = true; break;
+                        case "increment_file_Update": this.roles[17]['update']['value'] = true; break;
+                        case "increment_file_Delete": this.roles[17]['delete']['value'] = true; break;
+                        case "salary_management_View": this.roles[18]['view']['value'] = true; break;
+                        case "salary_management_Insert": this.roles[18]['insert']['value'] = true; break;
+                        case "salary_management_Update": this.roles[18]['update']['value'] = true; break;
+                        case "salary_management_Delete": this.roles[18]['delete']['value'] = true; break;
+                        case "salary_sheet_View": this.roles[19]['view']['value'] = true; break;
+                        case "salary_sheet_Insert": this.roles[19]['insert']['value'] = true; break;
+                        case "salary_sheet_Update": this.roles[19]['update']['value'] = true; break;
+                        case "salary_sheet_Delete": this.roles[19]['delete']['value'] = true; break;
                     }                    
                 }
 

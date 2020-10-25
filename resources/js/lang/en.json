@@ -1,4 +1,5 @@
 { 
+    "store" : "Store",
     "assembly" : "Assembly",
     "injection" : "Injection",
     "polish" : "Polish",

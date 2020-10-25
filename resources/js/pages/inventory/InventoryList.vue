@@ -8,16 +8,18 @@
                         <button v-if="checkRoles('InventoryItem_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div>
-                <div class="card-header d-flex align-items-center">
-                    <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
-                    <div style="min-width: 400px;"><model-select :options="store_options" class="form-control" v-model="store"></model-select></div>
-                    <button @click="store_change" class="btn ml-3 btn-secondary noprint"><b-icon icon="search"></b-icon></button>
-                    <div class="ml-auto" :class="noprint">
-                        <b-form-checkbox @change="showEtd" v-model="etd" class="noprint"> ETD </b-form-checkbox>
-                        <div class="input-group">
+                <div class="col-md-12 card-header">
+                    <div class="col-md-8 input-group float-left row m-0 p-0 my-auto">
+                        <div v-if="checkRoles('store_Insert')" @click="addStore" class="input-group-prepend input-group-text pointer noprint"><b-icon icon="plus"></b-icon></div>
+                        <div style="min-width: 60%;"><model-select :options="store_options" class="form-control" v-model="store"></model-select></div>
+                        <div @click="store_change" class="input-group-append input-group-text pointer noprint"><b-icon icon="search"></b-icon></div>
+                    </div>
+                    <div class="col-md-4 float-left" :class="noprint">
+                        <b-form-checkbox @change="showEtd" v-model="etd" class="noprint mr-2 float-left"> ETD </b-form-checkbox>
+                        <div class="input-group float-left">
                             <div class="input-group-prepend onlyprint mr-3">ETD</div>
                             <input type="date"  v-model="etdDate" class="">
-                            <button @click="showEtd('search')" class="btn btn-secondary input-group-append noprint"><b-icon icon="search"></b-icon></button>
+                            <div @click="showEtd('search')" class="input-group-append input-group-text pointer noprint"><b-icon icon="search"></b-icon></div>
                         </div>
                     </div>
                 </div> 
@@ -188,13 +190,50 @@
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                             <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
                         </template>
-                    </b-modal>
-                    
+                    </b-modal>                    
                     <!-- End Edit Details Modal -->
                     
                 </div>               
             </div>
         </div>  
+        <!-- Start Store Modal -->
+        <b-modal ref="dataStore" id="dataStore" title="Update Store" no-close-on-backdrop>
+            <div class="modal-body mb-2">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a @click="storeTask = 'insert'" class="nav-link active" id="insert-tab" data-toggle="tab" href="#insert" role="tab" aria-controls="insert" aria-selected="true">New Store</a>
+                    </li>
+                    <li v-if="checkRoles('store_Update')" class="nav-item" role="presentation">
+                        <a @click="storeTask = 'update'" class="nav-link" id="update-tab" data-toggle="tab" href="#update" role="tab" aria-controls="update" aria-selected="false">Update Store</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active mt-3" id="insert" role="tabpanel" aria-labelledby="insert-tab">
+                        <label>{{$t('accounts_code')}}</label>
+                        <input type="text" name="account_code" class="form-control" v-model="account_code">
+                        <span v-if="errors.account_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span><br>
+                        <label class="mt-3">{{$t('store_name')}}</label>
+                        <input type="text" name="storeName" class="form-control" v-model="storeName">
+                        <span v-if="errors.name" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
+                    </div>
+                    <div class="tab-pane fade mt-3" id="update" role="tabpanel" aria-labelledby="update-tab">
+                        <b-form-select v-model="store" :options="store_options"></b-form-select> 
+                        <label class="mt-3">{{$t('accounts_code')}}</label>
+                        <input type="text" name="account_code" class="form-control" v-model="account_code">
+                        <span v-if="errors.account_code" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span><br>
+                        <label class="mt-3">{{$t('store_name')}}</label>
+                        <input type="text" name="storeName" class="form-control" v-model="storeName">
+                        <span v-if="errors.name" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
+                    </div>
+                </div>
+            </div>
+            <template v-slot:modal-footer="">
+                <button v-if="storeTask == 'insert' && checkRoles('store_Insert')" @click="saveStore" class="mdb btn btn-outline-default" :disabled="disable"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{ buttonTitle }}</button>
+                <button v-if="storeTask == 'update' && checkRoles('store_update')" @click="saveStore" class="mdb btn btn-outline-default" :disabled="disable"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{ buttonTitle }}</button>
+                <button @click="$refs['dataStore'].hide()" type="button" class="mdb btn btn-outline-mdb-color">Close</button>
+            </template>
+        </b-modal>
+        <!-- End Store Modal -->
     </div>
 </template>
 
@@ -216,6 +255,9 @@ export default {
             errors : [],
             store : 3,
             storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
+            store_options: [],
+            storeTask: 'insert',
+            account_code: null,
             json_fields: {
                 'Material No': 'item_code',
                 'Material': 'item',
@@ -228,7 +270,6 @@ export default {
                 'Unit Price': 'unit_price',
                 'Total Price': 'total_price',
             },
-            store_options: [],
             noprint: 'noprint',
             etd : false,
             etdDate : new Date(),
@@ -372,6 +413,12 @@ export default {
             return [year, mnth, day].join("-");
         },
 
+        addStore() {
+            this.storeTask = 'insert'
+            this.storeName = null
+            this.$refs['dataStore'].show()
+        },
+
         handleFileUpload(e) {
             let file = e.target.files[0];
             var fileReader = new FileReader();
@@ -401,6 +448,57 @@ export default {
             this.taskId = id
             this.Index = index
             this.task = this.singleTask
+        },
+
+        saveStore(){
+            this.disable = !this.disable;
+            this.buttonTitle = this.$t('saving')
+            if (this.storeTask == 'insert') {
+                axios.post(`api/store`, {
+                    name : this.storeName,
+                    account_code : this.account_code
+                })
+                .then(({data})=>{
+                    this.store_options = data.Store
+                    this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
+                    this.disable = !this.disable
+                    this.buttonTitle = 'Save'
+                    this.$refs['dataStore'].hide()
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                    } else alert(err.response.data.message)
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')                      
+                })
+            } else {
+                axios.patch(`api/store/${this.store}`, {
+                    name : this.storeName,
+                    account_code : this.account_code
+                })
+                .then(({data})=>{
+                    for (let i = 0; i < this.store_options.length; i++) {
+                        if (this.store_options[i]['value'] == this.store) {
+                            this.store_options[i]['text'] = this.account_code+ ": "+ this.storeName
+                            break
+                        }                        
+                    }
+                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                    this.disable = !this.disable
+                    this.buttonTitle = 'Save'
+                    this.$refs['dataStore'].hide()
+                })
+                .catch(err => {
+                    if(err.response.status == 422){
+                        this.errors = err.response.data.errors
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                    } else alert(err.response.data.message)
+                    this.disable = !this.disable
+                    this.buttonTitle = this.$t('save')                      
+                })
+            } 
         },
 
         save() {

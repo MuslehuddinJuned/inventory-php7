@@ -47,7 +47,20 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'account_code'=> 'required|unique:stores,account_code',
+            'name'=> 'required|unique:stores,name'
+        ]);
+
+        $request->user()->store()->create($request->all());
+        
+        $Store = DB::SELECT('SELECT id value, (CASE WHEN account_code IS NULL THEN name ELSE CONCAT(account_code, ": ", name) END)text, remarks  FROM stores ORDER BY account_code');
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'Store' => $Store
+            ]);
+        }
     }
 
     /**
@@ -81,7 +94,12 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
-        //
+        $this->validate($request, [
+            'account_code'=> 'required|unique:stores,account_code,'.$store->id,
+            'name'=> 'required|unique:stores,name,'.$store->id,
+        ]);
+
+        $store->update($request->all());
     }
 
     /**
