@@ -319,9 +319,9 @@
                         <div class="col-4 text-right">{{(task['gross_pay'] || 0).toFixed(2)}}</div>
                         <div class="col-12 border-bottom border-top">Deductions  : (বিয়োজন)</div>
                         <div class="col-8">Absent/UPL/NW/Late (অনুপুস্থিত/অবৈতনিকছুটি/বিলম্ব)</div>
-                        <div class="col-4 text-right">{{(task['absent_days'] || 0).toFixed(2)}}</div>
-                        <div class="col-8">No.of days (দিনের সংখ্যা)</div>
                         <div class="col-4 text-right">{{(task['absent_amount'] || 0).toFixed(2)}}</div>
+                        <div class="col-8">No.of days (দিনের সংখ্যা)</div>
+                        <div class="col-4 text-right">{{(task['absent_days'] || 0).toFixed(2)}}</div>
                         <div class="col-8">Sick Leave (অসুস্থতাজনিত ছুটি)</div>
                         <div class="col-4 text-right">{{(0).toFixed(2)}}</div>
                         <div class="col-8">Advances (অগ্রিম)</div>

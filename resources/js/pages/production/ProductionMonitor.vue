@@ -58,25 +58,32 @@
                         <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(material)="row">
-                        {{row.item.material - row.item.quantity}} <br> {{row.item.material_remarks}}
+                        {{row.item.material - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.material_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(carton)="row">
-                        {{row.item.carton - row.item.quantity}} <br> {{row.item.carton_remarks}}
+                        {{row.item.carton - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.carton_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(color_card)="row">
-                        {{row.item.color_card - row.item.quantity}} <br> {{row.item.color_card_remarks}}
+                        {{row.item.color_card - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.color_card_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(cutting)="row">
-                        {{row.item.cutting - row.item.quantity}} <br> {{row.item.cutting_remarks}}
+                        {{row.item.cutting - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.cutting_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(polish)="row">
-                        {{row.item.polish - row.item.quantity}} <br> {{row.item.polish_remarks}}
+                        {{row.item.polish - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.polish_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(injection)="row">
-                        {{row.item.injection - row.item.quantity}} <br> {{row.item.injection_remarks}}
+                        {{row.item.injection - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.injection_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     <template v-slot:cell(assembly)="row">
-                        {{row.item.assembly - row.item.quantity}} <br> {{row.item.assembly_remarks}}
+                        {{row.item.assembly - row.item.quantity}} <br> 
+                        <b-form-textarea v-model="row.item.assembly_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
                     </template>
                     </b-table>
                     
@@ -125,7 +132,8 @@
                             <input type="text"  v-model="row.item.prod_qty" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
                         </template>
                         <template v-slot:cell(remarks)="row">
-                            <textarea v-model="row.item.remarks" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></textarea>
+                            <b-form-textarea v-model="row.item.remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                            <!-- <textarea v-model="row.item.remarks" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></textarea> -->
                         </template>
                         <template v-slot:cell(prod_date)="row">
                             <input type="date"  v-model="row.item.prod_date" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
