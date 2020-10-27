@@ -8,6 +8,7 @@
                         <button v-if="checkRoles('employee_profile_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div> -->
                 </div>
+                <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
                         <!-- <download-excel
@@ -46,7 +47,7 @@
                         </b-form-group>                        
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                    :items="employeeList"
+                    :items="employeeListByDept"
                     :fields="fields"
                     :current-page="currentPage"
                     :per-page="perPage"
@@ -301,6 +302,8 @@ export default {
             taskId: null,
             src : '/images/employee/',
             holiday : [],
+            DepartmentList: [],
+            DepartmentName: 'Management',
 
             weekOptions : [
                 { value: 6, text: this.$t('saturday') },
@@ -336,11 +339,16 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.employeeList = res['EmployeeList'];
-            this.totalRows = this.employeeList.length
             this.isBusy = false
         })
         .catch(err => {
             alert(err.response.data.message);
+        })
+
+        fetch(`api/salarysheet`)
+        .then(res => res.json())
+        .then(res => {
+            this.DepartmentList = res['Department'];
         })
 
         fetch(`api/settings/roles`)
@@ -400,6 +408,18 @@ export default {
                     break
                 }                
             }
+            return array
+        },
+
+        employeeListByDept() {
+            let array = [], k=0
+            for (let i = 0; i < this.employeeList.length; i++) {
+                if (this.employeeList[i]['department'] == this.DepartmentName) {
+                    array[k++] = this.employeeList[i]
+                }                
+            }
+
+            this.totalRows = array.length
             return array
         },
 

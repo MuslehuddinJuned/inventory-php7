@@ -5,6 +5,7 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('increment_file') }}</h3> 
                 </div>
+                <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
@@ -30,7 +31,7 @@
                         </b-form-group>                        
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                    :items="employeeList"
+                    :items="employeeListByDept"
                     :fields="fields"
                     :current-page="currentPage"
                     :per-page="perPage"
@@ -224,6 +225,8 @@ export default {
             buttonTitle : this.$t('save'),
             disable: false,
             noprint: 'noprint',
+            DepartmentList: [],
+            DepartmentName: 'Management',
 
             transProps: {
                 // Transition name
@@ -246,11 +249,16 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.employeeList = res['Increment'];
-            this.totalRows = this.employeeList.length
             this.isBusy = false
         })
         .catch(err => {
             alert(err.response.data.message);
+        })
+
+        fetch(`api/salarysheet`)
+        .then(res => res.json())
+        .then(res => {
+            this.DepartmentList = res['Department'];
         })
 
         fetch(`api/settings/roles`)
@@ -401,6 +409,18 @@ export default {
                     break
                 }                
             }
+            return array
+        },
+
+        employeeListByDept() {
+            let array = [], k=0
+            for (let i = 0; i < this.employeeList.length; i++) {
+                if (this.employeeList[i]['department'] == this.DepartmentName) {
+                    array[k++] = this.employeeList[i]
+                }                
+            }
+
+            this.totalRows = array.length
             return array
         },
 
