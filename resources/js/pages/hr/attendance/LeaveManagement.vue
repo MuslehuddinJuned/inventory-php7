@@ -52,10 +52,13 @@
                     <button v-if="reportEdit" @click="addDetails" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
                 </div>
             </div>
-            <div class="card-header">
-                <h3 class="panel-title float-left">
-                    {{ $t('personal_leave_management') }}
-                </h3>
+            <div class="card-header col-12 row m-0 p-0">
+                <div class="col-md-8">
+                    <h3 class="panel-title">
+                        {{ $t('personal_leave_management') }}
+                    </h3>
+                </div>
+                <div class="col-md-4 noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
             </div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
@@ -95,7 +98,7 @@
                     </b-form-group>                        
                 </div>
                 <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                :items="Usedleave"
+                :items="UsedleaveByDept"
                 :fields="fields"
                 :current-page="currentPage"
                 :per-page="perPage"
@@ -123,7 +126,7 @@
                     {{Leave[0]['sick_leave'] - row.item.sick_leave}}
                 </template>
                 <template v-slot:cell(earned_leave_remain)="row">
-                    {{row.item.earned_day - row.item.earned_leave}}
+                    {{(row.item.earned_day - row.item.earned_leave).toFixed(2)}}
                 </template>
                 <template v-slot:cell(maternity_leave)="row">
                     {{row.item.maternity_leave}}  ({{Leave[0]['maternity_leave'] - row.item.maternity_leave}})
@@ -291,6 +294,8 @@ export default {
             taskDetails: [{'leave_type': null, 'reason': null, 'replacing_person': null, 'leave_start': this.convertDate(new Date()), 'leave_end': this.convertDate(new Date()), 'day_count': 1, 'employee_id': this.taskHeadId}],
             taskDetailsId: null,
             personalLeave: [],
+            DepartmentList: [],
+            DepartmentName: 'Management',
             roles: [],
             year: new Date().getFullYear(),
             reportEdit: false,
@@ -334,9 +339,14 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.Usedleave = res['Usedleave']
-            this.totalRows = this.Usedleave.length
             this.Leave = res['Leave']
             this.isBusy = false
+        })
+
+        fetch(`api/salarysheet`)
+        .then(res => res.json())
+        .then(res => {
+            this.DepartmentList = res['Department'];
         })
 
         fetch(`api/settings/roles`)
@@ -669,6 +679,18 @@ export default {
                     break
                 }                
             } return array
+        },
+
+        UsedleaveByDept() {
+            let array = [], k=0
+            for (let i = 0; i < this.Usedleave.length; i++) {
+                if (this.Usedleave[i]['department'] == this.DepartmentName) {
+                    array[k++] = this.Usedleave[i]
+                }                
+            }
+
+            this.totalRows = array.length
+            return array
         },
 
         loading(){

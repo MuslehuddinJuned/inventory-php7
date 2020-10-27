@@ -91,7 +91,7 @@ class UsedleaveController extends Controller
         FROM(SELECT leave_type,day_count, employee_id, leave_start FROM usedleaves WHERE deleted_by = 0 AND YEAR(leave_start) = ?
             )A GROUP BY employee_id
         )A  RIGHT JOIN (SELECT id, employee_id, first_name, designation, department, start_date FROM employees WHERE status = 'active' and deleted_by = 0
-        )B ON A.employee_id = B.id LEFT JOIN (SELECT ac_no, (CASE WHEN (CHAR_LENGTH(in_time_1) > 0 && in_time_1 != '00:00') THEN COUNT(in_time_1) END)earned_day FROM attendances WHERE YEAR(date) = ? GROUP BY ac_no, in_time_1
+        )B ON A.employee_id = B.id LEFT JOIN (SELECT ac_no, earned_day FROM (SELECT ac_no, (CASE WHEN (CHAR_LENGTH(in_time_1) > 0 && in_time_1 != '00:00') THEN COUNT(in_time_1) END)earned_day FROM attendances WHERE YEAR(date) = ? GROUP BY ac_no, in_time_1)A WHERE earned_day IS NOT null
         )C ON B.employee_id = C.ac_no", [$year, $year]);
 
         $Leave = DB::SELEct("SELECT year, casual_leave, sick_leave, annual_leave, maternity_leave, paternity_leave, compensatory_leave, 

@@ -97,7 +97,7 @@
                 <div class="col-md-4 text-center m-0">
                     <h4 class="">ID: {{task['employee_id']}}</h4>
                     <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
-                    <div class="col-md-12 mt-2 p-0">
+                    <div class="col-md-12 mt-2 p-0 text-left">
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
                                 <p class="my-auto text-white font-weight-bold">{{$t('status')}}</p>
