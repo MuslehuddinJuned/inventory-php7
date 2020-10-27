@@ -248,26 +248,31 @@ export default {
         },
 
         in_time_1(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 0) return time1
             return '00:00'
         },
 
         out_time_1(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 12) return time1
             return '00:00'
         },
         
         in_time_2(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 18) return time1
             return '00:00'
         },
         
         out_time_2(time, time1) {
+            if(!time) return '00:00'
             if (time.length > 6) return time1
             return '00:00'
         },
 
         total_hours(time, start, end) {
+            if(!time) return '00:00'
             if (time.length < 7) return '0:00'
 
             start = start.split(":");
@@ -287,6 +292,7 @@ export default {
         },
 
         ot(time, start, end, ot) {
+            if(!time) return null
             if (ot) return ot
             if (time.length < 7) return null
 
@@ -303,6 +309,7 @@ export default {
         },
 
         ot_extra(time, start, end, ot) {
+            if(!time) return null
             if (ot) return ot
             if (time.length < 7) return null
 
