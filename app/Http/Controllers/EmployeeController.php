@@ -101,9 +101,9 @@ class EmployeeController extends Controller
     public function show($id)
     {
         //for employee exit
-        $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, 
-        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, 
-        contact_name, contact_address, contact_phone, relationship, employee_image, status, weekly_holiday, start_time, end_time, exit_type, reason, resign_date, effective_date, user_id, deleted_by, created_at, updated_at
+        $EmployeeList = DB::SELECT("SELECT id, employee_id, first_name, last_name, address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, effective_join_date, father_name, district, sub_district, zip_code, area, qualification, epf_entitled_in, team_member_of, transferred, contact_name, contact_address, contact_phone, relationship, employee_image, status, weekly_holiday, start_time, end_time, exit_type, reason, resign_date, effective_date, (CASE WHEN TIMESTAMPDIFF(MONTH, start_date, effective_date)> 6 THEN 'Permanent' ELSE 'Probation' END)service_category, 
+        CONCAT(TIMESTAMPDIFF(YEAR, start_date, effective_date), 'y ', 
+        TIMESTAMPDIFF(MONTH, start_date, effective_date) - TIMESTAMPDIFF(YEAR, start_date, effective_date) * 12, 'm ', CASE WHEN (DAY(effective_date) - DAY(start_date)) < 0 THEN (DAY(effective_date) - DAY(start_date) + 30) ELSE (DAY(effective_date) - DAY(start_date))END, 'd')service_length 
         FROM employees WHERE deleted_by = 0 and status != 'active'");
 
         return compact('EmployeeList');

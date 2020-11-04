@@ -8,7 +8,15 @@
                         <button v-if="checkRoles('employee_profile_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div> -->
                 </div>
-                <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
+                <div class="row m-0 p-0 card-body">
+                    <div class="col-md-4 noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
+                    <div class="col-md-8 input-group">
+                        <input type="date" class="form-control" v-model="start_date">
+                        <div class="input-group-append input-group-text"> to </div>
+                        <input type="date" class="form-control input-group-append" v-model="end_date">
+                        <!-- <div @click="employeeList_search" class="input-group-append input-group-text pointer noprint"><b-icon icon="search"></b-icon></div> -->
+                    </div>
+                </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
                         <!-- <download-excel
@@ -95,8 +103,20 @@
         <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('employee_profile')" no-close-on-backdrop ok-only>
             <div class="modal-body row m-0 p-0">
                 <div class="col-md-4 text-center m-0">
-                    <h4 class="">ID: {{task['employee_id']}}</h4>
                     <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
+                    <h2>{{task['first_name']}}</h2>
+                    <h2>{{task['Last_name']}}</h2>
+                    <div class="text-left">
+                        <h5>ID: {{task['employee_id']}}</h5>
+                        <h6>{{$t('designation')}}: {{task['designation']}}</h6>
+                        <h6>{{$t('department')}}: {{task['department']}}</h6>
+                        <h6>{{$t('joining_date')}}: {{task['start_date']}}</h6>
+                        <h6>{{$t('service_length')}}: {{task['service_length']}}</h6>
+                        <h6>{{$t('service_category')}}: {{task['service_category']}}</h6>
+                        <h6 v-if="task['qualification']">{{$t('qualification')}}: {{task['qualification']}}</h6>
+                        <h6 v-if="task['team_member_of']">{{$t('team_member_of')}}: {{task['team_member_of']}}</h6>
+                        <h6 v-if="task['transferred']">{{$t('transferred')}}: {{task['transferred']}}</h6>
+                    </div>
                     <div class="col-md-12 mt-2 p-0 text-left">
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
@@ -134,21 +154,29 @@
                 </div>
                 <div class="col-md-8 m-0">
                     <div class="col-md-12 p-0">
-                        <h2>{{task['name']}}</h2>
-                        <h4>{{task['designation']}}</h4>
-                        <h5>{{$t('department')}}: {{task['department']}}</h5>
-                    </div>
-                    <div class="row m-0 p-0 p-0 col-md-12 mt-5">
-                        <div class="col-md-4"><p class="font-weight-bold mb-0">{{$t('section')}}</p><p>{{task['section']}}</p></div>
-                        <div class="col-md-8"><p class="font-weight-bold mb-0">{{$t('work_location')}}</p><p>{{task['work_location']}}</p></div>
-                    </div>
-                    <div class="col-md-12 mt-2 p-0">
+                        <h4>{{$t('contact_info')}}</h4>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('phone')}}</p>
+                                <p class="my-auto text-white font-weight-bold">Father / CO</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['mobile_no']}}</p>
+                                <p class="my-auto text-white">{{task['father_name']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-light my-auto">
+                                <p class="my-auto font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['mobile_no']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['area']}}, {{task['zip_code']}}, {{task['sub_district']}}, {{task['district']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -157,14 +185,6 @@
                             </div>
                             <div class="col-md-6 bg-light">
                                 <p class="my-auto">{{task['email']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['address']}}</p>
                             </div>
                         </div>
                     </div>
@@ -200,14 +220,6 @@
                             </div>
                             <div class="col-md-6 bg-light">
                                 <p class="my-auto">{{task['blood_group']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('joining_date')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{`${task['start_date']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</p>
                             </div>
                         </div>
                     </div>
@@ -304,6 +316,8 @@ export default {
             holiday : [],
             DepartmentList: [],
             DepartmentName: 'Management',
+            start_date: this.start_date_initialize,
+            end_date: this.end_date_initialize,
 
             weekOptions : [
                 { value: 6, text: this.$t('saturday') },
@@ -356,6 +370,9 @@ export default {
         .then(res => {
             this.roles = res['allRoles'];
         })
+
+        this.start_date = this.start_date_initialize
+        this.end_date = this.end_date_initialize
     },
 
     methods: {
@@ -411,10 +428,25 @@ export default {
             return array
         },
 
+        start_date_initialize() {
+            var date = new Date(),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2)
+            return [year, mnth, '01'].join("-");
+        },
+
+        end_date_initialize() {
+            var date = new Date(),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                day = ("0" + date.getDate()).slice(-2)
+            return [year, mnth, day].join("-");
+        },
+
         employeeListByDept() {
             let array = [], k=0
             for (let i = 0; i < this.employeeList.length; i++) {
-                if (this.employeeList[i]['department'] == this.DepartmentName) {
+                if (this.employeeList[i]['department'] == this.DepartmentName && new Date(this.employeeList[i]['effective_date']) >= new Date(this.start_date) && new Date(this.employeeList[i]['effective_date']) <= new Date(this.end_date)) {
                     array[k++] = this.employeeList[i]
                 }                
             }
@@ -437,11 +469,11 @@ export default {
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'employee_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'blood_group', label : this.$t('blood_group'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'service_length', label : this.$t('service_length'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
     }
