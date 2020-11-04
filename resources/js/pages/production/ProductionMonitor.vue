@@ -32,7 +32,7 @@
                             ></b-form-select>
                         </b-form-group>                        
                     </div>
-                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
+                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover responsive
                     :items="productionMonitoringByEtd"
                     :fields="fields"
                     :current-page="currentPage"
@@ -42,7 +42,7 @@
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
                     @row-clicked="(item) => editDetails(item.id)"
-                    class="table-transition"
+                    class="table-transition table-bordered"
                     style="cursor : pointer"
                     >
                     <template v-slot:table-busy>
@@ -59,31 +59,31 @@
                     </template>
                     <template v-slot:cell(material)="row">
                         {{row.item.material - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.material_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.material_remarks}}</pre>
                     </template>
                     <template v-slot:cell(carton)="row">
                         {{row.item.carton - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.carton_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.carton_remarks}}</pre>
                     </template>
                     <template v-slot:cell(color_card)="row">
                         {{row.item.color_card - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.color_card_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.color_card_remarks}}</pre>
                     </template>
                     <template v-slot:cell(cutting)="row">
                         {{row.item.cutting - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.cutting_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.cutting_remarks}}</pre>
                     </template>
                     <template v-slot:cell(polish)="row">
                         {{row.item.polish - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.polish_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.polish_remarks}}</pre>
                     </template>
                     <template v-slot:cell(injection)="row">
                         {{row.item.injection - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.injection_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.injection_remarks}}</pre>
                     </template>
                     <template v-slot:cell(assembly)="row">
                         {{row.item.assembly - row.item.quantity}} <br> 
-                        <b-form-textarea v-model="row.item.assembly_remarks" rows="1" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-form-textarea>
+                        <pre>{{row.item.assembly_remarks}}</pre>
                     </template>
                     </b-table>
                     

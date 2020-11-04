@@ -30,7 +30,19 @@ class CreateEmployeesTable extends Migration
             $table->string('section')->nullable();
             $table->string('work_location')->nullable();
             $table->date('start_date')->nullable();
-            $table->string('salary')->nullable();
+            // start for shun ho
+            //pretend 'Type Of Employee' as 'Department' and 'Department' as 'Section'
+            $table->date('effective_join_date')->nullable();
+            $table->string('father_name')->nullable();
+            $table->string('district')->nullable();
+            $table->string('sub_district')->nullable();
+            $table->string('zip_code')->nullable();
+            $table->string('area')->nullable();
+            $table->string('qualification')->nullable();
+            $table->string('epf_entitled_in')->nullable();
+            $table->string('team_member_of')->nullable();
+            $table->string('transferred')->nullable();
+            // end for shun ho
             $table->string('contact_name')->nullable();
             $table->text('contact_address')->nullable();
             $table->string('contact_phone')->nullable();

@@ -27,7 +27,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, 
-        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, 
+        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, 
         contact_name, contact_address, contact_phone, relationship, employee_image, status, weekly_holiday, start_time, end_time, user_id, deleted_by, created_at, updated_at
         FROM employees WHERE deleted_by = 0 and status = 'active'");
 
@@ -41,7 +41,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, contact_name, contact_address, contact_phone, relationship, employee_image, status, user_id, deleted_by, created_at, updated_at
+        $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, contact_name, contact_address, contact_phone, relationship, employee_image, status, user_id, deleted_by, created_at, updated_at
         FROM employees WHERE deleted_by = 0");
 
         return $EmployeeList;
@@ -105,7 +105,7 @@ class EmployeeController extends Controller
     {
         //for employee exit
         $EmployeeList = DB::SELECT("SELECT id, employee_id, CONCAT(CASE WHEN last_name IS NULL THEN '' ELSE last_name END, CASE WHEN (first_name IS NOT NULL AND last_name IS NOT NULL) THEN  ', ' ELSE '' END, CASE WHEN first_name IS NULL THEN '' ELSE first_name END)AS name, 
-        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, salary, 
+        first_name, last_name,  address, mobile_no, email, blood_group, gender, date_of_birth, marital_status, designation, department, section, work_location, start_date, 
         contact_name, contact_address, contact_phone, relationship, employee_image, status, weekly_holiday, start_time, end_time, exit_type, reason, resign_date, effective_date, user_id, deleted_by, created_at, updated_at
         FROM employees WHERE deleted_by = 0 and status != 'active'");
 
