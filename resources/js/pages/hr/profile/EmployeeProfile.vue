@@ -11,7 +11,7 @@
                 <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
-                        <!-- <download-excel
+                        <download-excel
                             id="tooltip-target-1"
                             class="btn btn-outline-default btn-sm mr-3"
                             title="List of Employee"
@@ -23,7 +23,7 @@
                         </download-excel>
                         <b-tooltip target="tooltip-target-1" triggers="hover">
                             Save this table to Excel
-                        </b-tooltip> -->
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -112,26 +112,46 @@
                             <input v-model="task['employee_id']" type="text" class="form-control" id="employee_id" name="employee_id">
                             <span v-if="errors.employee_id" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}} </span>
                         </div>                      
-                        <div class="form-group col-md-3">                        
+                        <div class="form-group col-md-4">                        
                             <label for="first_name" class="col-form-label">{{$t('name')}}</label>
                             <input type="text" class="form-control" id="first_name" name="Name" v-model="task['first_name']">
                         </div>                      
-                        <div class="form-group col-md-3">                        
+                        <div class="form-group col-md-5">                        
                             <label for="last_name" class="col-form-label">নাম (বাংলা)</label>
                             <input type="text" class="form-control" id="last_name" name="Name" v-model="task['last_name']">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="email" class="col-form-label">{{$t('email')}}</label>
-                            <input type="email" class="form-control" id="email" name="email" v-model="task['email']">
-                        </div>
-                        <div class="form-group col-md-4">
+                            <label for="father_name" class="col-form-label">{{$t('father_name')}}</label>
+                            <input type="tel" class="form-control" id="father_name" name="father_name" v-model="task['father_name']">
+                        </div> 
+                        <div class="form-group col-md-3">
                             <label for="mobile_no" class="col-form-label">{{$t('phone')}}</label>
                             <input type="tel" class="form-control" id="mobile_no" name="mobile_no" v-model="task['mobile_no']">
-                        </div>                        
-                        <div class="form-group col-md-8">
-                            <label for="address" class="col-form-label">{{$t('address')}}</label>
-                            <input type="text" class="form-control" id="address" name="address" v-model="task['address']">
-                        </div>       
+                        </div> 
+                        <div class="form-group col-md-3">
+                            <label for="email" class="col-form-label">{{$t('email')}}</label>
+                            <input type="email" class="form-control" id="email" name="email" v-model="task['email']">
+                        </div> 
+                        <div class="form-group col-md-3">
+                            <label for="qualification" class="col-form-label">{{$t('qualification')}}</label>
+                            <input type="qualification" class="form-control" id="qualification" name="qualification" v-model="task['qualification']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="area" class="col-form-label">{{$t('area')}}</label>
+                            <input type="area" class="form-control" id="area" name="area" v-model="task['area']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="zip_code" class="col-form-label">{{$t('zip_code')}}</label>
+                            <input type="zip_code" class="form-control" id="zip_code" name="zip_code" v-model="task['zip_code']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="sub_district" class="col-form-label">{{$t('sub_district')}}</label>
+                            <input type="sub_district" class="form-control" id="sub_district" name="sub_district" v-model="task['sub_district']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="district" class="col-form-label">{{$t('district')}}</label>
+                            <input type="district" class="form-control" id="district" name="district" v-model="task['district']">
+                        </div>
                         <div class="form-group col-md-3">
                             <label for="date_of_birth" class="col-form-label">{{$t('date_of_birth')}}</label>
                             <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" v-model="task['date_of_birth']">
@@ -192,19 +212,32 @@
                         <div class="form-group col-md-3">
                             <label for="weekly_holiday" class="col-form-label">{{$t('weekly_holidays')}}</label>
                             <b-form-select v-model="task['weekly_holiday']" :options="weekOptions" multiple :select-size="7"></b-form-select>
-                            <!-- <input type="text" class="form-control" id="weekly_holiday" name="weekly_holiday" v-model="task['weekly_holiday']"> -->
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="start_date" class="col-form-label">{{$t('joining_date')}}</label>
-                            <input type="date" class="form-control" id="start_date" name="start_date" v-model="task['start_date']">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="start_time" class="col-form-label">{{$t('In Time')}}</label>
-                            <b-form-timepicker v-model="task['start_time']" locale="en"></b-form-timepicker>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="end_time" class="col-form-label">{{$t('Out Time')}}</label>
-                            <b-form-timepicker v-model="task['end_time']" locale="en"></b-form-timepicker>
+                        <div class="row m-0 p-0 col-md-9">
+                            <div class="form-group col-md-4">
+                                <label for="epf_entitled_in" class="col-form-label">EPF Entitled in</label>
+                                <input type="date" class="form-control" id="epf_entitled_in" name="epf_entitled_in" v-model="task['epf_entitled_in']">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="team_member_of" class="col-form-label">{{$t('team_member_of')}}</label>
+                                <input type="text" class="form-control" id="team_member_of" name="team_member_of" v-model="task['team_member_of']">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="transferred" class="col-form-label">{{$t('transferred')}}</label>
+                                <input type="text" class="form-control" id="transferred" name="transferred" v-model="task['transferred']">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="start_date" class="col-form-label">{{$t('joining_date')}}</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" v-model="task['start_date']">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="start_time" class="col-form-label">{{$t('In Time')}}</label>
+                                <b-form-timepicker v-model="task['start_time']" locale="en"></b-form-timepicker>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="end_time" class="col-form-label">{{$t('Out Time')}}</label>
+                                <b-form-timepicker v-model="task['end_time']" locale="en"></b-form-timepicker>
+                            </div>
                         </div>
                         <div class="form-group col-md-12">
                             <button @click="stepper_method(2, 'save')" class="mdb btn btn-outline-primary nextBtn float-right" type="button" ><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{buttonTitle}} & {{$t('next')}}</button> 
@@ -259,26 +292,46 @@
         <b-modal class="b-0" ref="dataView" id="dataView" size="xl" :title="$t('employee_profile')" no-close-on-backdrop>
             <div class="modal-body row m-0 p-0">
                 <div class="col-md-4 text-center m-0">
-                    <h4 class="">ID: {{task['employee_id']}}</h4>
                     <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
+                    <h2>{{task['first_name']}}</h2>
+                    <h2>{{task['Last_name']}}</h2>
+                    <div class="text-left">
+                        <h5>ID: {{task['employee_id']}}</h5>
+                        <h6>{{$t('designation')}}: {{task['designation']}}</h6>
+                        <h6>{{$t('department')}}: {{task['department']}}</h6>
+                        <h6>{{$t('joining_date')}}: {{task['start_date']}}</h6>
+                        <h6>{{$t('service_length')}}: {{task['service_length']}}</h6>
+                        <h6>{{$t('service_category')}}: {{task['service_category']}}</h6>
+                        <h6 v-if="task['qualification']">{{$t('qualification')}}: {{task['qualification']}}</h6>
+                        <h6 v-if="task['team_member_of']">{{$t('team_member_of')}}: {{task['team_member_of']}}</h6>
+                        <h6 v-if="task['transferred']">{{$t('transferred')}}: {{task['transferred']}}</h6>
+                    </div>
                 </div>
                 <div class="col-md-8 m-0">
                     <div class="col-md-12 p-0">
-                        <h2>{{task['name']}}</h2>
-                        <h4>{{task['designation']}}</h4>
-                        <h5>{{$t('department')}}: {{task['department']}}</h5>
-                    </div>
-                    <div class="row m-0 p-0 p-0 col-md-12 mt-5">
-                        <div class="col-md-4"><p class="font-weight-bold mb-0">{{$t('section')}}</p><p>{{task['section']}}</p></div>
-                        <div class="col-md-8"><p class="font-weight-bold mb-0">{{$t('work_location')}}</p><p>{{task['work_location']}}</p></div>
-                    </div>
-                    <div class="col-md-12 mt-2 p-0">
+                        <h4>{{$t('contact_info')}}</h4>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('phone')}}</p>
+                                <p class="my-auto text-white font-weight-bold">Father / CO</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['mobile_no']}}</p>
+                                <p class="my-auto text-white">{{task['father_name']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-light my-auto">
+                                <p class="my-auto font-weight-bold">{{$t('phone')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['mobile_no']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['area']}}, {{task['zip_code']}}, {{task['sub_district']}}, {{task['district']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -287,14 +340,6 @@
                             </div>
                             <div class="col-md-6 bg-light">
                                 <p class="my-auto">{{task['email']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['address']}}</p>
                             </div>
                         </div>
                     </div>
@@ -330,14 +375,6 @@
                             </div>
                             <div class="col-md-6 bg-light">
                                 <p class="my-auto">{{task['blood_group']}}</p>
-                            </div>
-                        </div>
-                        <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('joining_date')}}</p>
-                            </div>
-                            <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{`${task['start_date']}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MMMM-YYYY')}}</p>
                             </div>
                         </div>
                     </div>
@@ -467,7 +504,7 @@ export default {
             roles: [],
             errors : [],
             exit: {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())},
-            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
+            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
             taskId: null,
             Index: null,
             DepartmentList: [],
@@ -489,6 +526,36 @@ export default {
                 { value: 4, text: this.$t('thursday') },
                 { value: 5, text: this.$t('friday') }
             ],
+
+            json_fields: {
+                    'ID': 'employee_id',
+                    'Name': 'first_name',
+                    'Designation': 'designation',
+                    'Department' : 'department',
+                    'Date of Join' : 'start_date',
+                    'Service Length' : 'service_length',
+                    'Service Category' : 'service_category',
+                    'status' : 'status',
+                    'Gender' : 'gender',
+                    'Father Name/CO' : 'father_name',
+                    'Contact No' : 'mobile_no',
+                    'Village/Area' : 'area',
+                    'PO/Area Code' : 'zip_code',
+                    'Sub District' : 'sub_district',
+                    'District' : 'district',
+                    'Date of Birth' : 'date_of_birth',
+                    'Blood Group' : 'blood_group',
+                    'Marital Status' : 'marital_status',
+                    'Qualification' : 'qualification',
+                    'Egergency Cont. Name' : 'contact_name',
+                    'Relationship' : 'relationship',
+                    'Contact No.' : 'contact_phone',
+                    'Contact Address' : 'contact_address',
+                    'EPF Entitled In' : 'epf_entitled_in',
+                    'Type Of Employee' : 'work_location',
+                    'Team Member Of' : 'team_member_of',
+                    'Transferred' : 'transferred'
+                },
 
             weekArray: [this.$t('sunday'), this.$t('monday'), this.$t('tuesday'), this.$t('wednesday'), this.$t('thursday'), this.$t('friday'), this.$t('saturday')],
             
@@ -571,7 +638,7 @@ export default {
             this.taskId = null
             this.stepper = 1
             this.title = this.$t('insert_new_employee')
-            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
+            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
         },
 
         editDetails() {
@@ -761,11 +828,11 @@ export default {
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'employee_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'blood_group', label : this.$t('blood_group'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'service_length', label : this.$t('service_length'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 

@@ -25,7 +25,7 @@ class SalarysheetController extends Controller
      */
     public function index()
     {
-        $Department = DB::SELECT("SELECT DISTINCT department FROM employees WHERE deleted_by = 0 and status = 'Active' ORDER BY department");
+        $Department = DB::SELECT("SELECT DISTINCT department FROM employees WHERE deleted_by = 0 ORDER BY department");
 
         return compact('Department');
     }
