@@ -5,7 +5,12 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="panel-title float-left">{{ $t('increment_file') }}</h3> 
                 </div>
-                <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
+                <div class="row m-0 p-0 card-body">
+                    <!-- <div class="col-md-4  noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div> -->
+                    <div class="col-md-3 noprint">
+                        <input type="date" class="form-control" v-model="increment_date">
+                    </div>
+                </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
                         <b-form-group class="mb-0 mr-auto">
@@ -227,6 +232,7 @@ export default {
             noprint: 'noprint',
             DepartmentList: [],
             DepartmentName: 'Management',
+            increment_date: this.convertDate(new Date()),
 
             transProps: {
                 // Transition name
@@ -325,6 +331,13 @@ export default {
             return [year, mnth, day].join("-");
         },
 
+        getYearMonth(str) {
+            var date = new Date(str),
+                year = date.getFullYear(),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2)
+            return [year, mnth].join("-");
+        },
+
         save() {
             this.disable = !this.disable
             this.buttonTitle = this.$t('saving')
@@ -415,7 +428,8 @@ export default {
         employeeListByDept() {
             let array = [], k=0
             for (let i = 0; i < this.employeeList.length; i++) {
-                if (this.employeeList[i]['department'] == this.DepartmentName) {
+                // if (this.employeeList[i]['department'] == this.DepartmentName && this.getYearMonth(this.employeeList[i]['next_increment']) == this.getYearMonth(this.increment_date)) {
+                if (this.getYearMonth(this.employeeList[i]['next_increment']) == this.getYearMonth(this.increment_date)) {
                     array[k++] = this.employeeList[i]
                 }                
             }
@@ -442,7 +456,7 @@ export default {
                 { key: 'salary', label : this.$t('salary'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'amount', label : this.$t('increment'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'effective_date', label : this.$t('effective_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'next_increment', label : this.$t('next_increment'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'next_increment_month', label : this.$t('next_increment'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },

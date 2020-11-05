@@ -25,7 +25,7 @@ class WagehikeController extends Controller
     public function index()
     {
         $Increment = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, section, work_location, start_date, 
-        employee_image, effective_date, amount, remarks, file_link, next_increment, total_salary salary FROM (
+        employee_image, effective_date, amount, remarks, file_link, next_increment, MONTHNAME(next_increment)next_increment_month, total_salary salary FROM (
         SELECT A.id, A.employee_id, first_name, last_name, designation, department, section, work_location, start_date, 
         employee_image, effective_date, amount, remarks, file_link, total_salary,
         (CASE WHEN effective_date IS null THEN (CASE WHEN department != 'Management' THEN DATE_ADD(start_date, INTERVAL 6 MONTH) ELSE DATE_ADD(start_date, INTERVAL 12 MONTH) END) ELSE DATE_ADD(effective_date, INTERVAL 12 MONTH) END)next_increment FROM (
