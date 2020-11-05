@@ -1,4 +1,8 @@
 { 
+    "gross" : "Gross",
+    "basic" : "Basic",
+    "previous_gross" : "Previous Gross",
+    "previous_basic" : "Previous Basic",
     "father_name" : "Father's Name",
     "district" : "District",
     "sub_district" : "Sub-district",

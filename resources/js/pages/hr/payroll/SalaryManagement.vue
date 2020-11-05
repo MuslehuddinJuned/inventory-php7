@@ -54,7 +54,7 @@
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
-                    @row-clicked="(item) => viewDetails(item.id)"
+                    @row-clicked="(item) => viewDetails(item.id, item.employee_id)"
                     class="table-transition"
                     style="cursor : pointer"
                     >
@@ -348,10 +348,10 @@ export default {
             } return false
         },
 
-        viewDetails(id) {
+        viewDetails(id, employee_id) {
             this.taskId = id
             this.noprint = 'noprint'
-            this.task = this.singleTask
+            this.task = this.singleTask(employee_id)
             this.task['house_rent_percent'] =  this.task['house_rent'] * 100 / this.task['basic_pay']
             this.task['medic_alw_percent'] =  this.task['medic_alw'] * 100 / this.task['basic_pay']
             this.task['ta_percent'] =  this.task['ta'] * 100 / this.task['basic_pay']
@@ -359,6 +359,17 @@ export default {
             this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay']
             this.task['tax_percent'] =  this.task['tax'] * 100 / this.task['basic_pay']
             this.$refs['dataView'].show()
+        },
+
+        singleTask(employee_id) {
+            let array = []
+            for (let i = 0; i < this.employeeList.length; i++) {
+                if (this.employeeList[i]['employee_id'] == employee_id) {
+                    array = this.employeeList[i]
+                    break
+                }                
+            }
+            return array
         },
 
         convertDate(str) {
@@ -433,17 +444,6 @@ export default {
     },
 
     computed: {
-        
-        singleTask() {
-            let array = []
-            for (let i = 0; i < this.employeeList.length; i++) {
-                if (this.employeeList[i]['id'] == this.taskId) {
-                    array = this.employeeList[i]
-                    break
-                }                
-            }
-            return array
-        },
 
         TypetoSearch() {
             const lang = this.$i18n.locale

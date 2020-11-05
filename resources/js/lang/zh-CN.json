@@ -1,4 +1,8 @@
 {
+    "gross" : "毛",
+    "basic" : "基本的",
+    "previous_gross" : "以前的毛额",
+    "previous_basic" : "以前的基础",
     "father_name" : "父亲的名字",
     "district" : "区",
     "sub_district" : "分地区",

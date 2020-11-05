@@ -25,14 +25,14 @@ class WagehikeController extends Controller
     public function index()
     {
         $Increment = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, section, work_location, start_date, 
-        employee_image, effective_date, amount, remarks, file_link, next_increment, MONTHNAME(next_increment)next_increment_month, total_salary salary FROM (
+        employee_image, effective_date, amount, previous_basic, file_link, updated_at, next_increment, MONTHNAME(next_increment)next_increment_month, basic_pay, total_salary salary FROM (
         SELECT A.id, A.employee_id, first_name, last_name, designation, department, section, work_location, start_date, 
-        employee_image, effective_date, amount, remarks, file_link, total_salary,
-        (CASE WHEN effective_date IS null THEN (CASE WHEN department != 'Management' THEN DATE_ADD(start_date, INTERVAL 6 MONTH) ELSE DATE_ADD(start_date, INTERVAL 12 MONTH) END) ELSE DATE_ADD(effective_date, INTERVAL 12 MONTH) END)next_increment FROM (
+        employee_image, effective_date, amount, previous_basic, file_link, updated_at, total_salary, basic_pay,
+        (CASE WHEN effective_date IS null THEN (CASE WHEN work_location != 'Management' THEN DATE_ADD(start_date, INTERVAL 6 MONTH) ELSE DATE_ADD(start_date, INTERVAL 12 MONTH) END) ELSE DATE_ADD(effective_date, INTERVAL 12 MONTH) END)next_increment FROM (
             SELECT id, employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image FROM employees WHERE deleted_by = 0 AND status = 'active'
-            )A LEFT JOIN (SELECT A.effective_date, A.employee_id, next_increment, amount, remarks, file_link FROM (
+            )A LEFT JOIN (SELECT A.effective_date, A.employee_id, next_increment, amount, previous_basic, file_link, updated_at FROM (
                 SELECT MAX(effective_date)effective_date, employee_id FROM wagehikes GROUP BY employee_id
-                )A LEFT JOIN (SELECT effective_date, employee_id, next_increment, amount, remarks, file_link FROM wagehikes
+                )A LEFT JOIN (SELECT effective_date, employee_id, next_increment, amount, previous_basic, file_link, updated_at FROM wagehikes
                 )B ON A.effective_date = B.effective_date AND A.employee_id = B.employee_id
             )B ON A.id = B.employee_id LEFT JOIN (SELECT basic_pay, medic_alw, house_rent, ta, da, providant_fund, tax, total_salary, bank_name, acc_no, employee_id FROM salaries
             )C ON A.id = C.employee_id
@@ -76,7 +76,10 @@ class WagehikeController extends Controller
      */
     public function show($id)
     {
-        $Wagehike = Wagehike::where('employee_id', $id)->orderBy('effective_date', 'desc')->get();
+        $Wagehike = DB::SELECT("SELECT id, effective_date, next_increment, amount, previous_basic, (previous_basic*1.5 + 574)previous_gross, 
+            (previous_basic*(1+amount/100))post_basic, (previous_basic*(1+amount/100)*1.5 + 574)post_gross, file_link, employee_id, updated_at 
+            FROM wagehikes WHERE employee_id = ? ORDER BY effective_date", [$id]);
+
         return compact('Wagehike');
     }
 

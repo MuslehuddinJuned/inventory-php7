@@ -18,7 +18,7 @@ class CreateWagehikesTable extends Migration
             $table->date('effective_date')->nullable();
             $table->date('next_increment')->nullable();
             $table->double('amount')->nullable();
-            $table->string('remarks')->nullable();
+            $table->double('previous_basic')->nullable();
             $table->string('file_link')->nullable();
 
             $table->unsignedBigInteger('employee_id')->nullable();
