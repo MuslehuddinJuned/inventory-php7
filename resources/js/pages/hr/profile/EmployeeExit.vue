@@ -19,11 +19,11 @@
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
-                        <!-- <download-excel
+                        <download-excel
                             id="tooltip-target-1"
                             class="btn btn-outline-default btn-sm mr-3"
                             title="List of Employee"
-                            :data="employeeList"
+                            :data="employeeListByDept"
                             :fields="json_fields"
                             worksheet="List of Employee"
                             name="List of Employee.xls">
@@ -31,7 +31,7 @@
                         </download-excel>
                         <b-tooltip target="tooltip-target-1" triggers="hover">
                             Save this table to Excel
-                        </b-tooltip> -->
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -329,6 +329,40 @@ export default {
                 { value: 5, text: this.$t('friday') }
             ],
 
+            json_fields: {
+                'ID': 'employee_id',
+                'Name': 'first_name',
+                'Designation': 'designation',
+                'Department' : 'department',
+                'Date of Join' : 'start_date',
+                'Service Length' : 'service_length',
+                'Service Category' : 'service_category',
+                'status' : 'status',
+                'Gender' : 'gender',
+                'Father Name/CO' : 'father_name',
+                'Contact No' : 'mobile_no',
+                'Village/Area' : 'area',
+                'PO/Area Code' : 'zip_code',
+                'Sub District' : 'sub_district',
+                'District' : 'district',
+                'Date of Birth' : 'date_of_birth',
+                'Blood Group' : 'blood_group',
+                'Marital Status' : 'marital_status',
+                'Qualification' : 'qualification',
+                'Egergency Cont. Name' : 'contact_name',
+                'Relationship' : 'relationship',
+                'Contact No.' : 'contact_phone',
+                'Contact Address' : 'contact_address',
+                'EPF Entitled In' : 'epf_entitled_in',
+                'Type Of Employee' : 'work_location',
+                'Team Member Of' : 'team_member_of',
+                'Transferred' : 'transferred',
+                'Exit Type' : 'exit_type',
+                'Reason' : 'reason',
+                'Resign Date' : 'resign_date',
+                'Effective Date' : 'effective_date'
+            },
+
             weekArray: [this.$t('sunday'), this.$t('monday'), this.$t('tuesday'), this.$t('wednesday'), this.$t('thursday'), this.$t('friday'), this.$t('saturday')],
 
             transProps: {
@@ -474,6 +508,7 @@ export default {
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'service_length', label : this.$t('service_length'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'effective_date', label : this.$t('resign_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
     }

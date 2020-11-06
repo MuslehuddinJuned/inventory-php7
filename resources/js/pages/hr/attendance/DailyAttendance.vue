@@ -20,6 +20,19 @@
             <div class="col-md-4 card-body noprint"><b-form-select v-model="DepartmentName" :options="DepartmentList" value-field="department" text-field="department"></b-form-select></div>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
+                    <download-excel
+                        id="tooltip-target-1"
+                        class="btn btn-outline-default btn-sm mr-3"
+                        :title="DepartmentName + ' Daily Attendance ' + attendance_date"
+                        :data="attendanceByDepartment"
+                        :fields="json_fields"
+                        worksheet="Daily Attendance"
+                        name="Daily Attendance.xls">
+                        <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                    </download-excel>
+                    <b-tooltip target="tooltip-target-1" triggers="hover">
+                        Save this table to Excel
+                    </b-tooltip>
                     <b-form-group class="mb-0 mr-auto">
                         <b-input-group size="sm">
                             <b-form-input
@@ -90,8 +103,21 @@
                 <div class="col-md-12 m-0 p-0">
                     <span class="font-weight-bold mr-4">{{ $t('name')}}: {{perAttendanceList[0]['first_name']}}</span>
                     <span class="font-weight-bold mr-4">ID: {{perAttendanceList[0]['employee_id']}}</span>
-                    <span class="font-weight-bold mr-4">{{ $t('department')}}: {{perAttendanceList[0]['department']}}</span>
-                    <span class="font-weight-bold mr-4 mb-3">{{ $t('designation')}}: {{perAttendanceList[0]['designation']}}</span>
+                    <span class="font-weight-bold mr-4">{{ $t('designation')}}: {{perAttendanceList[0]['designation']}}</span>
+                    <span class="font-weight-bold mr-4 mb-3">{{ $t('department')}}: {{perAttendanceList[0]['department']}}</span>
+                    <download-excel
+                        id="tooltip-target-1"
+                        class="btn btn-outline-default btn-sm mr-3"
+                        :title="'Name: ' + perAttendanceList[0]['first_name'] + ', ID: ' + perAttendanceList[0]['employee_id'] + ', Designation: ' + perAttendanceList[0]['designation'] + ', Department: ' + perAttendanceList[0]['department'] + ', Month: ' + attendance_date "
+                        :data="perAttendanceList"
+                        :fields="indivisual_json_fields"
+                        worksheet="Daily Attendance"
+                        name="Daily Attendance.xls">
+                        <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                    </download-excel>
+                    <b-tooltip target="tooltip-target-1" triggers="hover">
+                        Save this table to Excel
+                    </b-tooltip>
                 </div>
                 <!-- <div class="col-md-12 ">
                     <span class="font-weight-bold mr-4">{{ $t('total_days')}}: {{perAttendanceList.length}}</span>
@@ -188,6 +214,45 @@ export default {
             buttonTitle : this.$t('save'),
             disable: false,
 
+            json_fields: {
+                'ID': 'employee_id',
+                'Name': 'first_name',
+                'Designation': 'designation',
+                'Department' : 'department',
+                'date' : 'Date',
+                'In' : 'in_time_1',
+                'Out (L)' : 'out_time_1',
+                'In (L)' : 'in_time_2',
+                'Out' : 'out_time_2',
+                'Total Hours' : 'total_hours',
+                'OT' : 'ot',
+                'Extra OT' : 'ot_extra'
+            },
+
+            indivisual_json_fields: {
+                'Date': 'date',
+                'Day': 'day',
+                'In' : 'in_time_1',
+                'Out (L)' : 'out_time_1',
+                'In (L)' : 'in_time_2',
+                'Out' : 'out_time_2',
+                'Present': 'present',
+                'Regular Days': 'regular_days',
+                'Absent': 'absent',
+                'Sick Leave': 'sick_leave',
+                'Casual Leave': 'casual_leave',
+                'Earned Leave': 'earned_leave',
+                'Other Leave': 'other_leave',
+                'Total Hours' : 'total_hours',
+                'OT': 'ot',
+                'Late': 'late',
+                'Worked on Friday': 'worked_on_weekly_holiday',
+                'Worked on Holiday': 'worked_on_yearly_holiday',
+                'Lay-off Days': 'lay_off_days',
+                'Not for Join': 'not_for_join',
+                'Suspense': 'suspense'
+            },
+
             noprint: '',
 
             transProps: {
@@ -270,7 +335,6 @@ export default {
                         k++                  
                     }
                 }
-                // console.log(id, start, end, this.personnelLeave, this.holiday)
 
                 // for attendance
                 let perAttendanceList = res['Attendance']
@@ -303,7 +367,6 @@ export default {
                 this.n_regular_days = 0
                 for (let i = first; i <= last; i.setDate(i.getDate() + 1)) {
                     
-                    console.log('hi')
                     check = false
                     for (let j = 0; j < perAttendanceList.length; j++) {
                         date_i = i

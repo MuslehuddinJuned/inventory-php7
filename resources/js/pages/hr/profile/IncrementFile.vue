@@ -13,6 +13,19 @@
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            title="Increment File"
+                            :data="employeeListByDept"
+                            :fields="json_fields"
+                            worksheet="Increment File"
+                            name="Increment File.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -310,6 +323,18 @@ export default {
             DepartmentList: [],
             DepartmentName: 'Management',
             increment_date: this.convertDate(new Date()),
+
+            json_fields: {
+                'ID': 'employee_id',
+                'Name': 'first_name',
+                'Designation': 'designation',
+                'Department' : 'department',
+                'Salary' : 'salary',
+                'Increment (%)' : 'amount',
+                'Effective Date' : 'effective_date',
+                'Next Increment' : 'next_increment_month',
+                'Joining Date' : 'start_date'
+            },
 
             transProps: {
                 // Transition name
