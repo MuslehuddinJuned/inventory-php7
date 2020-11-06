@@ -1,4 +1,7 @@
 { 
+    "late" : "Late",
+    "worked_on_friday" : "Worked on Friday",
+    "regular_days" : "Regular Days",
     "gross" : "Gross",
     "basic" : "Basic",
     "previous_gross" : "Previous Gross",
