@@ -106,7 +106,7 @@
                 :filterIncludedFields="filterOn"
                 :tbody-transition-props="transProps"
                 @filtered="onFiltered"
-                @row-clicked="(item) => viewDetails(item.id)"
+                @row-clicked="(item) => viewDetails(item.id, item.employee_id)"
                 class="table-transition"
                 style="cursor : pointer"
                 >
@@ -295,6 +295,8 @@ export default {
             taskDetailsId: null,
             personalLeave: [],
             DepartmentList: [],
+            absentList: [],
+            holidayList: [],
             DepartmentName: 'Management',
             roles: [],
             year: new Date().getFullYear(),
@@ -342,6 +344,7 @@ export default {
             this.Leave = res['Leave']
             this.isBusy = false
         })
+
 
         fetch(`api/salarysheet`)
         .then(res => res.json())
@@ -413,7 +416,7 @@ export default {
             return year + " years " + mnth + " months " + day + " days ";
         },
 
-        viewDetails(id) {
+        viewDetails(id, employee_id) {
             this.taskHeadId = id
             this.noprint = 'noprint'
             this.taskDetailsId = null
@@ -424,11 +427,17 @@ export default {
             .then(res => {
                 this.taskDetailsAll = res['AllLeaves']
                 this.personalLeave = this.taskDetailsSingle('read')
-                this.leaveSummaryMethod()
+                fetch(`api/absent/${employee_id}/${this.year}`)
+                .then(res => res.json())
+                .then(res => {
+                    this.holidayList = res['holiday']
+                    this.absentList = res['absentList']
+                    this.leaveSummaryMethod()
+                })
             })
             .catch(err => {
                 alert(err.response.data.message);
-            })
+            })           
 
             this.$refs['dataView'].show()
         },
@@ -445,46 +454,65 @@ export default {
                 }
             }
 
+            if(this.absentList[0]['absent_jan'] == 0) this.holidayList[0]['holiday_jan'] = 0
+            if(this.absentList[0]['absent_feb'] == 0) this.holidayList[0]['holiday_feb'] = 0
+            if(this.absentList[0]['absent_mar'] == 0) this.holidayList[0]['holiday_mar'] = 0
+            if(this.absentList[0]['absent_apr'] == 0) this.holidayList[0]['holiday_apr'] = 0
+            if(this.absentList[0]['absent_may'] == 0) this.holidayList[0]['holiday_may'] = 0
+            if(this.absentList[0]['absent_jun'] == 0) this.holidayList[0]['holiday_jun'] = 0
+            if(this.absentList[0]['absent_jul'] == 0) this.holidayList[0]['holiday_jul'] = 0
+            if(this.absentList[0]['absent_aug'] == 0) this.holidayList[0]['holiday_aug'] = 0
+            if(this.absentList[0]['absent_sep'] == 0) this.holidayList[0]['holiday_sep'] = 0
+            if(this.absentList[0]['absent_oct'] == 0) this.holidayList[0]['holiday_oct'] = 0
+            if(this.absentList[0]['absent_nov'] == 0) this.holidayList[0]['holiday_nov'] = 0
+            if(this.absentList[0]['absent_dec'] == 0) this.holidayList[0]['holiday_dec'] = 0
+
             this.leaveSummary= [
-                {'month' : 'January', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'February', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'March', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'April', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'May', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'June', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'July', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'August', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'September', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'October', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'November', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : 'December', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
-                {'month' : this.$t('total'), 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0},
+                {'month' : 'January', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_jan'] - this.holidayList[0]['holiday_jan'])},
+                {'month' : 'February', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_feb'] - this.holidayList[0]['holiday_feb'])},
+                {'month' : 'March', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_mar'] - this.holidayList[0]['holiday_mar'])},
+                {'month' : 'April', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_apr'] - this.holidayList[0]['holiday_apr'])},
+                {'month' : 'May', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_may'] - this.holidayList[0]['holiday_may'])},
+                {'month' : 'June', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_jun'] - this.holidayList[0]['holiday_jun'])},
+                {'month' : 'July', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_jul'] - this.holidayList[0]['holiday_jul'])},
+                {'month' : 'August', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_aug'] - this.holidayList[0]['holiday_aug'])},
+                {'month' : 'September', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_sep'] - this.holidayList[0]['holiday_sep'])},
+                {'month' : 'October', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_oct'] - this.holidayList[0]['holiday_oct'])},
+                {'month' : 'November', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_nov'] - this.holidayList[0]['holiday_nov'])},
+                {'month' : 'December', 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': (this.absentList[0]['absent_dec'] - this.holidayList[0]['holiday_dec'])},
+                {'month' : this.$t('total'), 'casual_leave' : 0, 'sick_leave': 0, 'earned_leave': 0, 'unpaid_leave': 0, 'other_leave': 0, 'absent': 0},
             ]
 
             for (let l = 0; l < leaveSummary.length; l++) {
                 switch(leaveSummary[l]['leave_type']) {
                     case 'casual_leave':
                         this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['casual_leave']++
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['absent']--
                         this.leaveSummary[12]['casual_leave']++
                         break;
                     case 'sick_leave':
                         this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['sick_leave']++
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['absent']--
                         this.leaveSummary[12]['sick_leave']++
                         break;
                     case 'earned_leave':
                         this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['earned_leave']++
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['absent']--
                         this.leaveSummary[12]['earned_leave']++
                         break;
-                    case 'unpaid_leave':
-                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['unpaid_leave']++
-                        this.leaveSummary[12]['unpaid_leave']++
-                        break;
+                    // case 'unpaid_leave':
+                    //     this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['unpaid_leave']++
+                    //     this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['absent']--
+                    //     this.leaveSummary[12]['unpaid_leave']++
+                    //     break;
                     default:
                         this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['other_leave']++
+                        this.leaveSummary[this.getMonthMethod(leaveSummary[l]['leave_start'])]['absent']--
                         this.leaveSummary[12]['other_leave']++
                         break;
                 }
             }
+            this.leaveSummary[12]['absent'] = this.leaveSummary[0]['absent'] + this.leaveSummary[1]['absent'] + this.leaveSummary[2]['absent'] + this.leaveSummary[3]['absent'] + this.leaveSummary[4]['absent'] + this.leaveSummary[5]['absent'] + this.leaveSummary[6]['absent'] + this.leaveSummary[7]['absent'] + this.leaveSummary[8]['absent'] + this.leaveSummary[9]['absent'] + this.leaveSummary[10]['absent'] + this.leaveSummary[11]['absent']
         },
 
         addDetails() {
@@ -755,7 +783,7 @@ export default {
                 { key: 'casual_leave', label : this.$t('casual_leave'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'sick_leave', label : this.$t('sick_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'earned_leave', label : this.$t('earned_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unpaid_leave', label : this.$t('unpaid_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'absent', label : this.$t('absent'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'other_leave', label : this.$t('other_leave'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'total', label : this.$t('total'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]            

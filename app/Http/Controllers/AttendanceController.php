@@ -140,6 +140,41 @@ class AttendanceController extends Controller
         return compact('Attendance', 'Leave', 'Holiday');
     }
 
+    public function absent($id, $year)
+    {
+        $absentList = DB::SELECT("SELECT ac_no, 
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'January') THEN 1 ELSE null END)absent_jan,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'February') THEN 1 ELSE null END)absent_feb,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'March') THEN 1 ELSE null END)absent_mar,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'April') THEN 1 ELSE null END)absent_apr,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'May') THEN 1 ELSE null END)absent_may,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'June') THEN 1 ELSE null END)absent_jun,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'July') THEN 1 ELSE null END)absent_jul,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'August') THEN 1 ELSE null END)absent_aug,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'September') THEN 1 ELSE null END)absent_sep,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'October') THEN 1 ELSE null END)absent_oct,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'November') THEN 1 ELSE null END)absent_nov,
+        COUNT(CASE WHEN ((CHAR_LENGTH(time)<4 || time = '00:00' || time IS null) && DAYNAME(date) != 'Friday' && MONTHNAME(date) = 'December') THEN 1 ELSE null END)absent_dec 
+        FROM attendances WHERE ac_no = ? AND YEAR(date) = ? GROUP BY ac_no ORDER BY date", [$id, $year]);
+
+        $holiday = DB::SELECT("SELECT 
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'January' THEN 1 ELSE null END)holiday_jan,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'February' THEN 1 ELSE null END)holiday_feb,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'March' THEN 1 ELSE null END)holiday_mar,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'April' THEN 1 ELSE null END)holiday_apr,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'May' THEN 1 ELSE null END)holiday_may,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'June' THEN 1 ELSE null END)holiday_jun,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'July' THEN 1 ELSE null END)holiday_jul,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'August' THEN 1 ELSE null END)holiday_aug,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'September' THEN 1 ELSE null END)holiday_sep,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'October' THEN 1 ELSE null END)holiday_oct,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'November' THEN 1 ELSE null END)holiday_nov,
+        COUNT(CASE WHEN MONTHNAME(yearly_holiday) = 'December' THEN 1 ELSE null END)holiday_dec
+        FROM holidays WHERE YEAR(yearly_holiday) = ?", [$year]);
+
+        return compact('absentList', 'holiday');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
