@@ -99,7 +99,7 @@ class SalarysheetController extends Controller
                 ta, da, providant_fund pf, tax, total_salary salary, 82 covert_rate, ((total_salary-ta-da+providant_fund)/82) salary_usd, 0 attendance_bonus, 0 production_bonus, 0 worked_friday_hour, 
                 0 worked_friday_amount, 0 worked_holiday_hour, 0 worked_holiday_amount, (basic_pay*2/208)ot_rate, 0 ot_hour, 0 ot_amount, 
                 0 attendance_allowance, 0 present_days, 0 holidays, 0 absent_days, 0 absent_amount, 0 leave_days, 0 not_for_join_days, 0 not_for_join_amount, 0 gross_pay, 0 total_deduction, 0 net_pay FROM(SELECT id, employee_id, weekly_holiday, start_date FROM employees WHERE deleted_by = 0 and status = 'active'
-                )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, other_field, other_pay, providant_fund, tax, total_salary, bank_name, acc_no, employee_id FROM salaries
+                )A LEFT JOIN (SELECT id, COALESCE(basic_pay, 0)basic_pay, COALESCE(medic_alw, 0)medic_alw, COALESCE(house_rent, 0)house_rent, COALESCE(ta, 0)ta, COALESCE(da, 0)da, COALESCE(other_field, 0)other_field, COALESCE(other_pay, 0)other_pay, COALESCE(providant_fund, 0)providant_fund, COALESCE(tax, 0)tax, COALESCE(total_salary, 0)total_salary, bank_name, acc_no, employee_id FROM salaries
                 )B ON A.id = B.employee_id", [$days, $days]);
 
             $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);        
@@ -121,12 +121,14 @@ class SalarysheetController extends Controller
                 }
 
                 //for leave
+                $earned_leave_count = 0;
                 for ($j = 0; $j < count($Leave); $j++) {
                     for ($k = 0; $k < $Leave[$j]->day_count; $k++) {
                         $dates = date('Y-m-d', strtotime($Leave[$j]->leave_start .'+'.$k.' day'));
                         if(substr($request->start, 0, 7) == substr($dates, 0, 7) && $Leave[$j]->leave_type != 'unpaid_leave'){
                             $Salary[$i]->leave_days++;
-                        }                
+                            if($Leave[$j]->leave_type == 'earned_leave' || $Leave[$j]->leave_type == 'compensatory_leave') $earned_leave_count++;
+                        }           
                     }
                 }
 
@@ -146,7 +148,7 @@ class SalarysheetController extends Controller
                 if($Salary[$i]->not_for_join_days < 0) $Salary[$i]->not_for_join_days = 0;
                 $Salary[$i]->absent_days = $days - $Salary[$i]->present_days - $Salary[$i]->holidays - $Salary[$i]->not_for_join_days;
 
-                if($days - $Salary[$i]->present_days - $Salary[$i]->holidays == 0) {
+                if($days - $Salary[$i]->present_days - $Salary[$i]->holidays - $earned_leave_count == 0) {
                     $Salary[$i]->attendance_bonus = 400;
                     $Salary[$i]->attendance_allowance = 2000;
                 }
