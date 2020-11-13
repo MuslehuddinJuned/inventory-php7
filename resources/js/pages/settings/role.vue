@@ -165,6 +165,11 @@
 <script>
 export default {
     middleware: 'auth',
+
+    metaInfo () {
+        return { title: this.$t('user_management') }
+    },
+
     data() {
         return{
             userList : [],

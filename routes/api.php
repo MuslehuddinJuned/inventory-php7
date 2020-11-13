@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('wagehike', 'WagehikeController')->middleware('can:increment_file_View');
     Route::resource('production', 'ProductionController')->middleware('can:production_View');
     Route::resource('prodstore', 'ProdstoreController')->middleware('can:production_View');
+    Route::resource('prodhourly', 'ProdhourlyController')->middleware('can:production_View');
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

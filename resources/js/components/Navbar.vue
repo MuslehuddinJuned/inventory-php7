@@ -4,6 +4,7 @@
       <img class="img-responsive mr-2" src="/favicon.ico" width="30px" alt="SUSTipe">
       <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
         {{ $t('appName') }}
+        <!-- SUSTipe -->
       </router-link>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false">
@@ -69,6 +70,10 @@
               <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionMonitor' }" class="dropdown-item pl-3">                
                 <b-icon icon="list-check"></b-icon>
                 {{ $t('production_monitor') }}
+              </router-link>
+              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.HourlyProduction' }" class="dropdown-item pl-3">
+                <b-icon icon="bricks"></b-icon>
+                {{ $t('hourly_production') }}
               </router-link>
               <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.DailyProduction' }" class="dropdown-item pl-3">
                 <b-icon icon="graph-up"></b-icon>

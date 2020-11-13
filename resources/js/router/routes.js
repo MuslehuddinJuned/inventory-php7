@@ -28,6 +28,7 @@ export default [
   { path: '/polist', name: 'po.PoList', component: page('po/PoList.vue') },
   { path: '/etdmonitor', name: 'po.EtdMonitor', component: page('po/EtdMonitor.vue') },
   { path: '/daily-production', name: 'production.DailyProduction', component: page('production/DailyProduction.vue') },
+  { path: '/hourly-production', name: 'production.HourlyProduction', component: page('production/HourlyProduction.vue') },
   { path: '/production-monitor', name: 'production.ProductionMonitor', component: page('production/ProductionMonitor.vue') },
 
 

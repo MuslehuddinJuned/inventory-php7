@@ -1,4 +1,5 @@
 { 
+    "hourly_production" : "Hourly Production",
     "late" : "Late",
     "worked_on_friday" : "Worked on Friday",
     "regular_days" : "Regular Days",
