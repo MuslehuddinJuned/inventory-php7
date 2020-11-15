@@ -38,6 +38,10 @@ class CreateEmployeesTable extends Migration
             $table->string('sub_district')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('area')->nullable();
+            $table->string('present_district')->nullable();
+            $table->string('present_sub_district')->nullable();
+            $table->string('present_zip_code')->nullable();
+            $table->string('present_area')->nullable();
             $table->string('qualification')->nullable();
             $table->string('epf_entitled_in')->nullable();
             $table->string('team_member_of')->nullable();

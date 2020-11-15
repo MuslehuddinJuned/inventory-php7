@@ -136,6 +136,25 @@
                             <label for="qualification" class="col-form-label">{{$t('qualification')}}</label>
                             <input type="qualification" class="form-control" id="qualification" name="qualification" v-model="task['qualification']">
                         </div>
+                        
+                        <span class="col-12 border-bottom">{{$t('present_address')}}</span>
+                        <div class="form-group col-md-3">
+                            <label for="present_area" class="col-form-label">{{$t('area')}}</label>
+                            <input type="present_area" class="form-control" id="present_area" name="present_area" v-model="task['present_area']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="present_zip_code" class="col-form-label">{{$t('zip_code')}}</label>
+                            <input type="present_zip_code" class="form-control" id="present_zip_code" name="present_zip_code" v-model="task['present_zip_code']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="present_sub_district" class="col-form-label">{{$t('sub_district')}}</label>
+                            <input type="present_sub_district" class="form-control" id="present_sub_district" name="present_sub_district" v-model="task['present_sub_district']">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="present_district" class="col-form-label">{{$t('district')}}</label>
+                            <input type="present_district" class="form-control" id="present_district" name="present_district" v-model="task['present_district']">
+                        </div>
+                        <span class="col-12 border-bottom">{{$t('permanent_address')}}</span>
                         <div class="form-group col-md-3">
                             <label for="area" class="col-form-label">{{$t('area')}}</label>
                             <input type="area" class="form-control" id="area" name="area" v-model="task['area']">
@@ -193,19 +212,19 @@
                 </div>
                 <div v-if="stepper == 2" class="col-12 mt-3">
                     <div class="form-row col-md-12">                        
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="designation" class="col-form-label">{{$t('designation')}}</label>
                             <input type="text" class="form-control" id="designation" name="designation" v-model="task['designation']">
                         </div>   
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="department" class="col-form-label">{{$t('department')}}</label>
                             <input type="text" class="form-control" id="department" name="department" v-model="task['department']">
                         </div>
-                        <div class="form-group col-md-3">
+                        <!-- <div class="form-group col-md-3">
                             <label for="section" class="col-form-label">{{$t('section')}}</label>
                             <input type="text" class="form-control" id="section" name="section" v-model="task['section']">
-                        </div>                        
-                        <div class="form-group col-md-3">
+                        </div>                         -->
+                        <div class="form-group col-md-4">
                             <label for="work_location" class="col-form-label">{{$t('work_location')}}</label>
                             <input type="text" class="form-control" id="work_location" name="work_location" v-model="task['work_location']">
                         </div>
@@ -328,18 +347,26 @@
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white font-weight-bold">{{$t('address')}}</p>
+                                <p class="my-auto text-white font-weight-bold">{{$t('present_address')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['area']}}, {{task['zip_code']}}, {{task['sub_district']}}, {{task['district']}}</p>
+                                <p class="my-auto text-white">{{task['present_area']}}, {{task['present_zip_code']}}, {{task['present_sub_district']}}, {{task['present_district']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('email')}}</p>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto font-weight-bold">{{$t('permanent_address')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['email']}}</p>
+                                <p class="my-auto">{{task['area']}}, {{task['zip_code']}}, {{task['sub_district']}}, {{task['district']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('email')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['email']}}</p>
                             </div>
                         </div>
                     </div>
@@ -504,7 +531,7 @@ export default {
             roles: [],
             errors : [],
             exit: {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())},
-            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
+            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
             taskId: null,
             Index: null,
             DepartmentList: [],
@@ -638,7 +665,7 @@ export default {
             this.taskId = null
             this.stepper = 1
             this.title = this.$t('insert_new_employee')
-            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
+            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
         },
 
         editDetails() {
