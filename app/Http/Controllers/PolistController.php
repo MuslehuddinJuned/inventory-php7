@@ -25,7 +25,7 @@ class PolistController extends Controller
     public function index()
     {
         $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, etd, producthead_id, buyer, product_style, product_code, product_image FROM (
-            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists
+            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists WHERE DATE(etd) >= CURDATE() - INTERVAL 30 DAY
             )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads WHERE deleted_by = 0
             )B ON A.producthead_id = B.id');
 
@@ -66,7 +66,7 @@ class PolistController extends Controller
         $polist = $request->user()->polist()->create($request->all());
 
         $PoList = DB::SELECT('SELECT A.id, quantity, remarks, po_date, po_no, etd, producthead_id, buyer, product_style, product_code, product_image FROM (
-            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists
+            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists WHERE DATE(etd) >= CURDATE() - INTERVAL 30 DAY
             )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads WHERE deleted_by = 0
             )B ON A.producthead_id = B.id');
 

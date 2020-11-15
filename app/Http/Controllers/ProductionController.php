@@ -26,7 +26,7 @@ class ProductionController extends Controller
     public function index()
     {
         $Production = DB::SELECT("SELECT A.id, quantity, po_date, po_no, etd, A.producthead_id, buyer, product_style, product_code, product_image, material, material_remarks, carton, carton_remarks, color_card, color_card_remarks, cutting, cutting_remarks, polish, polish_remarks, injection, injection_remarks, assembly, assembly_remarks FROM (
-            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists WHERE deleted_by  = 0 AND DATE(etd) >= CURDATE() - INTERVAL 60 DAY
+            SELECT id, quantity, remarks, po_date, po_no, etd, producthead_id FROM polists WHERE deleted_by  = 0 AND DATE(etd) >= CURDATE() - INTERVAL 30 DAY
             )A LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads
             )B ON A.producthead_id = B.id LEFT JOIN(SELECT polist_id, producthead_id, 
             SUM(material)material, GROUP_CONCAT(material_remarks)material_remarks, 

@@ -1,4 +1,10 @@
 {
+    "leader" : "领导",
+    "present_address" : "现在的住址",
+    "permanent_address" : "永久地址",
+    "complete" : "完成",
+    "hourly_target" : "每小时目标",
+    "line" : "线",
     "hourly_production" : "每小时生产",
     "late" : "晚的",
     "worked_on_friday" : "在星期五工作",

@@ -17,8 +17,13 @@ class CreateProdhourliesTable extends Migration
             $table->id();
             $table->string('line')->nullable();
             $table->string('section')->nullable();
+            $table->string('department')->nullable();
+            $table->string('leader')->nullable();
+            $table->string('item')->nullable();
             $table->string('remarks')->nullable();
             $table->date('prod_date')->nullable();
+            $table->double('quantity')->nullable();
+            $table->double('hourly_target')->nullable();
             $table->double('qty_1')->nullable();
             $table->double('ng_1')->nullable();
             $table->double('qty_2')->nullable();
@@ -67,8 +72,7 @@ class CreateProdhourliesTable extends Migration
             $table->double('ng_23')->nullable();
             $table->double('qty_24')->nullable();
             $table->double('ng_24')->nullable();
-            $table->unsignedBigInteger('polist_id');
-            $table->unsignedBigInteger('producthead_id');
+            $table->unsignedBigInteger('polist_id')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
