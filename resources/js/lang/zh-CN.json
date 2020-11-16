@@ -1,4 +1,9 @@
 {
+    "achievement" : "成就 (%)",
+    "achieve" : "实现",
+    "total_target" : "总目标",
+    "work_hour" : "工作时间",
+    "manpower" : "人手",
     "leader" : "领导",
     "present_address" : "现在的住址",
     "permanent_address" : "永久地址",

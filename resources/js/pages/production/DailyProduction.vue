@@ -7,16 +7,34 @@
                 </div> 
                 <div class="card-body">
                     <div class="col-md-6 float-left">
-                        <b-form-select v-model="prodStore" :options="prodStoreList" value-field="id" text-field="name"></b-form-select>
+                        <select class="form-control" v-model="department">
+                            <option>{{ $t('assembly') }}</option>
+                            <option>{{ $t('polish') }}</option>
+                            <option>{{ $t('injection') }}</option>
+                            <option>{{ $t('cutting') }}</option>
+                        </select>
                     </div>
                     <div class="col-md-6 float-left input-group">
-                        <input type="date" class="form-control" v-model="etd">
+                        <input type="date" class="form-control" v-model="searchDate">
                         <div @click="searchByDate" class="input-group-append input-group-text pointer"><b-icon icon="search"></b-icon></div>
                     </div>
                     
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
+                        <download-excel
+                            id="tooltip-target-1"
+                            class="btn btn-outline-default btn-sm mr-3"
+                            :title="'Production Report: ' + searchDate"
+                            :data="productionByDept"
+                            :fields="json_fields"
+                            worksheet="Daily Production"
+                            name="Daily Production.xls">
+                            <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
+                        </download-excel>
+                        <b-tooltip target="tooltip-target-1" triggers="hover">
+                            Save this table to Excel
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -29,21 +47,11 @@
                                 <b-button :disabled="!filter" @click="filter = ''">{{ $t('Clear')}}</b-button>
                                 </b-input-group-append>
                             </b-input-group>
-                        </b-form-group>
-                        <b-form-group size="sm" class="mb-0 ml-auto">
-                            <b-form-select
-                                v-model="perPage"
-                                id="perPageSelect"
-                                size="sm"
-                                :options="pageOptions"
-                            ></b-form-select>
-                        </b-form-group>                        
+                        </b-form-group>                       
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
-                    :items="productionByStore"
+                    :items="productionByDept"
                     :fields="fields"
-                    :current-page="currentPage"
-                    :per-page="perPage"
                     :filter="filter"
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
@@ -57,55 +65,21 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
-                        <template v-slot:cell(index)="row">
-                            {{ row.index+1 }}
-                        </template>
-                    <template v-slot:cell(product_image)="row">
-                        <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
+                    <template v-slot:cell(index)="row">
+                        {{ row.index+1 }}
                     </template>
-                    <template v-slot:cell(material)="row">
-                        {{row.item.material - row.item.quantity}} <br> {{row.item.material_remarks}}
-                    </template>
-                    <template v-slot:cell(carton)="row">
-                        {{row.item.carton - row.item.quantity}} <br> {{row.item.carton_remarks}}
-                    </template>
-                    <template v-slot:cell(color_card)="row">
-                        {{row.item.color_card - row.item.quantity}} <br> {{row.item.color_card_remarks}}
-                    </template>
-                    <template v-slot:cell(cutting)="row">
-                        {{row.item.cutting - row.item.quantity}} <br> {{row.item.cutting_remarks}}
-                    </template>
-                    <template v-slot:cell(polish)="row">
-                        {{row.item.polish - row.item.quantity}} <br> {{row.item.polish_remarks}}
-                    </template>
-                    <template v-slot:cell(injection)="row">
-                        {{row.item.injection - row.item.quantity}} <br> {{row.item.injection_remarks}}
-                    </template>
-                    <template v-slot:cell(assembly)="row">
-                        {{row.item.assembly - row.item.quantity}} <br> {{row.item.assembly_remarks}}
+                    <template v-slot:cell(achievement)="row">
+                        {{(row.item.achievement || 0).toFixed(0)}}
                     </template>
                     <template slot="bottom-row">
-                        <td class="text-white bg-info font-weight-bold text-center" colspan="8">Total</td>
+                        <td class="text-white bg-info font-weight-bold text-center" colspan="12">Total</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total}}</td>
                         <td class="text-white bg-info font-weight-bold text-center" colspan="2"></td>
                     </template>
                     </b-table>
-                    
-                    <div class="col-12 mx-auto p-0 noprint">
-                        <b-pagination
-                        v-model="currentPage"
-                        :total-rows="totalRows"
-                        :per-page="perPage"                            
-                        first-text="First"
-                        prev-text="Prev"
-                        next-text="Next"
-                        last-text="Last"
-                        align="center"
-                        size="sm"
-                        class="mdb bg-light m-0 rounded-0"
-                        aria-controls="table-transition-example"
-                        last-number
-                        ></b-pagination>
+
+                    <div v-if="productionByDept.length > 0" class="card-body" id="chart">
+                        <apexchart type="bar" height="350" :options="chartOptions" :series="series"></apexchart>
                     </div>
                 </div>
             </div>
@@ -123,35 +97,94 @@ export default {
 
     data() {
         return{
-            prodStoreList : [],
-            prodStore : 1,
             Production: [],
-            // productionByStore: [],
-            etd: this.convertDate(new Date()),
+            department: this.$t('assembly'),
+            // productionByDept: [],
+            searchDate: this.convertDate(new Date()),
             noprint : '',
 
             transProps: {
                 // Transition name
                 name: 'flip-list'
             },
-            totalRows: 1,
-            currentPage: 1,
-            perPage: 10,
-            pageOptions: [10, 25, 50],
             filter: null,
             filterOn: [],
             isBusy: false,
+
+            json_fields: {
+                'Line': 'line',
+                'Section': 'section',
+                'Item': 'item',
+                'ETD': 'etd',
+                'Quantity': 'quantity',
+                'Balance': 'balance',
+                'Manpower': 'manpower',
+                'Hourly Target': 'hourly_target',
+                'Working Hour': 'work_hour',
+                'Total Target': 'total_target',
+                'Achieve': 'daily_prod',
+                'Achievement (%)': 'achievement',
+                'Leader': 'leader',
+                'Remarks': 'remarks',
+            },
+
+            //for chart
+            dailyProduction : [],
+            dataLabelX : [],
+            series: [],
+            chartOptions: {
+                chart: { height: 350, type: 'bar', zoom: { enabled: true } },
+                plotOptions: {
+                    bar: { 
+                        dataLabels: {
+                            position: 'top', // top, center, bottom
+                        },
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) { return val + "%"; },
+                    offsetY: -20,
+                    style: { fontSize: '12px', colors: ["#304758"] }
+                },
+                
+                xaxis: {
+                    categories: [],
+                    position: 'bottom',
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    crosshairs: {
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                colorFrom: '#D8E3F0',
+                                colorTo: '#BED1E6',
+                                stops: [0, 100],
+                                opacityFrom: 0.4,
+                                opacityTo: 0.5,
+                            }
+                        }
+                    },
+                    tooltip: { enabled: true, }
+                },
+                yaxis: {
+                    axisBorder: { show: true }, axisTicks: { show: true, },
+                    labels: { show: true, formatter: function (val) { return val + "%";} }                
+                },
+            },
+
+            // end chart
         }
     },
 
     mounted() {
-        fetch(`api/prodstore`)
+        this.isBusy = true
+        fetch(`api/prodstore/${this.searchDate}`)
         .then(res => res.json())
         .then(res => {
-            this.prodStoreList = res['Prodstore']
-            for (let i = 0; i < this.prodStoreList.length; i++) {
-                this.prodStoreList[i]['name'] = this.$t(this.prodStoreList[i]['name']);                
-            }
+            this.Production = res['Production']
+            this.getGraph()
+            this.isBusy = false
         })
         .catch(err => {
             alert(err.response.data.message);
@@ -188,15 +221,31 @@ export default {
         },
 
         searchByDate() {
-            console.log('hi')
-            fetch(`api/prodstore/${this.etd}`)
+            fetch(`api/prodstore/${this.searchDate}`)
             .then(res => res.json())
             .then(res => {
                 this.Production = res['Production']
+                this.getGraph()
             })
             .catch(err => {
                 alert(err.response.data.message);
             })
+        },
+
+        getGraph() {
+            for (let i = 0; i < this.productionByDept.length; i++) {
+                this.dailyProduction[i] = (this.productionByDept[i]['achievement'] || 0).toFixed(0)
+                this.dataLabelX[i] = this.productionByDept[i]['line'] + '>> ' + this.productionByDept[i]['item']
+            }
+            if (this.productionByDept.length == 0) {
+                this.dailyProduction = []
+            }
+
+            this.series=[{
+                name: this.$t('daily_production'),
+                data: this.dailyProduction
+            }]
+            this.chartOptions = {'xaxis' : {'categories': this.dataLabelX}}
         },
     },
 
@@ -207,39 +256,44 @@ export default {
             return this.$t('TypetoSearch')
         },
 
-        productionByStore() {
+        productionByDept() {
             let array = [], k=0
             for (let i = 0; i < this.Production.length; i++) {
-                if (this.Production[i]['prodstore_id'] == this.prodStore) {
+                if (this.Production[i]['department'] == this.department) {
                     array[k++] = this.Production[i]
                 }                
             }
-            this.totalRows = array.length
             return array 
         },
 
         Total() {
-            let t = 0
-            for (let i = 0; i < this.productionByStore.length; i++) {
-                t += (parseFloat(this.productionByStore[i]['prod_qty']) || 0)                
-            } return t
+            let t = 0, a= 0
+            for (let i = 0; i < this.productionByDept.length; i++) {
+                t += (parseFloat(this.productionByDept[i]['total_target']) || 0)                
+                a += (parseFloat(this.productionByDept[i]['daily_prod']) || 0)                
+            } 
+            return (a*100/t).toFixed(0)
         },
 
         fields() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
-            
             return [
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
-                { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_style', label : this.$t('style') + ' ' + this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'etd', label : 'ETD', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'po_no', label : 'PO No', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
-                { key: 'prod_qty', label : this.$t('production'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'remain_qty', label : this.$t('remain'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'line', label : this.$t('line'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'section', label : this.$t('section'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'item', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : 'ETD', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'manpower', label : this.$t('manpower'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'hourly_target', label : this.$t('hourly_target'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'work_hour', label : this.$t('work_hour'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'total_target', label : this.$t('total_target'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'daily_prod', label : this.$t('achieve'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'achievement', label : this.$t('achievement'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'leader', label : this.$t('leader'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'remarks', label : this.$t('remarks'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },

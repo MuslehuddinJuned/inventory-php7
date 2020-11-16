@@ -35,7 +35,7 @@
                                 </b-input-group-append>
                             </b-input-group>
                         </b-form-group>  
-                        <button v-if="checkRoles('requisition_Insert')" @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>                     
+                        <button class="mdb btn btn-outline-default"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>                     
                     </div>
                     <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover responsive
                     :items="ProductionByDeparment"
@@ -80,6 +80,9 @@
                     </template>
                     <template v-slot:cell(hourly_target)="row">
                         <input @keyup="lazySaving(row.item)" type="text" v-model="row.item.hourly_target" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid p-0 m-0 border-0 bg-transparent rounded-0">
+                    </template>
+                    <template v-slot:cell(manpower)="row">
+                        <input @keyup="lazySaving(row.item)" type="text" v-model="row.item.manpower" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid p-0 m-0 border-0 bg-transparent rounded-0">
                     </template>
                     <template v-slot:cell(complete)="row">
                         {{row.item.complete  = parseInt(complete_method(row.item.polist_id) || 0) + parseInt(row.item.qty_1 || 0)+ parseInt(row.item.qty_2 || 0)+ parseInt(row.item.qty_3 || 0)+ parseInt(row.item.qty_4 || 0)+ parseInt(row.item.qty_5 || 0)+ parseInt(row.item.qty_6 || 0)+ parseInt(row.item.qty_7 || 0)+ parseInt(row.item.qty_8 || 0)+ parseInt(row.item.qty_9 || 0)+ parseInt(row.item.qty_10 || 0)+ parseInt(row.item.qty_11 || 0)+ parseInt(row.item.qty_12 || 0)+ parseInt(row.item.qty_13 || 0)+ parseInt(row.item.qty_14 || 0)+ parseInt(row.item.qty_15 || 0)+ parseInt(row.item.qty_16 || 0)+ parseInt(row.item.qty_17 || 0)+ parseInt(row.item.qty_18 || 0)+ parseInt(row.item.qty_19 || 0)+ parseInt(row.item.qty_20 || 0)+ parseInt(row.item.qty_21 || 0)+ parseInt(row.item.qty_22 || 0)+ parseInt(row.item.qty_23 || 0)+ parseInt(row.item.qty_24 || 0)}}
@@ -305,29 +308,6 @@ export default {
             this.fetchData()
         },
 
-        // product_code_method(id) {
-        //     if (id) {
-        //         for (let i = 0; i < this.PoList.length; i++) {
-        //             if (this.PoList[i]['value'] == id) {
-        //                 console.log(this.PoList[i]['product_code'])
-        //                 return this.PoList[i]['product_code']
-        //             }
-                    
-        //         }
-        //     }
-        // },
-
-        // quantity_method(id) {
-        //     if (id) {
-        //         for (let i = 0; i < this.PoList.length; i++) {
-        //             if (this.PoList[i]['value'] == id) {
-        //                 return this.PoList[i]['quantity']
-        //             }
-                    
-        //         }
-        //     }
-        // },
-
         complete_method(id) {
             if (id) {
                 for (let i = 0; i < this.PoList.length; i++) {
@@ -472,8 +452,9 @@ export default {
                 { key: 'leader', label : this.$t('leader'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'polist_id', label : 'PO No', class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'item', label : this.$t('style') + ' ' + this.$t('code'), stickyColumn: true, class: 'bg-white text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
-                { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
+                { key: 'manpower', label : this.$t('manpower'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'hourly_target', label : this.$t('hourly_target'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
+                { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
                 { key: 'complete', label : this.$t('complete'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'balance', label : this.$t('balance'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'qty_8', label : '8-9 am', class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},

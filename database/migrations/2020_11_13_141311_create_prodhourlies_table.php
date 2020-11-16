@@ -22,6 +22,7 @@ class CreateProdhourliesTable extends Migration
             $table->string('item')->nullable();
             $table->string('remarks')->nullable();
             $table->date('prod_date')->nullable();
+            $table->double('manpower')->nullable();
             $table->double('quantity')->nullable();
             $table->double('hourly_target')->nullable();
             $table->double('qty_1')->nullable();

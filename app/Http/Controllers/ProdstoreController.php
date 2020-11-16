@@ -58,15 +58,18 @@ class ProdstoreController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($date)
-    {
-        $Production = DB::SELECT("SELECT buyer, product_style, product_code, product_image, quantity, po_date, po_no, etd, prod_qty, (total_qty-quantity)remain_qty, prod_date, A.remarks, prodstore_id FROM(
-                SELECT id, prod_qty, SUM(total_qty)total_qty, prod_date, remarks, A.polist_id, A.producthead_id, A.prodstore_id FROM(
-                SELECT id, prod_qty, prod_date, remarks, polist_id, producthead_id, prodstore_id FROM productions WHERE prod_date = ?
-                )A LEFT JOIN(SELECT prod_qty total_qty, polist_id, prodstore_id, producthead_id FROM productions
-                )B ON A.polist_id = B.polist_id AND A.prodstore_id = B.prodstore_id AND A.producthead_id = B.producthead_id GROUP BY id, prod_qty, prod_date, remarks, polist_id, producthead_id, prodstore_id
-            )A LEFT JOIN (SELECT id, quantity, remarks, po_date, po_no, etd FROM polists
-            )B ON A.polist_id = B.id LEFT JOIN (SELECT id, buyer, product_style, product_code, product_image FROM productheads
-            )C ON A.producthead_id = C.id",[$date]);
+    {        
+        $Production = DB::SELECT("SELECT id, line, section, department, leader, etd, remarks, prod_date, hourly_target, (COALESCE(hourly_target, 0)*COALESCE(work_hour, 0))total_target,manpower, quantity, total_prod, (total_prod - COALESCE(quantity, 0))balance, item, daily_prod, (COALESCE(daily_prod, 0)/COALESCE(hourly_target, 0)/COALESCE(work_hour, 0)*100)achievement,polist_id, work_hour FROM(
+            SELECT A.id, line, section, department, leader, etd, remarks, prod_date, hourly_target, manpower, (CASE WHEN A.polist_id IS null THEN A.quantity ELSE B.quantity END)quantity, (CASE WHEN A.polist_id IS null THEN A.item ELSE C.product_code END)item, SUM(total_prod)total_prod, daily_prod, (24 - (CHAR_LENGTH(work_hour) - CHAR_LENGTH( REPLACE ( work_hour, 'j', '')))) work_hour, A.polist_id FROM(
+                SELECT id, line, section, department, leader, remarks, prod_date, hourly_target, manpower, quantity, item,  
+                (COALESCE(qty_1, 0) + COALESCE(qty_2, 0) + COALESCE(qty_3, 0) + COALESCE(qty_4, 0) + COALESCE(qty_5, 0) + COALESCE(qty_6, 0) + COALESCE(qty_7, 0) + COALESCE(qty_8, 0) + COALESCE(qty_9, 0) + COALESCE(qty_10, 0) + COALESCE(qty_11, 0) + COALESCE(qty_12, 0) + COALESCE(qty_13, 0) + COALESCE(qty_14, 0) + COALESCE(qty_15, 0) + COALESCE(qty_16, 0) + COALESCE(qty_17, 0) + COALESCE(qty_18, 0) + COALESCE(qty_19, 0) + COALESCE(qty_20, 0) + COALESCE(qty_21, 0) + COALESCE(qty_22, 0) + COALESCE(qty_23, 0) + COALESCE(qty_24, 0))daily_prod, CONCAT(COALESCE(qty_1, 'j') , COALESCE(qty_2, 'j') , COALESCE(qty_3, 'j') , COALESCE(qty_4, 'j') , COALESCE(qty_5, 'j') , COALESCE(qty_6, 'j') , COALESCE(qty_7, 'j') , COALESCE(qty_8, 'j') , COALESCE(qty_9, 'j') , COALESCE(qty_10, 'j') , COALESCE(qty_11, 'j') , COALESCE(qty_12, 'j') , COALESCE(qty_13, 'j') , COALESCE(qty_14, 'j') , COALESCE(qty_15, 'j') , COALESCE(qty_16, 'j') , COALESCE(qty_17, 'j') , COALESCE(qty_18, 'j') , COALESCE(qty_19, 'j') , COALESCE(qty_20, 'j') , COALESCE(qty_21, 'j') , COALESCE(qty_22, 'j') , COALESCE(qty_23, 'j') , COALESCE(qty_24, 'j'))work_hour,
+                polist_id FROM prodhourlies WHERE DATE(prod_date) = DATE(?)
+                )A LEFT JOIN (SELECT id, quantity, producthead_id, etd FROM polists
+                )B ON A.polist_id = B.id LEFT JOIN (SELECT id, product_code FROM productheads
+                )C ON B.producthead_id = C.id LEFT JOIN (SELECT (COALESCE(qty_1, 0) + COALESCE(qty_2, 0) + COALESCE(qty_3, 0) + COALESCE(qty_4, 0) + COALESCE(qty_5, 0) + COALESCE(qty_6, 0) + COALESCE(qty_7, 0) + COALESCE(qty_8, 0) + COALESCE(qty_9, 0) + COALESCE(qty_10, 0) + COALESCE(qty_11, 0) + COALESCE(qty_12, 0) + COALESCE(qty_13, 0) + COALESCE(qty_14, 0) + COALESCE(qty_15, 0) + COALESCE(qty_16, 0) + COALESCE(qty_17, 0) + COALESCE(qty_18, 0) + COALESCE(qty_19, 0) + COALESCE(qty_20, 0) + COALESCE(qty_21, 0) + COALESCE(qty_22, 0) + COALESCE(qty_23, 0) + COALESCE(qty_24, 0))
+                total_prod, polist_id FROM prodhourlies WHERE DATE(prod_date) <= DATE(?)
+                )D ON A.polist_id = D.polist_id GROUP BY id, line, section, department, leader, etd, remarks, prod_date, hourly_target, manpower, quantity, item, daily_prod, polist_id, work_hour
+            )A ORDER BY line",[$date, $date]);
 
         return compact('Production');
     }

@@ -1,4 +1,9 @@
 { 
+    "achievement" : "Achievement (%)",
+    "achieve" : "Achieve",
+    "total_target" : "Total Target",
+    "work_hour" : "Working Hour",
+    "manpower" : "Manpower",
     "leader" : "Leader",
     "present_address" : "Present Address",
     "permanent_address" : "Permanent Address",
