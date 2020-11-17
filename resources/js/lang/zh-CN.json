@@ -1,4 +1,8 @@
 {
+    "req_day" : "所需日",
+    "req_manhour" : "所需的人和小时",
+    "req_hour" : "所需时间",
+    "production_plan" : "生产计划",
     "inspection_date" : "验货",
     "loading_date" : "出货期",
     "shipment_booking" : "出货预定",

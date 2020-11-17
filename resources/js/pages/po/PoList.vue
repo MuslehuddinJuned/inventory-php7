@@ -10,13 +10,13 @@
                 </div>
                 <div class="card-header row m-0 p-0">
                     <div class="col-md-5">
-                        <label class="col-form-label">{{ $t('ETD')}}</label>
+                        <label class="col-form-label">ETD</label>
                         <div>
                             <input @change="etd_change" class="form-control" type="date" v-model="etd">
                         </div>
                     </div>
                     <div class="col-md-7">
-                        <label class="col-form-label">{{ $t('PO No:')}}</label>
+                        <label class="col-form-label">PO No:</label>
                         <div class="input-group">
                             <model-select :options="PoNoListView" class="form-control float-left col-11" v-model="po_no"></model-select>
                             <button @click="po_change" class="btn btn-secondary input-group-append noprint col-1"><b-icon icon="search"></b-icon></button>
@@ -60,7 +60,7 @@
                             ></b-form-select>
                         </b-form-group>                        
                     </div>
-                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover stacked="md"
+                    <b-table id="table-transition" primary-key="id" :busy="isBusy" show-empty small striped hover responsive
                     :items="PoList"
                     :fields="fields"
                     :current-page="currentPage"
@@ -182,7 +182,7 @@
                         <input type="date" class="form-control" v-model="task[0]['inspection_date']">
                     </div>
                     <div class="col-md-4">
-                        <label class="col-form-label">{{ $t('ETD')}}</label>
+                        <label class="col-form-label">ETD</label>
                         <input type="date" class="form-control" v-model="task[0]['etd']">
                         <span v-if="errors.etd" class="error text-danger"> {{$t('required_field')}}</span>
                     </div>

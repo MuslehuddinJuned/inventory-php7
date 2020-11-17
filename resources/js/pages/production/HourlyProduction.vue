@@ -69,7 +69,7 @@
                     <template v-slot:cell(polist_id)="row">
                         <div style="min-width: 150px;">
                             <model-select :options="PoList" v-model="row.item.polist_id" class="form-control text-center row-fluid p-0 m-0 border-0 bg-transparent rounded-0"></model-select>
-                            <b-icon icon="arrow-clockwise" @click="save(row.item, 'refresh')" class="btn"></b-icon>
+                            <b-icon icon="arrow-repeat" @click="save(row.item, 'refresh')" class="btn"></b-icon>
                         </div>
                     </template>
                     <template v-slot:cell(item)="row">

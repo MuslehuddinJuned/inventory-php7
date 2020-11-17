@@ -1,4 +1,8 @@
 { 
+    "req_day" : "Required Day",
+    "req_manhour" : "Required Man-Hour",
+    "req_hour" : "Required Hour",
+    "production_plan" : "Production Plan",
     "inspection_date" : "Inspection Date",
     "loading_date" : "Loading Date",
     "shipment_booking" : "Shipment Booking",

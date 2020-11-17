@@ -30,6 +30,7 @@ export default [
   { path: '/daily-production', name: 'production.DailyProduction', component: page('production/DailyProduction.vue') },
   { path: '/hourly-production', name: 'production.HourlyProduction', component: page('production/HourlyProduction.vue') },
   { path: '/production-monitor', name: 'production.ProductionMonitor', component: page('production/ProductionMonitor.vue') },
+  { path: '/production-plan', name: 'production.ProductionPlan', component: page('production/ProductionPlan.vue') },
 
 
   { path: '/employee-profile', name: 'hr.EmployeeProfile', component: page('hr/profile/EmployeeProfile.vue') },

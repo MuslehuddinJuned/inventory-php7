@@ -8,7 +8,7 @@
                         <button v-if="checkRoles('product_details_Insert')" @click="addDetails" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                     </div>
                 </div> 
-                <div class="card-header">
+                <div class="card-body">
                     <label for="buyer" class="mr-4"><h5 class="font-weight-bold">{{ $t('buyer') }}</h5></label>
                     <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
                 </div>
