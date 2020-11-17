@@ -119,42 +119,74 @@
             </div>
         </div> 
         <!-- Start Edit Details Modal -->
-        <b-modal ref="dataEdit" id="dataEdit" size="lg" :title="title" no-close-on-backdrop>            
+        <b-modal ref="dataEdit" id="dataEdit" size="xl" :title="title" no-close-on-backdrop>            
             <div class="modal-body row m-0 p-0">
                 <div class="col-md-12 row m-0 p-0">
-                    <div class="col-md-6">
-                        <label class="col-form-label">{{ $t('PO No.')}}</label>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('lot')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['lot']">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('container')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['container']">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">PO No.</label>
                         <input list="PoList" class="form-control text-nowrap" v-model="po_no">
                         <datalist id="PoList">
                             <option v-for="po in PoNoListView" :key="po.text">{{ po.text }}</option>
                         </datalist>
                         <span v-if="errors.po_no" class="error text-danger"> {{$t('required_field') + ' ' + $t('unique')}}</span>
                     </div>
-                    <div class="col-md-6">
-                        <label class="col-form-label">{{ $t('PO Date')}}</label>
-                        <input type="date" class="form-control" v-model="task[0]['po_date']">
-                        <span v-if="errors.po_date" class="error text-danger"> {{$t('required_field')}}</span>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="col-form-label">{{ $t('buyer')}}</label>
                         <b-form-select @change="change_buyer" id="buyer" v-model="buyer" :options="buyerlistview"></b-form-select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="col-form-label">{{ $t('style') + ' ' + $t('code')}}</label>
                         <b-form-select v-model="task[0]['producthead_id']" :options="product_codelistview"></b-form-select>
                         <span v-if="errors.producthead_id" class="error text-danger"> {{$t('required_field')}}</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="col-form-label">{{ $t('quantity')}}</label>
                         <input type="text" class="form-control" v-model="task[0]['quantity']" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                         <span v-if="errors.quantity" class="error text-danger"> {{$t('required_field')}}</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('ctn')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['ctn']" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('pcs_per_ctn')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['pcs_per_ctn']" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">CBM</label>
+                        <input type="text" class="form-control" v-model="task[0]['cbm']" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">PO Date</label>
+                        <input type="date" class="form-control" v-model="task[0]['po_date']">
+                        <span v-if="errors.po_date" class="error text-danger"> {{$t('required_field')}}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('shipment_booking')}}</label>
+                        <input type="text" class="form-control" v-model="task[0]['shipment_booking']">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('loading_date')}}</label>
+                        <input type="date" class="form-control" v-model="task[0]['loading_date']">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{ $t('inspection_date')}}</label>
+                        <input type="date" class="form-control" v-model="task[0]['inspection_date']">
+                    </div>
+                    <div class="col-md-4">
                         <label class="col-form-label">{{ $t('ETD')}}</label>
                         <input type="date" class="form-control" v-model="task[0]['etd']">
                         <span v-if="errors.etd" class="error text-danger"> {{$t('required_field')}}</span>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <label class="col-form-label">{{ $t('remarks')}}</label>
                         <input type="text" class="form-control" v-model="task[0]['remarks']">
                     </div>
@@ -170,7 +202,7 @@
         <!-- End Edit Details Modal -->
 
         <!-- Start View PO Details Modal -->
-        <b-modal ref="dataView" id="dataView" size="xxl" :title="$t('monitor_po') + ': ' + $t('ItemReceive')" no-close-on-backdrop ok-only>
+        <!-- <b-modal ref="dataView" id="dataView" size="xxl" :title="$t('monitor_po') + ': ' + $t('ItemReceive')" no-close-on-backdrop ok-only>
             <div class="card-body m-0 p-0">
                 <div class="card-header d-flex align-items-center noprint">
                     <b-form-group class="mb-0 mr-auto">
@@ -246,7 +278,7 @@
             <template v-slot:modal-footer="">
                 <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
-        </b-modal>
+        </b-modal> -->
         <!-- End View PO Details Modal --> 
     </div>
 </template>
@@ -280,7 +312,7 @@ export default {
             Index : '',
             title: '',
             disable: false,
-            task : [{'po_no' : null,'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}],
+            task : [{'lot': null, 'container': null, 'ctn': 0, 'pcs_per_ctn': 0, 'cbm': 0, 'shipment_booking': null, 'loading_date' : this.convertDate(new Date()), 'inspection_date' : this.convertDate(new Date()), 'po_no' : null,'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}],
             taskId : null,
             buttonTitle : this.$t('save'),
 
@@ -298,11 +330,19 @@ export default {
             filterOn: [],
             isBusy: false,
             json_fields: {
+                'Lot': 'lot',
+                'Container': 'container',
                 'PO No': 'po_no',
                 'Buyer': 'buyer',
                 'Style Code': 'product_code',
                 'Quantity': 'quantity',
+                'Carton': 'ctn',
+                'Pcs/Ctn': 'pcs_per_ctn',
+                'CBM': 'cbm',
                 'PO Date': 'po_date',
+                'Shipment Booking': 'shipment_booking',
+                'Inspection Date': 'inspection_date',
+                'Loading Date': 'loading_date',
                 'ETD': 'etd',
             },
         }
@@ -352,7 +392,7 @@ export default {
         addDetails(){
             this.taskId = null
             this.title = this.$t('InsertNewItem')
-            this.task = [{'po_no' : null, 'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}]
+            this.task = [{'lot': null, 'container': null, 'ctn': 0, 'pcs_per_ctn': 0, 'cbm': 0, 'shipment_booking': null, 'loading_date' : this.convertDate(new Date()), 'inspection_date' : this.convertDate(new Date()), 'po_no' : null, 'po_date' : this.convertDate(new Date()), 'etd' : this.convertDate(new Date()), 'remarks' : null,'producthead_id' : null, 'quantity' : null}]
         },
 
         po_change() {
@@ -390,22 +430,22 @@ export default {
             return [year, mnth, day].join("-");
         },
 
-        viewPoDetails(po) {
-            this.noprint = 'noprint'
-            this.isBusy = true
-            fetch(`api/polist/${po}`)
-            .then( res => res.json())
-            .then(res => {  
-                this.PoDetailsAll = res['polist']
-                this.PoDetails = this.PoDetailsByPoNo;
-                this.totalRows_po = this.PoDetails.length;
-                this.isBusy = false;                
-            })
-            .catch(err => {
-                alert(err.response.data.message);
-            })
-            this.$refs['dataView'].show()
-        },
+        // viewPoDetails(po) {
+        //     this.noprint = 'noprint'
+        //     this.isBusy = true
+        //     fetch(`api/polist/${po}`)
+        //     .then( res => res.json())
+        //     .then(res => {  
+        //         this.PoDetailsAll = res['polist']
+        //         this.PoDetails = this.PoDetailsByPoNo;
+        //         this.totalRows_po = this.PoDetails.length;
+        //         this.isBusy = false;                
+        //     })
+        //     .catch(err => {
+        //         alert(err.response.data.message);
+        //     })
+        //     this.$refs['dataView'].show()
+        // },
 
         editDetails(id, index) {
             this.title = this.$t('UpdateItem')
@@ -496,7 +536,7 @@ export default {
 
         hideModal() {
             this.noprint = ''
-            this.$refs['dataView'].hide()
+            // this.$refs['dataView'].hide()
             this.$refs['dataEdit'].hide()
         },
 
@@ -571,42 +611,50 @@ export default {
             if ((this.checkRoles('po_list_Update') || this.checkRoles('po_list_Delete'))) {
                 action = { key: 'action', label: this.$t('Action'),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
             }
-            
+            // , , , , , , , 
             return [
-                { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'lot', label : this.$t('lot'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'container', label : this.$t('container'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_no', label : 'PO No', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'buyer', label : this.$t('buyer'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'etd', label : this.$t('ETD'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'ctn', label : this.$t('ctn'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'pcs_per_ctn', label : this.$t('pcs_per_ctn'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'cbm', label : 'CBM', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_date', label : 'PO Date', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'shipment_booking', label : this.$t('shipment_booking'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'inspection_date', label : this.$t('inspection_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'loading_date', label : this.$t('loading_date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : 'ETD', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 action
             ]           
             
         },
 
-        poFields() {
-            const lang = this.$i18n.locale
-            if (!lang) { return [] }
-            this.buttonTitle = this.$t('save')
+        // poFields() {
+        //     const lang = this.$i18n.locale
+        //     if (!lang) { return [] }
+        //     this.buttonTitle = this.$t('save')
             
-            return [
-                { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'item_no', label : this.$t('material_number'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'item', label : this.$t('material_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'inventory_qty', label : this.$t('stock'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_qty', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-            ]           
+        //     return [
+        //         { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'po_no', label : this.$t('PO No'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'po_date', label : this.$t('PO Date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'item_no', label : this.$t('material_number'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'item', label : this.$t('material_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'inventory_qty', label : this.$t('stock'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'total_qty', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //         { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+        //     ]           
             
-        },
+        // },
 
         store_namelistview() {
             return uniq(this.PoList.map(({ store_name }) => store_name))

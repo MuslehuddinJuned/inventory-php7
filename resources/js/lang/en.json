@@ -1,4 +1,11 @@
 { 
+    "inspection_date" : "Inspection Date",
+    "loading_date" : "Loading Date",
+    "shipment_booking" : "Shipment Booking",
+    "pcs_per_ctn" : "Pcs/Carton",
+    "ctn" : "Carton",
+    "container" : "Container",
+    "lot" : "Lot",
     "achievement" : "Achievement (%)",
     "achieve" : "Achieve",
     "total_target" : "Total Target",

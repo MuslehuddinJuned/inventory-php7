@@ -15,9 +15,17 @@ class CreatePolistsTable extends Migration
     {
         Schema::create('polists', function (Blueprint $table) {
             $table->id();
+            $table->string('lot')->nullable();
+            $table->string('container')->nullable();
             $table->double('quantity')->nullable();
+            $table->double('ctn')->nullable();
+            $table->double('pcs_per_ctn')->nullable();
+            $table->double('cbm')->nullable();
+            $table->string('shipment_booking')->nullable();
             $table->string('remarks')->nullable();
             $table->date('po_date')->nullable();
+            $table->date('loading_date')->nullable();
+            $table->date('inspection_date')->nullable();
             $table->date('etd')->nullable();
             $table->string('po_no')->nullable();
             $table->unsignedBigInteger('user_id');

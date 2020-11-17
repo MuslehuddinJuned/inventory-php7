@@ -1,4 +1,11 @@
 {
+    "inspection_date" : "验货",
+    "loading_date" : "出货期",
+    "shipment_booking" : "出货预定",
+    "pcs_per_ctn" : "件/箱",
+    "ctn" : "箱数",
+    "container" : "货柜",
+    "lot" : "序号",
     "achievement" : "成就 (%)",
     "achieve" : "实现",
     "total_target" : "总目标",
