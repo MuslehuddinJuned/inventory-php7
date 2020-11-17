@@ -20,6 +20,8 @@ class CreateProductheadsTable extends Migration
             $table->string('product_style')->nullable();
             $table->string('product_code')->nullable();
             $table->string('specification')->nullable();
+            $table->double('smv')->nullable();
+            $table->double('manpower')->nullable();
             $table->string('product_image')->default('noimage.jpg');
             $table->string('remarks')->nullable();
             

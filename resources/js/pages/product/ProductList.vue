@@ -104,16 +104,20 @@
                         <input type="text" class="form-control" v-model="taskHead[0]['product_style']">
                     </div>
                     <div class="col-md-6">
+                        <label class="col-form-label">SMV</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['smv']">
+                        <label class="col-form-label">{{ $t('manpower')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['manpower']">
                         <label class="col-form-label">{{ $t('specification')}}</label>
                         <input type="text" class="form-control" v-model="taskHead[0]['specification']">
-                        
-                        <label class="col-form-label">{{ $t('remarks')}}</label>
-                        <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
-                        
                         <!-- <label for="store" class="col-form-label">{{ $t('store_name')}}</label>
                         <div>
                             <b-form-select @change="store_change" id="store" v-model="store" :options="store_options"></b-form-select>
                         </div> -->
+                    </div>
+                    <div class="col-md-12">
+                        <label class="col-form-label">{{ $t('remarks')}}</label>
+                        <input type="text" class="form-control" v-model="taskHead[0]['remarks']">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -224,7 +228,9 @@
                         <span class="font-weight-bold">{{ $t('style')}}:</span> {{taskHead[0]['product_style']}}
                     </div>
                     <div class="col-md-6">
-                        <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}<br>
+                        <span class="font-weight-bold">SMV:</span> {{taskHead[0]['smv']}}<br>
+                        <span class="font-weight-bold">{{ $t('manpower')}}:</span> {{taskHead[0]['manpower']}}<br>
+                        <span class="font-weight-bold">{{ $t('specification')}}:</span> {{taskHead[0]['specification']}}
                         
                     </div>
                 </div>
@@ -302,7 +308,7 @@ export default {
             errors : [],
             title: '',
             disable: false,
-            taskHead : [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}],
+            taskHead : [{'product_category' : null, 'buyer' : null, 'product_style' : null, 'product_code' : null, 'smv': 0, 'manpower': 0, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}],
             taskDetailsAll : [],
             taskDetails : [],
             taskHeadId : null,
@@ -401,7 +407,7 @@ export default {
         addDetails(){
             this.save_image = null
             this.hideDetails = 'd-none'
-            this.taskHead = [{'product_category' : null, 'buyer' : this.buyer, 'product_style' : null, 'product_code' : null, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}]
+            this.taskHead = [{'product_category' : null, 'buyer' : this.buyer, 'product_style' : null, 'product_code' : null, 'smv': 0, 'manpower': 0, 'specification' : null, 'remarks' : null, 'product_image' : 'noimage.jpg'}]
             this.taskHeadId = null
             this.title = this.$t('product_new')
             this.src = '/images/product/'
