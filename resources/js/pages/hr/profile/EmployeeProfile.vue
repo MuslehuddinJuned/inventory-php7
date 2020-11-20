@@ -15,7 +15,7 @@
                             id="tooltip-target-1"
                             class="btn btn-outline-default btn-sm mr-3"
                             title="List of Employee"
-                            :data="employeeList"
+                            :data="employeeListByDept"
                             :fields="json_fields"
                             worksheet="List of Employee"
                             name="List of Employee.xls">
@@ -313,7 +313,7 @@
                 <div class="col-md-4 text-center m-0">
                     <img style="width: 100%; " :src="'/images/employee/' + task['employee_image']" alt="Picture not found">
                     <h2>{{task['first_name']}}</h2>
-                    <h2>{{task['Last_name']}}</h2>
+                    <h2>{{task['last_name']}}</h2>
                     <div class="text-left">
                         <h5>ID: {{task['employee_id']}}</h5>
                         <h6>{{$t('designation')}}: {{task['designation']}}</h6>
