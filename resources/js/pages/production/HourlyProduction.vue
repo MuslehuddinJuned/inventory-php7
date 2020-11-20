@@ -9,6 +9,7 @@
                     <div class="col-md-6 float-left">
                         <select class="form-control" v-model="department">
                             <option>{{ $t('assembly') }}</option>
+                            <option>{{ $t('wash') }}</option>
                             <option>{{ $t('polish') }}</option>
                             <option>{{ $t('injection') }}</option>
                             <option>{{ $t('cutting') }}</option>
