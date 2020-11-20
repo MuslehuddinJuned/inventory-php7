@@ -217,9 +217,9 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         return $this->hasMany(Prodhourly::class);
     }
 
-    // public function prodparts(){
-    //     return $this->hasMany(Prodparts::class);
-    // }
+    public function prodparts(){
+        return $this->hasMany(Prodparts::class);
+    }
 
     // public function prodstore(){
     //     return $this->hasMany(Prodstore::class);

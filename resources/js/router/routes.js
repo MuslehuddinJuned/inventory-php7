@@ -29,6 +29,7 @@ export default [
   { path: '/etdmonitor', name: 'po.EtdMonitor', component: page('po/EtdMonitor.vue') },
   { path: '/daily-production', name: 'production.DailyProduction', component: page('production/DailyProduction.vue') },
   { path: '/hourly-production', name: 'production.HourlyProduction', component: page('production/HourlyProduction.vue') },
+  { path: '/parts-production', name: 'production.PartsProduction', component: page('production/PartsProduction.vue') },
   { path: '/production-monitor', name: 'production.ProductionMonitor', component: page('production/ProductionMonitor.vue') },
   { path: '/production-plan', name: 'production.ProductionPlan', component: page('production/ProductionPlan.vue') },
 
