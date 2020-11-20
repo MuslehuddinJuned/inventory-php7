@@ -1,5 +1,6 @@
 { 
     "production_date" : "Production Date",
+    "parts_production_report" : "Parts Production Report",
     "parts_production" : "Parts Production",
     "req_day" : "Required Day",
     "req_manhour" : "Required Man-Hour",

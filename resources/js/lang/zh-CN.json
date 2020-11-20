@@ -1,5 +1,6 @@
 {
     "production_date" : "生产日期",
+    "parts_production_report" : "零件生产报告",
     "parts_production" : "零件生产",
     "req_day" : "所需日",
     "req_manhour" : "所需的人和小时",

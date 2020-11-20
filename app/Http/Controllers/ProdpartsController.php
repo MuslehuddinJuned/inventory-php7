@@ -48,7 +48,13 @@ class ProdpartsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $prodparts = $request->user()->prodparts()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'id' => $prodparts->id
+            ]);
+        } 
     }
 
     /**
@@ -57,10 +63,19 @@ class ProdpartsController extends Controller
      * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function show(Prodparts $prodparts)
+    public function show($value)
     {
-        $Production = DB::SELECT("SELECT E.id, A.id polist_id, C.productdetails_id, `quantity`, `po_no`,  A.producthead_id, `buyer`, `product_style`, `product_code`, sn, parts_qty, unit, prod_qty , `prod_date`, `department`, `remarks` FROM (SELECT `id`, `quantity`, `po_no`,  `producthead_id` FROM `polists` WHERE id = 10)A LEFT JOIN (SELECT id producthead_id, `buyer`, `product_style`, `product_code` FROM `productheads`)B ON A.producthead_id = B.producthead_id LEFT JOIN(SELECT id productdetails_id, `sn`,  `unit_weight`, quantity parts_qty, `producthead_id`, `inventory_id` FROM `productdetails`)C ON B.producthead_id = C.producthead_id LEFT JOIN (SELECT id inventory_id, `store_id`, `item`, `item_code`, `specification`, `cann_per_sheet`, `grade`,`weight`, `unit` FROM `inventories`)D ON C.inventory_id = D.inventory_id LEFT JOIN (SELECT `id`, quantity prod_qty , `prod_date`, `department`, `remarks`, `producthead_id`, `productdetails_id`, `polist_id` FROM `prodparts` WHERE DATE(prod_date) = '2020-11-19'
-        )E ON C.productdetails_id = E.productdetails_id AND A.id = E.polist_id ");
+        $date = substr($value,-8);
+        $po_id = strtok($value, '_');
+
+        $Production = DB::SELECT("SELECT E.id, A.id polist_id, C.productdetails_id, quantity, po_no,  A.producthead_id, buyer, product_style, product_code, sn, item, item_code, specification, po_qty, parts_qty, unit, total_prod_qty, prod_date, E.department, remarks FROM (
+            SELECT id, quantity po_qty, po_no,  producthead_id FROM polists WHERE id = ?
+            )A LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code FROM productheads
+            )B ON A.producthead_id = B.producthead_id LEFT JOIN(SELECT id productdetails_id, sn,  unit_weight, quantity parts_qty, producthead_id, inventory_id FROM productdetails
+            )C ON B.producthead_id = C.producthead_id LEFT JOIN (SELECT id inventory_id, store_id, item, item_code, specification, cann_per_sheet, grade,weight, unit FROM inventories
+            )D ON C.inventory_id = D.inventory_id LEFT JOIN (SELECT id, quantity, prod_date, department, remarks, producthead_id, productdetails_id, polist_id FROM prodparts WHERE DATE(prod_date) = ?
+            )E ON C.productdetails_id = E.productdetails_id AND A.id = E.polist_id LEFT JOIN (SELECT SUM(quantity) total_prod_qty , department, productdetails_id, polist_id FROM prodparts WHERE DATE(prod_date) < ? GROUP BY department, productdetails_id, polist_id
+            )F ON C.productdetails_id = F.productdetails_id AND A.id = F.polist_id ORDER BY sn", [$po_id, $date, $date]);
 
         return compact('Production');
     }
@@ -85,7 +100,9 @@ class ProdpartsController extends Controller
      */
     public function update(Request $request, Prodparts $prodparts)
     {
-        //
+        $Prodparts = Prodparts::find($request['id']);
+        $Prodparts->quantity = $request['quantity'];
+        $Prodparts->save();
     }
 
     /**

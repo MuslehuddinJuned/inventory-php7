@@ -75,13 +75,17 @@
                 <b-icon icon="bricks"></b-icon>
                 {{ $t('hourly_production') }}
               </router-link>
+              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.DailyProduction' }" class="dropdown-item pl-3">
+                <b-icon icon="graph-up"></b-icon>
+                {{ $t('daily_production') }}
+              </router-link>
               <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.PartsProduction' }" class="dropdown-item pl-3">
                 <b-icon icon="columns-gap"></b-icon>
                 {{ $t('parts_production') }}
               </router-link>
-              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.DailyProduction' }" class="dropdown-item pl-3">
-                <b-icon icon="graph-up"></b-icon>
-                {{ $t('daily_production') }}
+              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.PartsProductionReport' }" class="dropdown-item pl-3">
+                <b-icon icon="columns"></b-icon>
+                {{ $t('parts_production_report') }}
               </router-link>
               <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionPlan' }" class="dropdown-item pl-3">
                 <b-icon icon="calculator"></b-icon>
