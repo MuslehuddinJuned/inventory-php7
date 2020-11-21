@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <div class="col-md-4 float-left">
                         <label for="po_no">{{$t('department')}}</label>
-                        <select class="form-control" v-model="department">
+                        <select @change="departmentChange" class="form-control" v-model="department">
                             <option>{{ $t('assembly') }}</option>
                             <option>{{ $t('wash') }}</option>
                             <option>{{ $t('polish') }}</option>
@@ -24,14 +24,19 @@
                         <label for="po_no">{{$t('production_date')}}</label>
                         <div class="col-md-12 pl-0 input-group">
                             <input type="date" class="form-control" v-model="prodDate">
-                            <div @click="searchByDate" class="input-group-append input-group-text pointer"><b-icon icon="search"></b-icon></div>
+                            <div @click="searchByDate" class="input-group-append input-group-text pointer noprint"><b-icon icon="search"></b-icon></div>
                         </div>
                     </div> 
-                    <div v-if="ProductionByDeparment.length > 0" class="col-12 mt-3 rounded-pill py-3 bg-info text-white float-left">
+                    <div v-if="Production.length > 0" class="col-12 float-left input-group mt-3">
+                        <model-select :options="Production" v-model="production_id" class="form-control col-11 float-left"></model-select>
+                        <div @click="addRow" class="input-group-append input-group-text pointer noprint float-left"><b-icon icon="plus"></b-icon></div>
+                    </div>
+                    <div v-if="Production.length > 0" class="col-12 mt-3 rounded-pill py-3 bg-info text-white float-left">
                         <div class="text-center">
-                            <span class="mr-4">{{$t('buyer')}} : {{ProductionByDeparment[0]['buyer']}}</span>
-                            <span class="mr-4">{{$t('style')+ ' ' + $t('code')}} : {{ProductionByDeparment[0]['product_code']}}</span>
-                            <span class="mr-4">{{$t('quantity')}} : {{ProductionByDeparment[0]['po_qty']}}</span>
+                            <span class="mr-4">{{$t('buyer')}} : {{Production[0]['buyer']}}</span>
+                            <span class="mr-4">{{$t('style')+ ' ' + $t('code')}} : {{Production[0]['product_code']}}</span>
+                            <span class="mr-4">{{$t('quantity')}} : {{Production[0]['po_qty']}}</span>
+                            <span class="mr-4">PO No : {{Production[0]['po_no']}}</span>
                         </div>
                     </div>
                 </div>
@@ -68,8 +73,12 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
+                    <template v-slot:cell(action)="row">
+                        <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                    </template>
                     <template v-slot:cell(quantity)="row">
-                        <input @keyup="lazySaving(row.item)" type="text" v-model="row.item.quantity"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 p-0 border-0 bg-transparent rounded-0">
+                        <span v-if="!checkRoles('production_Insert')">{{row.item.quantity}}</span>
+                        <input @keyup="lazySaving(row.item)" type="text" v-model="row.item.quantity" v-if="checkRoles('production_Insert')"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 p-0 border-0 bg-transparent rounded-0">
                     </template>
                     <template v-slot:cell(parts_qty)="row">
                         {{(row.item.parts_qty || 0) * (row.item.po_qty || 0)}}
@@ -101,6 +110,7 @@ export default {
             PoList : [],
             po_no: null,
             Production: [],
+            production_id: null,
             ProductionByDeparment: [],
             roles: [],
             department: this.$t('assembly'),
@@ -178,7 +188,20 @@ export default {
             this.fetchData()
         },
 
-        lazySaving(value) {     
+        departmentChange() {
+            this.ProductionByDeparment = []
+        },
+
+        addRow() {
+            for (let i = 0; i < this.Production.length; i++) {
+                if (this.Production[i]['productdetails_id'] == this.production_id) {
+                    this.ProductionByDeparment.push(this.Production[i])
+                    break
+                }                
+            }
+        },
+
+        lazySaving(value) {
             this.disable = !this.disable;
             this.buttonTitle = this.$t('saving')
             if (this.timer) {
@@ -229,6 +252,33 @@ export default {
                 });
             }
         },
+
+        destroy_d(id, index){
+            this.$toast.warning(this.$t('sure_to_delete'), this.$t('confirm'), {
+                timeout: 20000,           
+                position: 'center',
+                buttons: [
+                    ['<button><b>' + this.$t('ok') +'</b></button>', (instance, toast) => {                        
+                        if(id){
+                            axios.delete(`api/prodparts/${id}`)                        
+                            .then(res => {
+                                this.ProductionByDeparment.splice(index, 1)                                
+                            })
+                            .catch(err => {
+                                alert(err.response.data.message);                       
+                            });
+                        } else {
+                            this.ProductionByDeparment.splice(index, 1)
+                        }
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>'+ this.$t('cancel') +'</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ]            
+            });
+        },
     },
 
     computed: {
@@ -242,7 +292,7 @@ export default {
             let array = [], k=0
 
             for (let i = 0; i < this.Production.length; i++) {
-                if (this.Production[i]['department'] == this.department || this.Production[i]['department'] == null) {
+                if (this.Production[i]['department'] == this.department) {
                     array[k++] = this.Production[i]
                 }                
             }
@@ -261,9 +311,10 @@ export default {
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
-                { key: 'item', label : this.$t('item'), stickyColumn: true, class: 'bg-white text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
-                { key: 'item_code', label : this.$t('item_code'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
-                { key: 'specification', label : this.$t('specification'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
+                { key: 'action', label : '#', class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
+                { key: 'item', label : this.$t('material_name'), stickyColumn: true, class: 'bg-white text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('description'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'parts_qty', label : this.$t('quantity'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'complete', label : this.$t('complete'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },

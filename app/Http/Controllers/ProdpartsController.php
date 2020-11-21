@@ -68,7 +68,7 @@ class ProdpartsController extends Controller
         $date = substr($value,-8);
         $po_id = strtok($value, '_');
 
-        $Production = DB::SELECT("SELECT E.id, A.id polist_id, C.productdetails_id, quantity, po_no,  A.producthead_id, buyer, product_style, product_code, sn, item, item_code, specification, po_qty, parts_qty, unit, total_prod_qty, prod_date, E.department, remarks FROM (
+        $Production = DB::SELECT("SELECT E.id, CONCAT(item_code, ' || ', item, ' || ', specification)text, A.id polist_id, C.productdetails_id,C.productdetails_id value, quantity, po_no,  A.producthead_id, buyer, product_style, product_code, sn, item, item_code, specification, po_qty, parts_qty, unit, total_prod_qty, prod_date, E.department, remarks FROM (
             SELECT id, quantity po_qty, po_no,  producthead_id FROM polists WHERE id = ?
             )A LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code FROM productheads
             )B ON A.producthead_id = B.producthead_id LEFT JOIN(SELECT id productdetails_id, sn,  unit_weight, quantity parts_qty, producthead_id, inventory_id FROM productdetails
@@ -111,8 +111,8 @@ class ProdpartsController extends Controller
      * @param  \App\Prodparts  $prodparts
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Prodparts $prodparts)
+    public function destroy($id)
     {
-        //
+        DB::SELECT("DELETE FROM prodparts WHERE id = ?", [$id]);
     }
 }
