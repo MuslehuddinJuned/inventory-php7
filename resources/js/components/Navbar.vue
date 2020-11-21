@@ -71,7 +71,7 @@
                 <b-icon icon="list-check"></b-icon>
                 {{ $t('production_monitor') }}
               </router-link>
-              <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.HourlyProduction' }" class="dropdown-item pl-3">
+              <router-link v-if="checkRoles('production_Insert')" :to="{ name: 'production.HourlyProduction' }" class="dropdown-item pl-3">
                 <b-icon icon="bricks"></b-icon>
                 {{ $t('hourly_production') }}
               </router-link>

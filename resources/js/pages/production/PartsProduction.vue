@@ -195,7 +195,10 @@ export default {
         addRow() {
             for (let i = 0; i < this.Production.length; i++) {
                 if (this.Production[i]['productdetails_id'] == this.production_id) {
-                    this.ProductionByDeparment.push(this.Production[i])
+                    if(this.Production[i]['id']){
+                        this.$toast.error(this.$t('error_alert_text'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
+                    } else this.ProductionByDeparment.push(this.Production[i])
+
                     break
                 }                
             }
@@ -204,22 +207,27 @@ export default {
         lazySaving(value) {
             this.disable = !this.disable;
             this.buttonTitle = this.$t('saving')
+                
             if (this.timer) {
                 clearTimeout(this.timer);
                 this.timer = null;
             }
-            this.timer = setTimeout(() => {
-                this.save(value);
-            }, 500);
+
+            if (this.waiting){
+                this.timer = setTimeout(() => {
+                    this.save(value);
+                }, 5000);
+            } else {
+                if(!value['id']) this.waiting = true
+                this.save(value)
+            }
         },
 
         save(value) {
-            if (this.wating) return
             value['department'] = this.department
             value['polist_id'] = this.po_no
             value['prod_date'] = this.prodDate
             if(!value['id']){
-                this.waiting = true
                 axios.post(`api/prodparts`, value)
                 .then(({data}) =>{
                     value['id'] = data.id
