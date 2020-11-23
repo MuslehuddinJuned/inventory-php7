@@ -50,6 +50,10 @@
                 <fa icon="utensils" fixed-width/>
                 {{ $t('product_list') }}
               </router-link>
+              <router-link v-if="checkRoles('product_details_View')" :to="{ name: 'product.ProductParts' }" class="dropdown-item pl-3">
+                <b-icon icon="columns-gap"></b-icon>
+                {{ $t('product_parts') }}
+              </router-link>
               <router-link v-if="checkRoles('po_list_View')" :to="{ name: 'po.PoList' }" class="dropdown-item pl-3">                
                 <b-icon icon="alarm"></b-icon>
                 {{ $t('po_list') }}

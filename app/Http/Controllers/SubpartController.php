@@ -46,7 +46,13 @@ class SubpartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Productdetails = $request->user()->subpart()->create($request->all());
+
+        if(request()->expectsJson()){
+            return response()->json([
+                'ProductdetailsID' => $Productdetails->id
+            ]);
+        }
     }
 
     /**
@@ -55,9 +61,11 @@ class SubpartController extends Controller
      * @param  \App\Subpart  $subpart
      * @return \Illuminate\Http\Response
      */
-    public function show(Subpart $subpart)
+    public function show($id)
     {
-        //
+        $productDetails = Subpart::where('producthead_id', $id)->get();
+
+        return compact('productDetails');
     }
 
     /**
@@ -80,7 +88,7 @@ class SubpartController extends Controller
      */
     public function update(Request $request, Subpart $subpart)
     {
-        //
+        $subpart->update();
     }
 
     /**
@@ -91,6 +99,6 @@ class SubpartController extends Controller
      */
     public function destroy(Subpart $subpart)
     {
-        //
+        $subpart->delete();
     }
 }

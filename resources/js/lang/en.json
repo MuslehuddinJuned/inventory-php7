@@ -1,4 +1,5 @@
 { 
+    "product_parts" : "Product Parts",
     "production_date" : "Production Date",
     "parts_production_report" : "Parts Production Report",
     "parts_production" : "Parts Production",

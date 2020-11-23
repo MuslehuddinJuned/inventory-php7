@@ -172,7 +172,7 @@ export default {
 
         fetchData() {
             this.isBusy = true
-            fetch(`api/prodparts/${this.po_no + '_' + this.prodDate}`)
+            fetch(`api/prodparts/production/${this.department}/${this.po_no}/${this.prodDate}`)
             .then(res => res.json())
             .then(res => {
                 this.Production = res['Production']
@@ -195,10 +195,13 @@ export default {
         addRow() {
             for (let i = 0; i < this.Production.length; i++) {
                 if (this.Production[i]['productdetails_id'] == this.production_id) {
-                    if(this.Production[i]['id']){
-                        this.$toast.error(this.$t('error_alert_text'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
-                    } else this.ProductionByDeparment.push(this.Production[i])
-
+                    for (let j = 0; j < this.ProductionByDeparment.length; j++) {
+                        if(this.Production[i]['productdetails_id'] == this.ProductionByDeparment[j]['productdetails_id']){
+                            this.$toast.error(this.$t('error_alert_text'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
+                            return
+                        }                        
+                    }                     
+                    this.ProductionByDeparment.push(this.Production[i])
                     break
                 }                
             }
@@ -213,21 +216,19 @@ export default {
                 this.timer = null;
             }
 
-            if (this.waiting){
-                this.timer = setTimeout(() => {
-                    this.save(value);
-                }, 5000);
-            } else {
-                if(!value['id']) this.waiting = true
-                this.save(value)
-            }
+            this.timer = setTimeout(() => {
+                this.save(value);
+            }, 1000);
+            
         },
 
         save(value) {
+            if (this.waiting) return
             value['department'] = this.department
             value['polist_id'] = this.po_no
             value['prod_date'] = this.prodDate
             if(!value['id']){
+                this.waiting = true
                 axios.post(`api/prodparts`, value)
                 .then(({data}) =>{
                     value['id'] = data.id
