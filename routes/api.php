@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('recdetails', 'RecdetailsController')->middleware('can:requisition_View');
     Route::resource('productdetails', 'ProductdetailsController')->middleware('can:product_details_View');
     Route::resource('producthead', 'ProductheadController')->middleware('can:product_details_View');
-    Route::resource('subpart', 'subpartController')->middleware('can:product_details_View');
+    Route::resource('subpart', 'SubpartController')->middleware('can:product_details_View');
     Route::resource('polist', 'PolistController')->middleware('can:po_list_View');
 
     Route::resource('employee', 'EmployeeController')->middleware('can:employee_profile_View');

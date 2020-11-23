@@ -88,7 +88,7 @@ class SubpartController extends Controller
      */
     public function update(Request $request, Subpart $subpart)
     {
-        $subpart->update();
+        $subpart->update($request->all());
     }
 
     /**
