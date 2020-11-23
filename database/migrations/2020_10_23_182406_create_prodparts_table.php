@@ -20,7 +20,7 @@ class CreateProdpartsTable extends Migration
             $table->string('department')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('producthead_id');
-            $table->unsignedBigInteger('productdetails_id');
+            $table->unsignedBigInteger('subpart_id');
             $table->unsignedBigInteger('polist_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

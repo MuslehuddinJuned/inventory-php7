@@ -57,7 +57,7 @@
                         </b-form-group>  
                         <button class="mdb btn btn-outline-default"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>                     
                     </div>
-                    <b-table id="table-transition" primary-key="productdetails_id" :busy="isBusy" show-empty small striped hover responsive
+                    <b-table id="table-transition" primary-key="subpart_id" :busy="isBusy" show-empty small striped hover responsive
                     :items="ProductionByDeparment"
                     :fields="fields"
                     :filter="filter"
@@ -176,6 +176,7 @@ export default {
             .then(res => res.json())
             .then(res => {
                 this.Production = res['Production']
+                console.log(this.Production)
                 this.ProductionByDeparment = this.ProductionByDeparmentMethod
                 this.isBusy = false
             })
@@ -194,9 +195,9 @@ export default {
 
         addRow() {
             for (let i = 0; i < this.Production.length; i++) {
-                if (this.Production[i]['productdetails_id'] == this.production_id) {
+                if (this.Production[i]['subpart_id'] == this.production_id) {
                     for (let j = 0; j < this.ProductionByDeparment.length; j++) {
-                        if(this.Production[i]['productdetails_id'] == this.ProductionByDeparment[j]['productdetails_id']){
+                        if(this.Production[i]['subpart_id'] == this.ProductionByDeparment[j]['subpart_id']){
                             this.$toast.error(this.$t('error_alert_text'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
                             return
                         }                        
@@ -308,22 +309,14 @@ export default {
             return array 
         },
 
-        // Total() {
-        //     let t = 0
-        //     for (let i = 0; i < this.productionByStore.length; i++) {
-        //         t += (parseFloat(this.productionByStore[i]['prod_qty']) || 0)                
-        //     } return t
-        // },
-
         fields() {
             const lang = this.$i18n.locale
             if (!lang) { return [] }
             this.buttonTitle = this.$t('save')
             return [
                 { key: 'action', label : '#', class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
-                { key: 'item_code', label : this.$t('material_number'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
-                { key: 'item', label : this.$t('material_name'), stickyColumn: true, class: 'bg-white text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold'},
-                { key: 'specification', label : this.$t('description'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
+                { key: 'parts_name', label : this.$t('name'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
+                { key: 'parts_description', label : this.$t('description'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'parts_qty', label : this.$t('quantity'), class: 'text-center align-middle', tdClass: 'p-0', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'complete', label : this.$t('complete'), class: 'text-center align-middle', thClass: 'text-nowrap border-top border-dark font-weight-bold' },
