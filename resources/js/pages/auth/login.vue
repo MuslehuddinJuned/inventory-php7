@@ -35,7 +35,7 @@
             </div>
           </div>
 
-          <div class="form-group row">
+          <div v-if="paymentMethod == 1" class="form-group row">
             <div class="col-md-7 offset-md-3 d-flex">
               <!-- Submit Button -->
               <v-button :loading="form.busy">
@@ -55,6 +55,7 @@
 <script>
 import Form from 'vform'
 import LoginWithGithub from '~/components/LoginWithGithub'
+import Cookies from 'js-cookie'
 
 export default {
   middleware: 'guest',
@@ -92,6 +93,12 @@ export default {
       // Redirect home.
       this.$router.push({ name: 'home' })
     }
-  }
+  },
+
+  computed: {
+    paymentMethod() {
+      return Cookies.get('payment')
+    },
+  },
 }
 </script>
