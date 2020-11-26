@@ -204,7 +204,6 @@ export default {
             employeeList : [],
             singlEmployee : {},
             personnelList: [],
-            roles: [],
             errors : [],
             task: {'date': this.convertDate(new Date()), 'activity': null, 'amount': null, 'remarks': null, 'file_link': null, 'employee_id': null},
             taskId: null,
@@ -247,12 +246,6 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -388,6 +381,9 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
         
         singlEmployeeMethod() {
             let array = []

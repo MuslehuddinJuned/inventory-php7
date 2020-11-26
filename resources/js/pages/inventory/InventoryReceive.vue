@@ -265,7 +265,6 @@ export default {
             inventoryrec_h : [],
             inventoryrec_d : [],
             PoListAll: [],
-            roles: [],
             storeDisabled : false,
             noprint : '',
             today : new Date(),
@@ -325,12 +324,6 @@ export default {
         })
         .catch(err => {
             alert(err.response.data.message);
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
 
         this.title = this.$t('receive_item')
@@ -598,6 +591,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         singleTask() {
             let id = this.taskHeadId
             return this.inventoryreceiveList.filter(function (item) {

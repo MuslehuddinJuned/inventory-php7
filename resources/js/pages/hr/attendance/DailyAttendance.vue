@@ -205,7 +205,6 @@ export default {
             uploadReady: true,
             dataEdit: false,
             audit: false,
-            roles: [],
             DepartmentList: [],
             DepartmentName: 'Management',
             attendance_date: this.convertDate(new Date()),
@@ -277,11 +276,6 @@ export default {
         })
 
         this.fetchData()
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
-        })
     },
 
     methods: {
@@ -603,7 +597,10 @@ export default {
     },
 
     computed: {
-
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         loading(){
             return[ 
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'

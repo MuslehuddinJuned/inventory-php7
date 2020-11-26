@@ -125,7 +125,6 @@
             return {
                 HolidayList : [],
                 YearlyHoliday: [],
-                roles: [], 
                 task: {'event': null, 'yearly_holiday': this.convertDate(new Date())},  
                 taskId: null,     
                 errors : [],
@@ -159,12 +158,6 @@
             })
             .catch(err => {
                 alert(err.response.data.message);
-            })
-            
-            fetch(`api/settings/roles`)
-            .then(res => res.json())
-            .then(res => {
-                this.roles = res['allRoles'];
             })
         },
 
@@ -282,6 +275,10 @@
         },
 
         computed: {
+            roles() {
+                return JSON.parse(localStorage.getItem("roles"))
+            },
+            
             yearly() {
                 let check = this.year
                 return this.HolidayList.filter(function (item){

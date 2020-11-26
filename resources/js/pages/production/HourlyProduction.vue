@@ -239,7 +239,6 @@ export default {
             PoList : [],
             Production: [],
             ProductionByDeparment: [],
-            roles: [],
             department: this.$t('assembly'),
             prodDate: this.convertDate(new Date()),
             noprint : '',
@@ -259,12 +258,6 @@ export default {
 
     mounted() {
         this.fetchData()
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
-        })
     },
 
     methods: {
@@ -409,6 +402,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }

@@ -205,7 +205,6 @@ export default {
     data() {
         return{
             productList : [],
-            roles: [],
             productListAll : [],
             noprint : '',
             buyer : null,
@@ -235,12 +234,6 @@ export default {
 
     mounted() {
         this.fetchData()
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
-        })
     },
 
     methods: {
@@ -395,6 +388,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         singleTask() {
             let id = this.taskHeadId
             return this.productList.filter(function (item) {

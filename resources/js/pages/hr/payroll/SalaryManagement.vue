@@ -281,7 +281,6 @@ export default {
     data() {
         return{
             employeeList : [],
-            roles: [],
             errors : [],
             task: {'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'providant_fund': 0, 'tax': 0, 'medic_alw_percent': 0, 'house_rent_percent': 0, 'ta_percent': 0, 'da_percent': 0, 'providant_fund_percent': 0, 'tax_percent': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
             taskId: null,
@@ -324,12 +323,6 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -444,7 +437,10 @@ export default {
     },
 
     computed: {
-
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }

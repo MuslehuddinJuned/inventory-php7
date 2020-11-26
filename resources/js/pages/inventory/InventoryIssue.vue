@@ -160,7 +160,7 @@ export default {
     data() {
         return{
             inventoryissueList : [],
-            roles: [],
+            // roles: [],
             disable: false,
             store: 3,
             store_options: [],
@@ -204,12 +204,6 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.store_options = res['Store'];
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -295,6 +289,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         singleTask() {
             let id = this.taskHeadId
             return this.inventoryissueList.filter(function (item) {

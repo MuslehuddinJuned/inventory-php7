@@ -528,7 +528,6 @@ export default {
     data() {
         return{
             employeeList : [],
-            roles: [],
             errors : [],
             exit: {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())},
             task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
@@ -620,12 +619,6 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -805,6 +798,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         imageName() {
             if(this.task['employee_image'] == null || this.task['employee_image'] == 'noimage.jpg') {
                 this.task['employee_image'] = null

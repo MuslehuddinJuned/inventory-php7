@@ -181,12 +181,6 @@ export default {
         .catch(err => {
             alert(err.response.data.message);
         })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
-        })
     },
 
     methods: {
@@ -232,6 +226,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         TypetoSearch() {
             const lang = this.$i18n.locale
             if (!lang) { return '' }

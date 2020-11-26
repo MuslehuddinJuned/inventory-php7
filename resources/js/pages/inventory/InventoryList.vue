@@ -251,7 +251,6 @@ export default {
         return{
             inventoryList : [],
             inventoryListAll : [],
-            roles: [],
             errors : [],
             store : 3,
             storeName: '5-7530: Kitchen Utensil (Stainless Steel)',
@@ -328,12 +327,6 @@ export default {
         })
         .catch(err => {
             alert(err.response.data.message);
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -598,6 +591,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         inventoryListByDept() {
             let id = this.store, etdDate = this.etdDate
             if (this.etd) {

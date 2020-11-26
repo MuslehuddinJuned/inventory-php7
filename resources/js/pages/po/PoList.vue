@@ -297,7 +297,6 @@ export default {
         return{
             PoList : [],
             PoListAll : [],
-            roles: [],
             errors : [],
             po_no : null,
             etd: this.convertDate(new Date()),
@@ -365,12 +364,6 @@ export default {
         })
         .catch(err => {
             alert(err.response.data.message);
-        })
-
-        fetch(`api/settings/roles`)
-        .then(res => res.json())
-        .then(res => {
-            this.roles = res['allRoles'];
         })
     },
 
@@ -544,6 +537,10 @@ export default {
     },
 
     computed: {
+        roles() {
+            return JSON.parse(localStorage.getItem("roles"))
+        },
+        
         PoListByPoNo() {
             let po = this.po_no            
             return this.PoListAll.filter(function (item) {
