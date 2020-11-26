@@ -159,6 +159,7 @@ export default {
             fileName: this.$t('choose_file'),
             uploadReady: true,
             dataEdit: false,
+            roles: [],
             DepartmentList: [],
             DepartmentName: 'Management',
             attendance_date: this.convertDate(new Date()),
@@ -187,6 +188,13 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+        })
+
+        this.fetchData()
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
         })
     },
 
@@ -425,10 +433,7 @@ export default {
     },
 
     computed: {
-        roles() {
-            return JSON.parse(localStorage.getItem("roles"))
-        },
-        
+
         loading(){
             return[ 
                 this.buttonTitle == this.$t('saving') ? '' : 'd-none'

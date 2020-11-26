@@ -235,7 +235,6 @@ export default {
       .then(res => res.json())
       .then(res => {
           this.roles = res['allRoles'];
-          localStorage.setItem("roles" , JSON.stringify(this.roles));
       })
     }
 

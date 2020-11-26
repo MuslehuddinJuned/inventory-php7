@@ -308,6 +308,7 @@ export default {
     data() {
         return{
             employeeList : [],
+            roles: [],
             errors : [],
             task: [{'employee_id': null, 'first_name': null, 'last_name': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': null, 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}],
             taskId: null,
@@ -398,6 +399,12 @@ export default {
             this.DepartmentList = res['Department'];
         })
 
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
+
         this.start_date = this.start_date_initialize
         this.end_date = this.end_date_initialize
     },
@@ -439,10 +446,6 @@ export default {
     },
 
     computed: {
-        roles() {
-            return JSON.parse(localStorage.getItem("roles"))
-        },
-        
         singleTask() {
             let array = [], weekly_holiday = null
             for (let i = 0; i < this.employeeList.length; i++) {

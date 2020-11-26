@@ -298,6 +298,7 @@ export default {
             absentList: [],
             holidayList: [],
             DepartmentName: 'Management',
+            roles: [],
             year: new Date().getFullYear(),
             reportEdit: false,
             reportType: this.$t('summary'),
@@ -349,6 +350,12 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+        })
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
         })
     },
 
@@ -685,10 +692,6 @@ export default {
     },
 
     computed: {
-        roles() {
-            return JSON.parse(localStorage.getItem("roles"))
-        },
-        
         singleTask() {
             let year = this.year
             return this.leaveList.filter(function (item) {

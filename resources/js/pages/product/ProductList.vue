@@ -298,6 +298,7 @@ export default {
         return{
             inventoryList : [],
             productList : [],
+            roles: [],
             productListAll : [],
             noprint : '',
             // taskDetailsByStore : [],
@@ -351,6 +352,12 @@ export default {
         })
         .catch(err => {
             alert(err.response.data.message);
+        })
+
+        fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
         })
     },
 
@@ -653,10 +660,6 @@ export default {
     },
 
     computed: {
-        roles() {
-            return JSON.parse(localStorage.getItem("roles"))
-        },
-        
         imageName() {
             if(this.taskHead[0]['product_image'] == null || this.taskHead[0]['product_image'] == 'noimage.jpg') {
                 // this.taskHead[0]['product_image'] = null
