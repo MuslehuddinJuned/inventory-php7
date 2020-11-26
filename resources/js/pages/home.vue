@@ -22,11 +22,23 @@ export default {
     return { title: this.$t('home') }
   },
 
+  data() {
+    return{
+      roles: [],
+    }
+  },
+
+  mounted() {
+    fetch(`api/settings/roles`)
+        .then(res => res.json())
+        .then(res => {
+            this.roles = res['allRoles'];
+        })
+  },
+
   methods: {
     chooseModule(id) {
-      localStorage.setItem("module_no" , id)
-      console.log(localStorage.getItem("module_no"))
-      // Cookies.set('module_no', id, { expires: 365 })
+      Cookies.set('module_no', id, { expires: 365 })
       location.reload()
     },
 
@@ -36,12 +48,6 @@ export default {
                 return true
             }                
         } return false
-    },
-  },
-
-  computed: {
-    roles() {
-        return JSON.parse(localStorage.getItem("roles"))
     },
   }
 }
