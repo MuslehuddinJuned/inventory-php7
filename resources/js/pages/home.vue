@@ -38,7 +38,8 @@ export default {
 
   methods: {
     chooseModule(id) {
-      Cookies.set('module_no', id, { expires: 365 })
+      // Cookies.set('module_no', id, { expires: 365 })
+      localStorage.setItem("module_no" , id)
       location.reload()
     },
 

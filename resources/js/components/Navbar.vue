@@ -269,7 +269,8 @@ export default {
     }),
 
     module_no() {
-      return Cookies.get('module_no')
+      // return Cookies.get('module_no')
+      return localStorage.getItem("module_no")
     },
   },
 
