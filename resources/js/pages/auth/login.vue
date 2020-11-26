@@ -35,7 +35,7 @@
             </div>
           </div>
 
-          <div v-if="paymentMethod == 1" class="form-group row">
+          <div class="form-group row">
             <div class="col-md-7 offset-md-3 d-flex">
               <!-- Submit Button -->
               <v-button :loading="form.busy">
@@ -78,6 +78,10 @@ export default {
 
   methods: {
     async login () {
+      if (this.paymentMethod == 0) {
+        this.$router.push({ name: 'etc.Payment' })
+        return
+      }
       // Submit the form.
       const { data } = await this.form.post('/api/login')
 
