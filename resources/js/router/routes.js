@@ -48,7 +48,7 @@ export default [
   { path: '/salary-sheet', name: 'hr.SalarySheet', component: page('hr/payroll/SalarySheet.vue') },
   { path: '/providant-fund', name: 'hr.ProvidantFund', component: page('hr/payroll/ProvidantFund.vue') },
 
-  { path: '/payment', name: 'hr.Payment', component: page('hr/payroll/Payment.vue') },
+  { path: '/payment', name: 'etc.Payment', component: page('etc/Payment.vue') },
 
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },

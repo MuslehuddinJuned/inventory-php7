@@ -198,17 +198,18 @@
         </div>
       </div>
     </nav>
-    <!-- Start Edit Details Modal -->
-    <b-modal ref="payment" id="payment" title="Your payment is Due" no-close-on-backdrop>                        
-        <div class="modal-body row m-0 p-0 mb-2">
-            
+    <!-- Start Payment Details Modal -->
+    <b-modal ref="payment" id="payment" size="lg" title="Your payment is due" no-close-on-backdrop>                        
+        <div class="modal-body row m-0 p-0 mb-2 text-center">
+          <h3 class="mx-auto my-3">Please pay your subscription fee ৳ 3,000 to stay connected</h3>
+          <h1 id="timer_id" class="mx-auto my-5 bg-info rounded-pill px-5 py-3 text-white"></h1>
         </div>
         <template v-slot:modal-footer="">
             <button @click="payNow" class="mdb btn btn-outline-default">Pay Now</button>
             <button @click="$refs['payment'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
         </template>
     </b-modal>                    
-    <!-- End Edit Details Modal -->
+    <!-- End Payment Details Modal -->
   </div>
 </template>
 
@@ -225,6 +226,7 @@ export default {
   data: () => ({
     appName: window.config.appName,
     roles: [],
+    value: 'hh',
   }),
 
   mounted() {
@@ -243,6 +245,7 @@ export default {
     .then(res => {
       payment = res['payment'];
       if (payment.length == 0) {
+        this.CountDownTimer()
         this.$refs['payment'].show()
         if(countDays.getDate()>5) {
           Cookies.set('payment', 0, { expires: 365 })
@@ -291,8 +294,44 @@ export default {
         } return false
     },
 
-    payNow() {
+    CountDownTimer() {     
 
+      var date = new Date(),
+          year = date.getFullYear(),
+          mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+          day = '05'
+
+      var end = new Date([year, mnth, day].join("-"));
+      var _second = 1000;
+      var _minute = _second * 60;
+      var _hour = _minute * 60;
+      var _day = _hour * 24;
+      var timer;
+
+      function showRemaining() {
+            var now = new Date();
+            var distance = end - now;
+            if (distance < 0) {
+                clearInterval(timer);
+                document.getElementById("timer_id").innerHTML = 'EXPIRED!';
+                return
+            }
+            var days = Math.floor(distance / _day);
+            var hours = Math.floor((distance % _day) / _hour);
+            var minutes = Math.floor((distance % _hour) / _minute);
+            var seconds = Math.floor((distance % _minute) / _second);
+
+            document.getElementById("timer_id").innerHTML = days + 'days ';
+            document.getElementById("timer_id").innerHTML += hours + 'hrs ';
+            document.getElementById("timer_id").innerHTML += minutes + 'mins ';
+            document.getElementById("timer_id").innerHTML += seconds + 'secs';
+        }
+        timer = setInterval(showRemaining, 1000);
+    },
+
+    payNow() {
+      this.$refs['payment'].hide()
+      this.$router.push({ name: 'etc.Payment' })
     },
   }
 }
