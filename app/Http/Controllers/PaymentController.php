@@ -16,7 +16,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payment = DB::SELECT("SELECT EXTRACT(YEAR_MONTH FROM mnth_of_payment) payment
-        FROM payments WHERE EXTRACT(YEAR_MONTH FROM mnth_of_payment) = EXTRACT(YEAR_MONTH FROM CURDATE())");
+        FROM payments WHERE EXTRACT(YEAR_MONTH FROM mnth_of_payment) = EXTRACT(YEAR_MONTH FROM DATE(NOW()+interval 11 hour))");
 
         return compact('payment');
     }

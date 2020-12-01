@@ -201,7 +201,7 @@
     <!-- Start Payment Details Modal -->
     <b-modal ref="payment" id="payment" size="lg" title="Your payment is due" no-close-on-backdrop>                        
         <div class="modal-body row m-0 p-0 mb-2 text-center">
-          <h3 class="mx-auto my-3">Please pay your subscription fee ৳ 3,000 to stay connected</h3>
+          <h3 class="mx-auto my-3">Please pay your monthly subscription fee ৳ 3,000 to stay connected</h3>
           <h1 id="timer_id" class="mx-auto my-5 bg-info rounded-pill px-5 py-3 text-white"></h1>
         </div>
         <template v-slot:modal-footer="">
@@ -259,7 +259,7 @@ export default {
         }
       }
       
-      if (payment.length > 0 || countDays.getDate()<5) {        
+      if (payment.length > 0 || countDays.getDate()<6) {        
         Cookies.set('payment', 1, { expires: 365 })
       }
     })
@@ -299,7 +299,9 @@ export default {
       var date = new Date(),
           year = date.getFullYear(),
           mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-          day = '05'
+          day = '06'
+
+          console.log(date)
 
       var end = new Date([year, mnth, day].join("-"));
       var _second = 1000;
@@ -310,7 +312,7 @@ export default {
 
       function showRemaining() {
             var now = new Date();
-            var distance = end - now;
+            var distance = end - now - 21600000;
             if (distance < 0) {
                 clearInterval(timer);
                 document.getElementById("timer_id").innerHTML = 'EXPIRED!';
