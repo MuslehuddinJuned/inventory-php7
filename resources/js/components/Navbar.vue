@@ -226,7 +226,6 @@ export default {
   data: () => ({
     appName: window.config.appName,
     roles: [],
-    value: 'hh',
   }),
 
   mounted() {
@@ -323,12 +322,15 @@ export default {
             var minutes = Math.floor((distance % _hour) / _minute);
             var seconds = Math.floor((distance % _minute) / _second);
 
-            document.getElementById("timer_id").innerHTML = days + 'days ';
-            document.getElementById("timer_id").innerHTML += hours + 'hrs ';
-            document.getElementById("timer_id").innerHTML += minutes + 'mins ';
-            document.getElementById("timer_id").innerHTML += seconds + 'secs';
+            if (document.getElementById("timer_id")) {              
+              document.getElementById("timer_id").innerHTML = days + 'days ';
+              document.getElementById("timer_id").innerHTML = days + 'days ';
+              document.getElementById("timer_id").innerHTML += hours + 'hrs ';
+              document.getElementById("timer_id").innerHTML += minutes + 'mins ';
+              document.getElementById("timer_id").innerHTML += seconds + 'secs';
+            }
         }
-        timer = setInterval(showRemaining, 1000);
+      timer = setInterval(showRemaining, 1000);
     },
 
     payNow() {
