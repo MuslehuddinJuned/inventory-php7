@@ -218,7 +218,10 @@
                         </div>   
                         <div class="form-group col-md-4">
                             <label for="department" class="col-form-label">{{$t('department')}}</label>
-                            <input type="text" class="form-control" id="department" name="department" v-model="task['department']">
+                            <input list="DepartmentList" type="text" class="form-control" id="department" name="department" v-model="task['department']">
+                            <datalist id="DepartmentList">
+                                <option v-for="department in DepartmentList" :key="department.department">{{ department['department'] }}</option>
+                            </datalist>
                         </div>
                         <!-- <div class="form-group col-md-3">
                             <label for="section" class="col-form-label">{{$t('section')}}</label>
