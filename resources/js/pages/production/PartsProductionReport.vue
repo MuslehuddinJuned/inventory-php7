@@ -56,8 +56,8 @@
                             <strong>{{$t('loading')}}</strong>
                         </div>
                     </template>
-                    <template v-slot:cell(item_image)="row">
-                        <a :href="'/images/item/' + row.item.item_image"><b-img :src="'/images/item/' + row.item.item_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
+                    <template v-slot:cell(product_image)="row">
+                        <a :href="'/images/product/' + row.item.product_image"><b-img :src="'/images/product/' + row.item.product_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
                     <template v-slot:cell(parts_qty)="row">
                         {{(row.item.parts_qty || 0) * (row.item.po_qty || 0)}}
@@ -203,7 +203,7 @@ export default {
             this.buttonTitle = this.$t('save')
             return [
                 // , po_no
-                { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'po_no', label : 'PO no', class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'parts_name', label : this.$t('name'), class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },

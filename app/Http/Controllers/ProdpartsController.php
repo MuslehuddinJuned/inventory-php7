@@ -65,10 +65,10 @@ class ProdpartsController extends Controller
      */
     public function show($date)
     {
-        $Production = DB::SELECT("SELECT A.id, po_no, product_code, parts_name, parts_description, po_qty, parts_qty, unit, total_prod_qty, quantity, prod_date, A.department, remarks FROM(
+        $Production = DB::SELECT("SELECT A.id, po_no, product_code, product_image, parts_name, parts_description, po_qty, parts_qty, unit, total_prod_qty, quantity, prod_date, A.department, remarks FROM(
             SELECT id, quantity, prod_date, department, remarks, producthead_id, subpart_id, polist_id FROM prodparts WHERE DATE(prod_date) = ?
             )A LEFT JOIN (SELECT id, quantity po_qty, po_no,  producthead_id FROM polists
-            )B ON A.polist_id = B.id LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code FROM productheads
+            )B ON A.polist_id = B.id LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code, product_image FROM productheads
             )C ON B.producthead_id = C.producthead_id LEFT JOIN(SELECT id subpart_id, parts_name, parts_description, parts_qty, unit, producthead_id FROM subparts
             )D ON C.producthead_id = D.producthead_id AND A.subpart_id = D.subpart_id LEFT JOIN (SELECT SUM(quantity) total_prod_qty , department, subpart_id, polist_id FROM prodparts WHERE DATE(prod_date) < ? GROUP BY department, subpart_id, polist_id
             )E ON D.subpart_id = E.subpart_id AND B.id = E.polist_id ORDER BY po_no", [$date, $date]);
