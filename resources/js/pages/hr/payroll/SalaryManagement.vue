@@ -137,6 +137,11 @@
                             <b-td class="border border-dark"><input v-model="task['da']" @keyup="da_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                         </b-tr>
                         <b-tr>
+                            <b-th class="border border-dark align-middle">{{$t('fixed_allowance')}}</b-th>
+                            <b-td class="border border-dark"><input v-model="task['fixed_allowance_percent']" @keyup="fixed_allowance" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['fixed_allowance']" @keyup="fixed_allowance_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                        </b-tr>
+                        <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('providant_fund')}}</b-th>
                             <b-td class="border border-dark"><input v-model="task['providant_fund_percent']" @keyup="providant_fund" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                             <b-td class="border border-dark"><input v-model="task['providant_fund']" @keyup="providant_fund_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
@@ -150,7 +155,7 @@
                     <b-tfoot>
                         <b-tr>
                             <b-td class="border border-dark" colspan="2" variant="success">{{ $t('total_salary')}}</b-td>
-                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = (parseFloat(task['basic_pay'] || 0) + parseFloat(task['house_rent'] || 0) + parseFloat(task['medic_alw'] || 0) + parseFloat(task['ta'] || 0) + parseFloat(task['da'] || 0) - parseFloat(task['providant_fund'] || 0)- parseFloat(task['tax'] || 0))}}</b-td>
+                            <b-td class="border border-dark" variant="success">{{task['total_salary'] = (parseFloat(task['basic_pay'] || 0) + parseFloat(task['house_rent'] || 0) + parseFloat(task['medic_alw'] || 0) + parseFloat(task['ta'] || 0) + parseFloat(task['da'] || 0) + parseFloat(task['fixed_allowance'] || 0) - parseFloat(task['providant_fund'] || 0)- parseFloat(task['tax'] || 0))}}</b-td>
                         </b-tr>
                     </b-tfoot>
                 </b-table-simple>
@@ -235,27 +240,35 @@
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('providant_fund')}} (-)</p>
+                            <div class="col-md-6 bg-light my-auto">
+                                <p class="my-auto font-weight-bold">{{$t('fixed_allowance')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['providant_fund']}}</p>
+                                <p class="my-auto">{{task['fixed_allowance']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('tax')}} (-)</p>
+                            <div class="col-md-6 my-auto bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('providant_fund')}} (-)</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['tax']}}</p>
+                                <p class="my-auto text-white">{{task['providant_fund']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('total_salary')}}</p>
+                            <div class="col-md-6 bg-light my-auto">
+                                <p class="my-auto font-weight-bold">{{$t('tax')}} (-)</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['total_salary']}}</p>
+                                <p class="my-auto">{{task['tax']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('total_salary')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-info">
+                                <p class="my-auto text-white">{{task['total_salary']}}</p>
                             </div>
                         </div>
                     </div>
@@ -283,7 +296,7 @@ export default {
             employeeList : [],
             roles: [],
             errors : [],
-            task: {'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'providant_fund': 0, 'tax': 0, 'medic_alw_percent': 0, 'house_rent_percent': 0, 'ta_percent': 0, 'da_percent': 0, 'providant_fund_percent': 0, 'tax_percent': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
+            task: {'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'fixed_allowance': 0, 'fixed_allowance_percent': 0, 'providant_fund': 0, 'tax': 0, 'medic_alw_percent': 0, 'house_rent_percent': 0, 'ta_percent': 0, 'da_percent': 0, 'providant_fund_percent': 0, 'tax_percent': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
             taskId: null,
             buttonTitle : this.$t('save'),
             disable: false,
@@ -356,6 +369,7 @@ export default {
             this.task['medic_alw_percent'] =  this.task['medic_alw'] * 100 / this.task['basic_pay']
             this.task['ta_percent'] =  this.task['ta'] * 100 / this.task['basic_pay']
             this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay']
+            this.task['fixed_allowance_percent'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay']
             this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay']
             this.task['tax_percent'] =  this.task['tax'] * 100 / this.task['basic_pay']
             this.$refs['dataView'].show()
@@ -385,6 +399,7 @@ export default {
             this.task['medic_alw'] =  this.task['basic_pay'] * this.task['medic_alw_percent'] / 100
             this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100
             this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100
+            this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_percent'] / 100
             this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100
             this.task['tax'] =  this.task['basic_pay'] * this.task['tax_percent'] / 100
         },
@@ -396,6 +411,8 @@ export default {
         ta() { this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100 },
         da_percent() { this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay'] },
         da() { this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100 },
+        fixed_allowance_percent() { this.task['fixed_allowance_percent'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay'] },
+        fixed_allowance() { this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_percent'] / 100 },
         providant_fund_percent() { this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay'] },
         providant_fund() { this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100 },
         tax_percent() { this.task['tax_percent'] =  this.task['tax'] * 100 / this.task['basic_pay'] },
