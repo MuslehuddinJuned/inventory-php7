@@ -70,6 +70,17 @@
                     </template>
                     </b-table>
                 </div>
+                <div class="card-footer">
+                    <div class="onlyprint fixed-bottom">
+                        <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
+                    </div>
+                </div>
             </div>
         </div> 
     </div>
@@ -204,6 +215,7 @@ export default {
             return [
                 // , po_no
                 { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'etd', label : 'ETD', class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'po_no', label : 'PO no', class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
                 { key: 'parts_name', label : this.$t('name'), class: 'text-center align-middle', sortable: true, thClass: 'text-nowrap border-top border-dark font-weight-bold' },
