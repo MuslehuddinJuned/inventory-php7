@@ -34,6 +34,7 @@ export default [
   { path: '/parts-production-report', name: 'production.PartsProductionReport', component: page('production/PartsProductionReport.vue') },
   { path: '/production-monitor', name: 'production.ProductionMonitor', component: page('production/ProductionMonitor.vue') },
   { path: '/production-plan', name: 'production.ProductionPlan', component: page('production/ProductionPlan.vue') },
+  { path: '/monitor-parts-production', name: 'production.MonitorPartsProduction', component: page('production/MonitorPartsProduction.vue') },
 
 
   { path: '/employee-profile', name: 'hr.EmployeeProfile', component: page('hr/profile/EmployeeProfile.vue') },

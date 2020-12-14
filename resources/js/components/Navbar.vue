@@ -92,6 +92,13 @@
                   <b-icon icon="columns"></b-icon>
                   {{ $t('parts_production_report') }}
                 </router-link>
+                <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.MonitorPartsProduction' }" class="dropdown-item pl-3">
+                  <b-iconstack>
+                    <b-icon stacked icon="columns" scale="0.5" shift-h="-1" shift-v="1"></b-icon>
+                    <b-icon stacked icon="search" scale="1.15"></b-icon>
+                  </b-iconstack>
+                  {{ $t('monitor_parts_production') }}
+                </router-link>
                 <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionPlan' }" class="dropdown-item pl-3">
                   <b-icon icon="calculator"></b-icon>
                   {{ $t('production_plan') }}

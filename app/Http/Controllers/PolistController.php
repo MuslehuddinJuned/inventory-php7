@@ -123,7 +123,6 @@ class PolistController extends Controller
                     )D ON D.polist_id = A.id AND D.inventory_id = C.inventory_id
                 )A GROUP BY etd, inventory_id");
 
-
             return compact('etd', 'Inventory', 'etdQty');
         }        
 
@@ -140,6 +139,33 @@ class PolistController extends Controller
             )A", [$date]);
 
         return compact('buyer', 'Production');
+    }
+
+    public function monitor($department)
+    {
+        $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (SUM(req_qty)-prod_qty)stock, unit FROM(
+                SELECT B.id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, 
+                (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))req_qty, COALESCE(prod_qty, 0)prod_qty, unit FROM(
+                SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
+                )A LEFT JOIN (SELECT id, parts_name, parts_description, parts_qty, unit, producthead_id FROM subparts
+                )B ON A.id = B.producthead_id LEFT JOIN(SELECT quantity, producthead_id FROM polists WHERE deleted_by = 0 AND DATE(etd) < CURDATE()
+                )C ON A.id = C.producthead_id LEFT JOIN(SELECT SUM(quantity)prod_qty, department, subpart_id FROM prodparts WHERE department = ? GROUP by subpart_id, department
+                )D ON B.id = D.subpart_id
+            )A GROUP BY id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, unit", [$department]);
+
+        $etd = DB::SELECT('SELECT DISTINCT(etd)etd FROM polists WHERE DATE(etd) >= CURDATE() ORDER BY etd');
+
+        $etdQty = DB::SELECT("SELECT id, etd, SUM(quantity)quantity FROM(
+                SELECT B.id, etd, (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))quantity FROM(
+                SELECT id FROM productheads WHERE deleted_by = 0
+                )A LEFT JOIN (SELECT id, parts_qty, producthead_id FROM subparts
+                )B ON A.id = B.producthead_id RIGHT JOIN(SELECT quantity, etd, producthead_id FROM polists WHERE deleted_by = 0 AND DATE(etd) >= CURDATE()
+                )C ON A.id = C.producthead_id
+            )A GROUP BY id, etd");
+
+        $buyer = DB::SELECT("SELECT DISTINCT buyer FROM productheads WHERE deleted_by = 0 ORDER BY buyer");
+
+        return compact('stock', 'etd', 'etdQty', 'buyer');
     }
 
     /**
