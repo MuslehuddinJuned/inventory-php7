@@ -1,4 +1,6 @@
 { 
+    "save_this_table_to_excel" : "Save this table to Excel",
+    "monitor_parts_production" : "Monitor Parts Production",
     "product_parts" : "Product Parts",
     "production_date" : "Production Date",
     "parts_production_report" : "Parts Production Report",
@@ -131,7 +133,7 @@
     "basic_pay" : "Basic Salary",
     "acc_no" : "Account No",
     "bank_name" : "Bank Name",
-    "providant_fund" : "Providant Fund",
+    "providant_fund" : "Provident Fund",
     "pay_slip" : "Payslip",
     "salary_sheet" : "Salary Sheet",
     "salary_management" : "Salary Management",

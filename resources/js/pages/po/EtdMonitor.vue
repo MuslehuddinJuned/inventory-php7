@@ -23,7 +23,7 @@
                             <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
                         </download-excel>
                         <b-tooltip target="tooltip-target-1" triggers="hover">
-                            Save this table to Excel
+                            {{$t('save_this_table_to_excel')}}
                         </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
