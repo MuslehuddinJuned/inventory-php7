@@ -1,9 +1,9 @@
 <template>
     <div class="container-fluid justify-content-center">
-       <div v-if="checkRoles('monitor_etd_View')" class="col-md-12">
+       <div v-if="checkRoles('production_View')" class="col-md-12">
            <div class="card filterable">
                 <div class="card-header d-flex align-items-center">
-                    <h3 class="panel-title float-left">{{ $t('monitor_etd') }}</h3>
+                    <h3 class="panel-title float-left">{{ $t('monitor_parts_production') }}</h3>
                 </div> 
                 <div class="card-body d-flex align-items-center">
                     <select @change="departmentChange" class="form-control mr-3" v-model="department">
@@ -113,7 +113,7 @@ export default {
     middleware: 'auth',
 
     metaInfo () {
-        return { title: this.$t('monitor_etd') }
+        return { title: this.$t('monitor_parts_production') }
     },
 
     data() {
