@@ -127,9 +127,9 @@ export default {
             buyer: 'APL',
             department: 'injection',
             json_fields: {
-                'Material No': 'item_code',
-                'Material': 'item',
-                'Description': 'specification',
+                'Style Code': 'product_code',
+                'Parts Name': 'parts_name',
+                'Unit': 'unit',
                 'Unit': 'unit',
                 'Stock': 'stock',
             },
@@ -256,10 +256,13 @@ export default {
                 { key: 'index', label : '#', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle text-nowrap', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'product_code', label : this.$t('style') + ' ' + this.$t('code'), stickyColumn: true, sortable: true, class: 'text-center align-middle bg-white text-nowrap', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'parts_name', label : this.$t('parts_name'), stickyColumn: true, sortable: true, class: 'text-center align-middle bg-white text-nowrap', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle text-nowrap', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'stock', label : this.$t('stock'), sortable: true, class: 'text-center align-middle text-nowrap', thClass: 'border-top border-dark font-weight-bold'},
-            ]  
+            ] 
+            if (this.department != 'assembly') {
+                data.push({ key: 'parts_name', label : this.$t('name'), stickyColumn: true, sortable: true, class: 'text-center align-middle bg-white text-nowrap', thClass: 'border-top border-dark font-weight-bold'})
+                data.push({ key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle text-nowrap', thClass: 'border-top border-dark font-weight-bold'})
+            } 
+            
+            data.push({ key: 'stock', label : this.$t('stock'), sortable: true, class: 'text-center align-middle text-nowrap', thClass: 'border-top border-dark font-weight-bold'})
             
             for (let i = 0; i < this.etdList.length; i++) {
                 data.push({ 'key': this.etdList[i]['etd'], 'label' : this.convertDate(this.etdList[i]['etd']),'sortable': true, 'class': 'text-center align-middle', 'thClass': 'border-top border-dark font-weight-bold' })
