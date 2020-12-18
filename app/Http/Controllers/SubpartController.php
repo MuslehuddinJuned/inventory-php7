@@ -88,6 +88,45 @@ class SubpartController extends Controller
      */
     public function update(Request $request, Subpart $subpart)
     {
+        $pic = $request->parts_image;
+        if( strlen($pic) > 25){
+            $exploded = explode(',', $request->parts_image);
+            $decoded = base64_decode($exploded[1]);
+    
+            if(str_contains($exploded[0], 'png'))
+                $extesion = 'png';
+            else
+                $extesion = 'jpg';
+    
+            $fileName = str_random().'.'.$extesion;
+            $path = public_path().'/images/product/'.$fileName;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$fileName;
+    
+            // store new image
+            file_put_contents($path, $decoded);
+
+            // delete previous image
+            $Subpart = Subpart::find($subpart->id);
+
+            if($Subpart->parts_image != 'noimage.jpg'){
+                //Delete Image
+                $path = public_path().'/images/product/'.$subpart->parts_image;
+                // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$subpart->parts_image;
+                @unlink($path);
+            }
+
+            //save data
+            $subpart->update($request->except('parts_image') + [
+                'parts_image' => $fileName
+            ]);
+
+            if(request()->expectsJson()){
+                return response()->json([
+                    'fileName' => $fileName
+                ]);
+            }
+        }
+
         $subpart->update($request->all());
     }
 
@@ -99,6 +138,16 @@ class SubpartController extends Controller
      */
     public function destroy(Subpart $subpart)
     {
+        // delete previous image
+        $Subpart = Subpart::find($subpart->id);
+
+        if($Subpart->product_image != 'noimage.jpg'){
+            //Delete Image
+            $path = public_path().'/images/product/'.$subpart->parts_image;
+            // $path = '/home/sustipe/inventory.sustipe.com/images/product/'.$subpart->parts_image;
+            @unlink($path);
+        }
+
         $subpart->delete();
     }
 }

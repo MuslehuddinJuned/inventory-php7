@@ -162,10 +162,10 @@ class PolistController extends Controller
 
         } else {
             $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (SUM(req_qty)-prod_qty)stock, unit FROM(
-                SELECT B.id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, 
+                SELECT B.id, buyer, product_style, product_code, specification, parts_image product_image, parts_name, parts_description, 
                 (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))req_qty, COALESCE(prod_qty, 0)prod_qty, unit FROM(
                 SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
-                )A LEFT JOIN (SELECT id, parts_name, parts_description, parts_qty, unit, producthead_id FROM subparts
+                )A LEFT JOIN (SELECT id, parts_name, parts_image, parts_description, parts_qty, unit, producthead_id FROM subparts
                 )B ON A.id = B.producthead_id LEFT JOIN(SELECT quantity, producthead_id FROM polists WHERE deleted_by = 0 AND DATE(etd) < CURDATE()
                 )C ON A.id = C.producthead_id LEFT JOIN(SELECT SUM(quantity)prod_qty, department, subpart_id FROM prodparts WHERE department = ? GROUP by subpart_id, department
                 )D ON B.id = D.subpart_id

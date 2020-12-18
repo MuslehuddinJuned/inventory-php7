@@ -20,6 +20,7 @@ class CreateSubpartsTable extends Migration
             $table->double('parts_qty')->nullable();
             $table->string('unit')->nullable();
             $table->text('remarks')->nullable();
+            $table->string('parts_image')->default('noimage.jpg');
             
             $table->unsignedBigInteger('producthead_id')->nullable();
             $table->unsignedBigInteger('user_id');

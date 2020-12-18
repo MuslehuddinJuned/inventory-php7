@@ -101,6 +101,7 @@
                         <thead class="bg-info text-center">
                         <tr>
                             <th style="width: 4%;" class="font-weight-bold">S/N</th>
+                            <th style="width: 30%;" class="font-weight-bold">{{ $t('image') }}</th>
                             <th style="width: 30%;" class="font-weight-bold">{{ $t('name') }}</th>
                             <th style="width: 25%;" class="font-weight-bold">{{$t('description')}}</th>
                             <th style="width: 10%;" class="font-weight-bold">{{$t('quantity')}}</th>
@@ -115,6 +116,14 @@
                                     <input type="text" class="form-control m-0 border-0 bg-transparent rounded-0" name="sn" v-model="item.sn">
                                 </td>
                                 <td class="m-0 p-0">
+                                    <div v-if="item.parts_image" class="fileBrowser col-md-12 p-0 m-0">
+                                        <div class="form-group col-md-12 upload-btn-wrapper p-0 m-0 text-center" id="employee_image">
+                                            <b-img :src="'/images/product/' + item.parts_image" style="height: 50px; max-width: 150px;" alt=""></b-img>
+                                            <input type="file" @click="taskDetailsId = item.id" @change="uploadImage" id="upload" name="EmployeeImage" class="pointer mx-auto"/>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="m-0 p-0">
                                     <input type="text" v-model="item.parts_name" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
                                 </td>
                                 <td class="m-0 p-0">
@@ -126,7 +135,7 @@
                                 <td class="m-0 p-0">
                                     <input type="text" v-model="item.unit" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0">
                                 </td>
-                                <td class="text-right m-0 p-0">
+                                <td class="text-right m-0 p-0 text-nowrap">
                                     <a @click="addRow" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="plus" fixed-width /></a>
                                     <a @click="destroy_d(item.id, index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
                                 </td>
@@ -169,6 +178,9 @@
                     <b-table show-empty small striped hover stacked="md" :items="taskDetailsAll" :fields="taskDetailsfieldsView" class="mt-3">
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
+                        </template>
+                        <template v-slot:cell(parts_image)="row">
+                            <a :href="'/images/product/' + row.item.parts_image"><b-img :src="'/images/product/' + row.item.parts_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                         </template>
                         <template v-slot:cell(total_weight)="row">
                             {{(row.item.quantity * row.item.weight).toFixed(2)}}
@@ -287,7 +299,7 @@ export default {
         },
 
         addRow() {            
-            this.taskDetails.push({'id': null, 'parts_name' : null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId})
+            this.taskDetails.push({'id': null, 'parts_name' : null, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId})
         },
 
         viewDetails(id) {
@@ -306,13 +318,52 @@ export default {
         },
 
         editDetails() {
-            this.$refs['dataView'].hide()
+            // this.$refs['dataView'].hide()
             this.title = this.$t('UpdateItem')
             this.taskDetails = this.taskDetailsAll
             if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'id': null, 'parts_name' : null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
+                this.taskDetails = [{'id': null, 'parts_name' : null, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
             }
             this.$refs['dataEdit'].show()         
+        },
+
+        uploadImage(e) {
+            let file = e.target.files[0];
+            var fileReader = new FileReader();
+            
+            if(file['size'] <= 262144 &&  file['type'].split('/')[0]=='image' ){          //256 KB ~~ 262144 Byte
+                fileReader.onload = (e) => {
+                    let options = {headers: {'enctype': 'multipart/form-data'}}
+                    let data = {parts_image: e.target.result}
+
+                    axios.patch(`api/subpart/${this.taskDetailsId}`, data, options)
+                    .then(({data}) => {
+                        for (let i = 0; i < this.taskDetails.length; i++) {
+                            if (this.taskDetails[i]['id'] == this.taskDetailsId) {
+                                this.taskDetails[i]['parts_image'] = data.fileName
+                                break
+                            }                            
+                        }
+                    })
+                    .catch(err => {
+                        if(err.response.status == 422){
+                            this.errors = err.response.data.errors
+                        }
+                        this.disable = !this.disable
+                        this.buttonTitle = this.$t('save')
+                    });
+
+                }
+            } else {
+                let warningMessages;
+                file['size'] > 262144 ? warningMessages = this.$t('image_size_warning'): warningMessages = this.$t('image_format_warning');
+                this.$toast.warning(warningMessages, this.$t('error_alert_title'), {
+                    timeout: 10000,          
+                    position: 'center',
+                })
+            }
+
+            fileReader.readAsDataURL(e.target.files[0]);
         },
 
         save() {
@@ -329,11 +380,28 @@ export default {
                             }
                             this.disable = !this.disable
                             this.buttonTitle = this.$t('save')
+                            if (i == this.taskDetails.length - 1) {
+                                this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                                this.disable = !this.disable
+                                this.errors = ''
+                                this.buttonTitle = this.$t('save')
+                                this.$refs['dataEdit'].hide()
+                            }
                         })
                     } else {
+                        this.taskDetails[i]['parts_image'] = 'noimage.jpg'
                         axios.post(`api/subpart`, this.taskDetails[i])
                         .then(({data})=>{
                             this.taskDetails[i]['id'] = data.ProductdetailsID
+                            
+                            console.log(this.taskDetails)
+                            if (i == this.taskDetails.length - 1) {
+                                this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
+                                this.disable = !this.disable
+                                this.errors = ''
+                                this.buttonTitle = this.$t('save')
+                                this.$refs['dataEdit'].hide()
+                            }
                         })
                         .catch(err => {
                             if(err.response.status == 422){
@@ -343,15 +411,6 @@ export default {
                             this.buttonTitle = this.$t('save')
                         })
                     }
-                }
-                
-                if (i == this.taskDetails.length - 1) {
-                    this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
-                    this.disable = !this.disable
-                    this.errors = ''
-                    this.buttonTitle = this.$t('save')
-                    this.$refs['dataEdit'].hide()
-                    this.$refs['dataView'].show()
                 }
             }            
         },
@@ -426,6 +485,7 @@ export default {
 
             return [
                 { key: 'index', label : '#', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
+                { key: 'parts_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'parts_name', label : this.$t('name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'parts_description', label : this.$t('description'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'parts_qty', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
