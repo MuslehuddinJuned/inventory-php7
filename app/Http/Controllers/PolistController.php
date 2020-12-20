@@ -144,11 +144,11 @@ class PolistController extends Controller
     public function monitor($department)
     {
         if($department == 'assembly'){
-            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (SUM(req_qty)-prod_qty)stock, unit FROM(
+            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (prod_qty-SUM(req_qty))stock, unit FROM(
                 SELECT A.id, buyer, product_style, product_code, specification, product_image, null parts_name, null parts_description, 
                 COALESCE(quantity, 0)req_qty, COALESCE(prod_qty, 0)prod_qty, null unit FROM(
                 SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
-                )A LEFT JOIN(SELECT quantity, producthead_id FROM polists WHERE DATE(etd) < CURDATE()
+                )A LEFT JOIN(SELECT quantity, producthead_id FROM polists WHERE deleted_by = 0 AND DATE(etd) < CURDATE()
                 )C ON A.id = C.producthead_id LEFT JOIN(SELECT SUM(prod_qty)prod_qty, department, producthead_id FROM(SELECT (COALESCE(qty_1, 0) + COALESCE(qty_2, 0) + COALESCE(qty_3, 0) + COALESCE(qty_4, 0) + COALESCE(qty_5, 0) + COALESCE(qty_6, 0) + COALESCE(qty_7, 0) + COALESCE(qty_8, 0) + COALESCE(qty_9, 0) + COALESCE(qty_10, 0) + COALESCE(qty_11, 0) + COALESCE(qty_12, 0) + COALESCE(qty_13, 0) + COALESCE(qty_14, 0) + COALESCE(qty_15, 0) + COALESCE(qty_16, 0) + COALESCE(qty_17, 0) + COALESCE(qty_18, 0) + COALESCE(qty_19, 0) + COALESCE(qty_20, 0) + COALESCE(qty_21, 0) + COALESCE(qty_22, 0) + COALESCE(qty_23, 0) + COALESCE(qty_24, 0))
                 prod_qty, department, polist_id FROM prodhourlies WHERE department = ?
                     )A LEFT JOIN (SELECT id, producthead_id FROM polists
@@ -161,7 +161,7 @@ class PolistController extends Controller
                 )C ON A.id = C.producthead_id GROUP BY id, etd");
 
         } else {
-            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (SUM(req_qty)-prod_qty)stock, unit FROM(
+            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (prod_qty-SUM(req_qty))stock, unit FROM(
                 SELECT B.id, buyer, product_style, product_code, specification, parts_image product_image, parts_name, parts_description, 
                 (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))req_qty, COALESCE(prod_qty, 0)prod_qty, unit FROM(
                 SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
@@ -169,7 +169,7 @@ class PolistController extends Controller
                 )B ON A.id = B.producthead_id LEFT JOIN(SELECT quantity, producthead_id FROM polists WHERE deleted_by = 0 AND DATE(etd) < CURDATE()
                 )C ON A.id = C.producthead_id LEFT JOIN(SELECT SUM(quantity)prod_qty, department, subpart_id FROM prodparts WHERE department = ? GROUP by subpart_id, department
                 )D ON B.id = D.subpart_id
-            )A GROUP BY id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, unit", [$department]);
+            )A WHERE parts_name IS NOT null GROUP BY id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, unit", [$department]);
 
             $etdQty = DB::SELECT("SELECT id, etd, SUM(quantity)quantity FROM(
                 SELECT B.id, etd, (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))quantity FROM(
@@ -181,7 +181,7 @@ class PolistController extends Controller
         }
         
 
-        $etd = DB::SELECT('SELECT DISTINCT(etd)etd FROM polists WHERE DATE(etd) >= CURDATE() ORDER BY etd');        
+        $etd = DB::SELECT('SELECT DISTINCT(etd)etd FROM polists WHERE deleted_by = 0 AND DATE(etd) >= CURDATE() ORDER BY etd');        
 
         $buyer = DB::SELECT("SELECT DISTINCT buyer FROM productheads WHERE deleted_by = 0 ORDER BY buyer");
 
