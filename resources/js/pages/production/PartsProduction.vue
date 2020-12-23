@@ -9,11 +9,11 @@
                     <div class="col-md-4 float-left">
                         <label for="po_no">{{$t('department')}}</label>
                         <select @change="departmentChange" class="form-control" v-model="department">
-                            <option>{{ $t('assembly') }}</option>
-                            <option>{{ $t('wash') }}</option>
-                            <option>{{ $t('polish') }}</option>
-                            <option>{{ $t('injection') }}</option>
-                            <option>{{ $t('cutting') }}</option>
+                            <option value="assembly">{{ $t('assembly') }}</option>
+                            <option value="wash">{{ $t('wash') }}</option>
+                            <option value="polish">{{ $t('polish') }}</option>
+                            <option value="injection">{{ $t('injection') }}</option>
+                            <option value="cutting">{{ $t('cutting') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4 float-left">
@@ -27,10 +27,10 @@
                             <div @click="searchByDate" class="input-group-append input-group-text pointer noprint"><b-icon icon="search"></b-icon></div>
                         </div>
                     </div> 
-                    <div v-if="Production.length > 0" class="col-12 float-left input-group mt-3">
-                        <model-select :options="Production" v-model="production_id" class="form-control col-11 float-left"></model-select>
+                    <!-- <div v-if="Production.length > 0" class="col-12 float-left input-group mt-3">
+                        <model-select :options="ProductionByDeparment" v-model="production_id" class="form-control col-11 float-left"></model-select>
                         <div @click="addRow" class="input-group-append input-group-text pointer noprint float-left"><b-icon icon="plus"></b-icon></div>
-                    </div>
+                    </div> -->
                     <div v-if="Production.length > 0" class="col-12 mt-3 rounded-pill py-3 bg-info text-white float-left">
                         <div class="text-center">
                             <span class="mr-4">{{$t('buyer')}} : {{Production[0]['buyer']}}</span>
@@ -113,7 +113,7 @@ export default {
             production_id: null,
             ProductionByDeparment: [],
             roles: [],
-            department: this.$t('assembly'),
+            department: 'injection',
             prodDate: this.convertDate(new Date()),
             noprint : '',
             disable: false,
