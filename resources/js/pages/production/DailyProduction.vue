@@ -83,6 +83,17 @@
                         <apexchart type="bar" height="350" :options="chartOptions" :series="series"></apexchart>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <div class="onlyprint fixed-bottom">
+                        <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('dept_head')}}</div>
+                        <div class="mt-3 float-left col-1"></div>
+                        <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
+                    </div>
+                </div>
             </div>
         </div> 
     </div>
