@@ -15,6 +15,9 @@ table.table-transition .flip-list-move {
   max-width: 98% !important;
 }
 
+@page {
+  size: auto;
+}
 
 body {
   background-image: url("https://i.pinimg.com/originals/aa/d0/25/aad0257efb6f7e171110d6963922ad26.jpg") !important;
@@ -32,6 +35,7 @@ body {
 
   table, th, td {
     border: 1px solid black;
+    background-color: white;
   }
 
   .modal-xl {
