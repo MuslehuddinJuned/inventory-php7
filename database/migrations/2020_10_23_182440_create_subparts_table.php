@@ -17,6 +17,7 @@ class CreateSubpartsTable extends Migration
             $table->id();
             $table->string('parts_name')->nullable();
             $table->string('parts_description')->nullable();
+            $table->string('department')->nullable();
             $table->double('parts_qty')->nullable();
             $table->string('unit')->nullable();
             $table->text('remarks')->nullable();

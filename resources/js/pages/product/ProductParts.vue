@@ -96,6 +96,16 @@
                         <a :href="'images/product/' + taskHead[0]['product_image']"> <img id="blah" style="width: 70%;" :src="'images/product/' + taskHead[0]['product_image']" alt="product image" /></a>
                     </div>
                 </div>
+                <div class="col-md-6 float-left">
+                    <label for="po_no">{{$t('department')}}</label>
+                    <select @change="change_department" class="form-control" v-model="department">
+                        <option value="assembly">{{ $t('assembly') }}</option>
+                        <option value="wash">{{ $t('wash') }}</option>
+                        <option value="polish">{{ $t('polish') }}</option>
+                        <option value="injection">{{ $t('injection') }}</option>
+                        <option value="cutting">{{ $t('cutting') }}</option>
+                    </select>
+                </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
                     <table class="table table-striped table-bordered table-responsive-stack mx-auto">
                         <thead class="bg-info text-center">
@@ -174,8 +184,18 @@
                         <a :href="'images/product/' + taskHead[0]['product_image']"> <img id="blah" style="width: 70%;" :src="'images/product/' + taskHead[0]['product_image']" alt="product image" /></a>
                     </div>
                 </div>
+                <div class="col-md-6 float-left">
+                    <label for="po_no">{{$t('department')}}</label>
+                    <select @change="change_department" class="form-control" v-model="department">
+                        <option value="assembly">{{ $t('assembly') }}</option>
+                        <option value="wash">{{ $t('wash') }}</option>
+                        <option value="polish">{{ $t('polish') }}</option>
+                        <option value="injection">{{ $t('injection') }}</option>
+                        <option value="cutting">{{ $t('cutting') }}</option>
+                    </select>
+                </div>
                 <div class="col-md-12 m-0 p-0 mt-3">
-                    <b-table show-empty small striped hover stacked="md" :items="taskDetailsAll" :fields="taskDetailsfieldsView" class="mt-3">
+                    <b-table show-empty small striped hover stacked="md" :items="taskDetails" :fields="taskDetailsfieldsView" class="mt-3">
                         <template v-slot:cell(index)="row">
                             {{ row.index+1 }}
                         </template>
@@ -219,6 +239,7 @@ export default {
             productList : [],
             roles: [],
             productListAll : [],
+            department: 'injection',
             noprint : '',
             buyer : null,
             errors : [],
@@ -275,6 +296,13 @@ export default {
             this.totalRows = this.productList.length
         },
 
+        change_department() {
+            this.taskDetails = this.departmentChange
+            if (this.taskDetails.length == 0) {
+                this.taskDetails = [{'id': null, 'parts_name' : null, 'department': this.department, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
+            }
+        },
+
         fetchData() {
             this.isBusy = true;
             fetch(`api/producthead`)
@@ -299,7 +327,7 @@ export default {
         },
 
         addRow() {            
-            this.taskDetails.push({'id': null, 'parts_name' : null, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId})
+            this.taskDetails.push({'id': null, 'parts_name' : null, 'department': this.department, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId})
         },
 
         viewDetails(id) {
@@ -309,6 +337,7 @@ export default {
             .then(res => res.json())
             .then(res => {
                 this.taskDetailsAll = res['productDetails']
+                this.taskDetails = this.departmentChange
                 this.taskHead = this.singleTask
             })
             .catch(err => {
@@ -320,9 +349,8 @@ export default {
         editDetails() {
             // this.$refs['dataView'].hide()
             this.title = this.$t('UpdateItem')
-            this.taskDetails = this.taskDetailsAll
             if (this.taskDetails.length == 0) {
-                this.taskDetails = [{'id': null, 'parts_name' : null, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
+                this.taskDetails = [{'id': null, 'parts_name' : null, 'department': this.department, 'parts_image': null, 'parts_description' : null, 'parts_qty' : null, 'unit': null, 'remarks' : null, 'producthead_id' : this.taskHeadId}]
             }
             this.$refs['dataEdit'].show()         
         },
@@ -371,15 +399,11 @@ export default {
             this.buttonTitle = this.$t('saving')
 
             for (let i = 0; i < this.taskDetails.length; i++) {
+                this.taskDetails[i]['department'] = this.department
                 if (this.taskDetails[i]['parts_qty']) {
                     if(this.taskDetails[i]['id']){                            
                         axios.patch(`api/subpart/${this.taskDetails[i]['id']}`, this.taskDetails[i])
-                        .catch(err => {
-                            if(err.response.status == 422){
-                                this.errors = err.response.data.errors
-                            }
-                            this.disable = !this.disable
-                            this.buttonTitle = this.$t('save')
+                        .then(({data})=>{
                             if (i == this.taskDetails.length - 1) {
                                 this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                                 this.disable = !this.disable
@@ -387,14 +411,21 @@ export default {
                                 this.buttonTitle = this.$t('save')
                                 this.$refs['dataEdit'].hide()
                             }
+                        })
+                        .catch(err => {
+                            if(err.response.status == 422){
+                                this.errors = err.response.data.errors
+                            } else alert(err.response.data.message);
+                            this.disable = !this.disable
+                            this.buttonTitle = this.$t('save')
                         })
                     } else {
                         this.taskDetails[i]['parts_image'] = 'noimage.jpg'
                         axios.post(`api/subpart`, this.taskDetails[i])
                         .then(({data})=>{
                             this.taskDetails[i]['id'] = data.ProductdetailsID
+                            this.taskDetailsAll.push(this.taskDetails[i])
                             
-                            console.log(this.taskDetails)
                             if (i == this.taskDetails.length - 1) {
                                 this.$toast.success(this.$t('success_message_update'), this.$t('success'), {timeout: 3000, position: 'center'})
                                 this.disable = !this.disable
@@ -406,7 +437,7 @@ export default {
                         .catch(err => {
                             if(err.response.status == 422){
                                 this.errors = err.response.data.errors
-                            }
+                            } else alert(err.response.data.message);
                             this.disable = !this.disable
                             this.buttonTitle = this.$t('save')
                         })
@@ -465,6 +496,15 @@ export default {
             const lang = this.$i18n.locale
             if (!lang) { return '' }
             return this.$t('TypetoSearch')
+        },
+
+        departmentChange() {
+            let array = [], j=0
+            for (let i = 0; i < this.taskDetailsAll.length; i++) {
+                if (this.taskDetailsAll[i]['department'] == this.department) {
+                    array[j++] = this.taskDetailsAll[i]
+                }                    
+            } return array
         },
 
         fields() {
