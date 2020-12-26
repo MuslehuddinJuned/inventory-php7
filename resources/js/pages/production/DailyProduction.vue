@@ -8,11 +8,11 @@
                 <div class="card-body">
                     <div class="col-md-6 float-left">
                         <select class="form-control" v-model="department">
-                            <option>{{ $t('assembly') }}</option>
-                            <option>{{ $t('polish') }}</option>
-                            <option>{{ $t('wash') }}</option>
-                            <option>{{ $t('injection') }}</option>
-                            <option>{{ $t('cutting') }}</option>
+                            <option value="assembly">{{ $t('assembly') }}</option>
+                            <option value="polish">{{ $t('polish') }}</option>
+                            <option value="wash">{{ $t('wash') }}</option>
+                            <option value="injection">{{ $t('injection') }}</option>
+                            <option value="cutting">{{ $t('cutting') }}</option>
                         </select>
                     </div>
                     <div class="col-md-6 float-left input-group">
@@ -110,7 +110,7 @@ export default {
     data() {
         return{
             Production: [],
-            department: this.$t('assembly'),
+            department: 'assembly',
             // productionByDept: [],
             searchDate: this.convertDate(new Date()),
             noprint : '',
