@@ -40,14 +40,14 @@
                             </b-input-group>
                         </b-form-group>  
                     </div>
-                    <b-table id="table-transition" primary-key="productdetails_id" :busy="isBusy" show-empty small striped hover stacked="md"
+                    <b-table id="table-transition" primary-key="productdetails_id" :busy="isBusy" show-empty small striped hover
                     :items="ProductionByDeparment"
                     :fields="fields"
                     :filter="filter"
                     :filterIncludedFields="filterOn"
                     :tbody-transition-props="transProps"
                     @filtered="onFiltered"
-                    class="table-transition table-bordered"
+                    class="table-transition"
                     style="cursor : pointer"
                     >
                     <template v-slot:table-busy>
@@ -71,7 +71,7 @@
                     </b-table>
                 </div>
                 <div class="card-footer">
-                    <div class="onlyprint fixed-bottom mt-5">
+                    <div class="onlyprint">
                         <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
                         <div class="mt-3 float-left col-1"></div>
                         <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('checked_by')}}</div>
@@ -103,7 +103,7 @@ export default {
             production_id: null,
             ProductionByDeparment: [],
             roles: [],
-            department: 'assembly',
+            department: 'injection',
             prodDate: this.convertDate(new Date()),
             noprint : '',
             disable: false,
@@ -240,12 +240,5 @@ export default {
 </script>
 
 <style>
-.footer_sign{
-        width: 100%;
-        position: relative;
-        margin-bottom: 0 !important;
-        font-size: 10pt;
-        page-break-inside: avoid !important;
-        page-break-before: auto !important; /* this pushes the footer to the bottom of next page if table overflows to another page */
-    }
+ 
 </style>
