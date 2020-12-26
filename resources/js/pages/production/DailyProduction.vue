@@ -73,7 +73,7 @@
                         {{(row.item.achievement || 0).toFixed(0)}}
                     </template>
                     <template slot="bottom-row">
-                        <td class="text-white bg-info font-weight-bold text-center" colspan="12">Total</td>
+                        <td class="text-white bg-info font-weight-bold text-center" colspan="13">Total</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total}}</td>
                         <td class="text-white bg-info font-weight-bold text-center" colspan="2"></td>
                     </template>
@@ -296,6 +296,7 @@ export default {
                 { key: 'line', label : this.$t('line'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'section', label : this.$t('section'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'item', label : this.$t('style') + ' ' + this.$t('code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'po_no', label : 'PO No', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'etd', label : 'ETD', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'quantity', label : this.$t('quantity'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'balance', label : this.$t('balance'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
