@@ -534,7 +534,7 @@ export default {
             roles: [],
             errors : [],
             exit: {'exit_type': this.$t('resign'), 'reason': null, 'resign_date': null, 'effective_date': this.convertDate(new Date())},
-            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
+            task: {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'effective_join_date': null, 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'},
             taskId: null,
             Index: null,
             DepartmentList: [],
@@ -668,7 +668,7 @@ export default {
             this.taskId = null
             this.stepper = 1
             this.title = this.$t('insert_new_employee')
-            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'start_date': this.convertDate(new Date()), 'salary': null, 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
+            this.task = {'employee_id': null, 'first_name': null, 'last_name': null, 'father_name': null, 'district': null, 'sub_district': null, 'zip_code': null, 'area': null, 'present_district': null, 'present_sub_district': null, 'present_zip_code': null, 'present_area': null, 'qualification': null, 'epf_entitled_in': null, 'team_member_of': null, 'transferred': null, 'address': null, 'mobile_no': null, 'email': null, 'blood_group': null, 'gender': this.$t('male'), 'date_of_birth': this.convertDate(new Date()), 'marital_status': this.$t('single'), 'designation': null, 'department': 'No Department', 'section': null, 'work_location': null, 'effective_join_date': null, 'start_date': this.convertDate(new Date()), 'contact_name': null, 'contact_address': null, 'contact_phone': null, 'relationship': null, 'employee_image': 'noimage.jpg', 'status': 'active', 'weekly_holiday': [5], 'start_time': '8:00:00', 'end_time': '17:00:00'}
         },
 
         editDetails() {
@@ -734,6 +734,7 @@ export default {
                     this.errors = ''
                     this.employeeList.unshift(data.employeeList)
                     this.taskId = this.employeeList[0]['id']
+                    this.task['id'] = this.employeeList[0]['id']
                     this.$toast.success(this.$t('success_message_add'), this.$t('success'), {timeout: 3000, position: 'center'})
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
