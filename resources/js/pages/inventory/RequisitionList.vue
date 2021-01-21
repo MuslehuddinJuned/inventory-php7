@@ -427,7 +427,7 @@ export default {
                 this.disable = !this.disable;
                 this.buttonTitle = this.$t('saving')
                 this.storeDisabled = true
-
+                // console.log(this.taskHead[0])
                 if(this.taskHeadId == null){
                     this.taskHead[0]['store'] = this.store
                     axios.post(`api/rechead`, this.taskHead[0])
