@@ -86,7 +86,7 @@
                 <div class="col-md-6">
                     <label for="store" class="col-form-label mr-2">{{ $t('store_name')}}</label>
                     <div>
-                        <b-form-select id="store" v-model="store" :options="store_options" :disabled="storeDisabled"></b-form-select>
+                        <b-form-select @change="store_change" id="store" v-model="store" :options="store_options" :disabled="storeDisabled"></b-form-select>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -301,6 +301,8 @@ export default {
             this.roles = res['allRoles'];
         })
 
+        this.grabRequsitionData()
+
         this.title = this.$t('receive_item')
         this.showModal()
         
@@ -336,6 +338,7 @@ export default {
             this.title = this.$t('receive_item')
             this.grand_total = null
             this.taskDetails = []
+            this.store_change()
         },
 
         addRow() {            
@@ -427,7 +430,7 @@ export default {
                 this.disable = !this.disable;
                 this.buttonTitle = this.$t('saving')
                 this.storeDisabled = true
-                console.log(this.taskHead[0]['accept'])
+                // console.log(this.taskHead[0]['accept'])
                 if(this.taskHeadId == null){
                     this.taskHead[0]['store'] = this.store
                     axios.post(`api/rechead`, this.taskHead[0])
@@ -438,7 +441,6 @@ export default {
                         if(this.requisitionList.length > 0){
                             this.requisitionList.unshift(this.taskHead[0])
                         }
-
                         this.disable = !this.disable
                         this.buttonTitle = this.$t('save')
                         this.hideDetails = ''
