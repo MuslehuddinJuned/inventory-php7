@@ -99,10 +99,10 @@
                   </b-iconstack>
                   {{ $t('monitor_parts_production') }}
                 </router-link>
-                <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionPlan' }" class="dropdown-item pl-3">
+                <!-- <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.ProductionPlan' }" class="dropdown-item pl-3">
                   <b-icon icon="calculator"></b-icon>
                   {{ $t('production_plan') }}
-                </router-link>
+                </router-link> -->
               </div>
             </li>
             <li v-if="user && module_no == 2 && (checkRoles('employee_profile_View') || checkRoles('personnel_file_View') || checkRoles('increment_file_View'))" class="nav-item dropdown">
