@@ -370,6 +370,7 @@ export default {
                     this.$nextTick(() => {
                         this.uploadReady = true
                     })
+                    this.uploadFile = null
                     this.fileName = this.$t('choose_file')
                 })
                 .catch(err => {
