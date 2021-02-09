@@ -2,8 +2,14 @@
     <div class="container-fluid justify-content-center">
        <div v-if="checkRoles('production_View')" class="col-md-12">
            <div class="card filterable">
-                <div class="card-header d-flex align-items-center">
-                    <h3 class="panel-title float-left">{{ $t('monitor_parts_production') }}</h3>
+                <div class="card-header align-items-center">
+                    <div class="col-md-8 float-left">
+                        <h3 class="panel-title float-left">{{ $t('monitor_parts_production') }}</h3>
+                    </div>
+                    <div class="col-md-4 float-left">
+                        Old ETD
+                        <b-form-select @change="etd_change" v-model="etdOld" :options="etdOldList" text-field="etd" value-field="etd"></b-form-select>
+                    </div>
                 </div> 
                 <div class="card-body d-flex align-items-center">
                     <select @change="departmentChange" class="form-control mr-3" v-model="department">
@@ -121,6 +127,8 @@ export default {
             stockList : [],
             stock : [],
             etdList : [],
+            etdOld: 'Old ETD',
+            etdOldList: [],
             buyerList: [],
             etdQty : [],
             roles: [],
@@ -185,11 +193,12 @@ export default {
 
         fetchData() {
             this.isBusy = true
-            fetch(`api/polist/monitor/${this.department}`)
+            fetch(`api/polist/monitor/${this.department}/${this.etdOld}`)
             .then( res => res.json())
             .then(res => {  
                 this.stock = res['stock']
                 this.etdList = res['etd']
+                this.etdOldList = res['etdOld']
                 this.etdQty = res['etdQty'] 
                 this.buyerList = res['buyer']
                 let stock = 0, varient = {}
@@ -223,6 +232,10 @@ export default {
         },
 
         departmentChange() {
+            this.fetchData()
+        },
+
+        etd_change(){
             this.fetchData()
         },
 

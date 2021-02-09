@@ -19,8 +19,8 @@
             {{ $t('software_title') }}
           </router-link>
         </div>
-        <a href="https://www.hrm.sustipe.com/login" class="text-nowrap mdb btn btn-outline-purple p-2">Human Resource Management</a>
-        <a href="https://www.hrm.sustipe.com/login" class="text-nowrap mdb btn btn-outline-purple p-2">Inventory Management</a>
+        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-outline-purple p-2">Human Resource Management</a>
+        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-outline-purple p-2">Inventory Management</a>
         <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Supply Chain Management</a>
         <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Production</a>
         <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Planning</a>
