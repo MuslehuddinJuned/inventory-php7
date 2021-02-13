@@ -145,8 +145,7 @@ class PolistController extends Controller
     {
         $etdDate = ($date == 'Old ETD' ? date("Y-m-d") : $date);
         if($department == 'assembly'){
-            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, 
-            (CASE WHEN (prod_qty-SUM(req_qty)) < 0 THEN 0 ELSE (prod_qty-SUM(req_qty)) END)stock, unit FROM(
+            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (prod_qty-SUM(req_qty))stock, unit FROM(
                 SELECT A.id, buyer, product_style, product_code, specification, product_image, null parts_name, null parts_description, 
                 COALESCE(quantity, 0)req_qty, COALESCE(prod_qty, 0)prod_qty, null unit FROM(
                 SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
@@ -163,8 +162,7 @@ class PolistController extends Controller
                 )C ON A.id = C.producthead_id GROUP BY id, etd", [$etdDate]);
 
         } else {
-            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, 
-            (CASE WHEN (prod_qty-SUM(req_qty)) < 0 THEN 0 ELSE (prod_qty-SUM(req_qty)) END)stock, unit FROM(
+            $stock = DB::SELECT("SELECT id, buyer, product_style, product_code, specification, product_image, parts_name, parts_description, (prod_qty-SUM(req_qty))stock, unit FROM(
                 SELECT B.id, buyer, product_style, product_code, specification, parts_image product_image, parts_name, parts_description, 
                 (COALESCE(parts_qty, 0)*COALESCE(quantity, 0))req_qty, COALESCE(prod_qty, 0)prod_qty, unit FROM(
                 SELECT id, buyer, product_style, product_code, specification, product_image FROM productheads WHERE deleted_by = 0
