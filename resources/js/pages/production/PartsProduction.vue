@@ -75,6 +75,7 @@
                     </template>
                     <template v-slot:cell(action)="row">
                         <a @click="destroy_d(row.item.id, row.index)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                        <a @click="row.toggleDetails" class="btn btn-sm text-black-50"><fa icon="eye" fixed-width /></a>
                     </template>
                     <template v-slot:cell(quantity)="row">
                         <span v-if="!checkRoles('production_Insert')">{{row.item.quantity}}</span>
@@ -89,10 +90,18 @@
                     <template v-slot:cell(balance)="row">
                         {{row.item.balance = row.item.complete - (row.item.parts_qty || 0) * (row.item.po_qty || 0)}}
                     </template>
+                    <template #row-details="row">
+                        <b-card>
+                            <ul>
+                                <li v-for="value in ProductionByDeparmentOld" :key="value.id">{{ value.text }} || {{ value.quantity }} || {{ value.prod_date }}</li>
+                            </ul>
+                        </b-card>
+                    </template>
                     </b-table>
                 </div>
             </div>
         </div> 
+
     </div>
 </template>
 
@@ -110,8 +119,10 @@ export default {
             PoList : [],
             po_no: null,
             Production: [],
+            ProductionOld: [],
             production_id: null,
             ProductionByDeparment: [],
+            ProductionByDeparmentOld: [],
             roles: [],
             department: 'injection',
             prodDate: this.convertDate(new Date()),
@@ -176,8 +187,9 @@ export default {
             .then(res => res.json())
             .then(res => {
                 this.Production = res['Production']
-                console.log(this.Production)
                 this.ProductionByDeparment = this.ProductionByDeparmentMethod
+                this.ProductionOld = res['Production_old']
+                this.ProductionByDeparmentOld = this.ProductionByDeparmentMethodOld
                 this.isBusy = false
             })
             .catch(err => {
@@ -191,6 +203,20 @@ export default {
 
         departmentChange() {
             this.ProductionByDeparment = []
+        },
+
+        all_production() {
+            this.isBusy = true
+            fetch(`api/prodparts/production/${this.department}/${this.po_no}/all`)
+            .then(res => res.json())
+            .then(res => {
+                this.ProductionOld = res['Production']
+                this.ProductionByDeparmentOld = this.ProductionByDeparmentMethodOld
+                this.isBusy = false
+            })
+            .catch(err => {
+                alert(err.response.data.message);
+            })
         },
 
         addRow() {
@@ -304,6 +330,17 @@ export default {
             for (let i = 0; i < this.Production.length; i++) {
                 if (this.Production[i]['department'] == this.department) {
                     array[k++] = this.Production[i]
+                }                
+            }
+            return array 
+        },
+
+        ProductionByDeparmentMethodOld() {
+            let array = [], k=0
+
+            for (let i = 0; i < this.ProductionOld.length; i++) {
+                if (this.ProductionOld[i]['department'] == this.department) {
+                    array[k++] = this.ProductionOld[i]
                 }                
             }
             return array 

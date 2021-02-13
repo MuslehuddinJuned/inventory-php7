@@ -335,6 +335,7 @@ export default {
                 'Designation': 'designation',
                 'Department' : 'department',
                 'Date of Join' : 'start_date',
+                'Current Salary' : 'usd_salary',
                 'Service Length' : 'service_length',
                 'Service Category' : 'service_category',
                 'status' : 'status',

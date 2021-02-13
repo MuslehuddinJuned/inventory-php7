@@ -716,7 +716,7 @@ export default {
         taskDetailsCheck(){
             for (let i = 0; i < this.taskDetails.length; i++) {
                 if(this.taskDetails[i]['stock'] < this.taskDetails[i]['quantity']) {
-                    this.taskDetails[i]['_rowVariant'] = 'danger'
+                    this.taskDetails[i]['_rowVariant'] = 'danger noprint'
                 } else {
                     this.taskDetails[i]['_rowVariant'] = ''
                 }            

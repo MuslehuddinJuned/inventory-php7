@@ -15,7 +15,7 @@
                             id="tooltip-target-1"
                             class="btn btn-outline-default btn-sm mr-3"
                             title="List of Employee"
-                            :data="employeeListByDept"
+                            :data="employeeList"
                             :fields="json_fields"
                             worksheet="List of Employee"
                             name="List of Employee.xls">
@@ -494,6 +494,8 @@
                     <label for="exit_type" class="col-form-label">{{$t('exit_type')}}</label>
                     <select class="form-control" id="exit_type" name="exit_type" v-model="exit['exit_type']">
                         <option>{{$t('resign')}}</option>
+                        <option>Lefty</option>
+                        <option>PRC</option>
                         <option>{{$t('terminate')}}</option>
                         <option>{{$t('retirement')}}</option>
                     </select>
@@ -563,6 +565,7 @@ export default {
                 'Designation': 'designation',
                 'Department' : 'department',
                 'Date of Join' : 'start_date',
+                'Current Salary' : 'usd_salary',
                 'Service Length' : 'service_length',
                 'Service Category' : 'service_category',
                 'status' : 'status',

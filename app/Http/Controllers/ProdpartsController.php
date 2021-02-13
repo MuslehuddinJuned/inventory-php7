@@ -78,6 +78,14 @@ class ProdpartsController extends Controller
 
     public function production($department, $po_no, $date)
     {
+        $Production_old = DB::SELECT("SELECT E.id, CONCAT(parts_name, ' || ', unit)text, A.id polist_id, C.subpart_id, C.subpart_id value, po_qty, quantity, po_no,  A.producthead_id, buyer, product_style, product_code, C.subpart_id, parts_name, parts_description, parts_qty, unit, total_prod_qty, prod_date, C.department, remarks FROM (
+            SELECT id, quantity po_qty, po_no,  producthead_id FROM polists WHERE id = ?
+            )A LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code FROM productheads
+            )B ON A.producthead_id = B.producthead_id LEFT JOIN(SELECT id subpart_id, parts_name, department, parts_description, parts_qty, unit, producthead_id FROM subparts WHERE department = ?
+            )C ON B.producthead_id = C.producthead_id LEFT JOIN (SELECT id, quantity, prod_date, department, remarks, producthead_id, subpart_id, polist_id FROM prodparts WHERE department = ?
+            )E ON C.subpart_id = E.subpart_id AND A.id = E.polist_id LEFT JOIN (SELECT SUM(quantity) total_prod_qty , department, subpart_id, polist_id FROM prodparts WHERE department = ? GROUP BY department, subpart_id, polist_id
+            )F ON C.subpart_id = F.subpart_id AND A.id = F.polist_id", [$po_no, $department, $department, $department]);
+    
         $Production = DB::SELECT("SELECT E.id, CONCAT(parts_name, ' || ', unit)text, A.id polist_id, C.subpart_id, C.subpart_id value, po_qty, quantity, po_no,  A.producthead_id, buyer, product_style, product_code, C.subpart_id, parts_name, parts_description, parts_qty, unit, total_prod_qty, prod_date, C.department, remarks FROM (
             SELECT id, quantity po_qty, po_no,  producthead_id FROM polists WHERE id = ?
             )A LEFT JOIN (SELECT id producthead_id, buyer, product_style, product_code FROM productheads
@@ -85,8 +93,8 @@ class ProdpartsController extends Controller
             )C ON B.producthead_id = C.producthead_id LEFT JOIN (SELECT id, quantity, prod_date, department, remarks, producthead_id, subpart_id, polist_id FROM prodparts WHERE DATE(prod_date) = ? AND department = ?
             )E ON C.subpart_id = E.subpart_id AND A.id = E.polist_id LEFT JOIN (SELECT SUM(quantity) total_prod_qty , department, subpart_id, polist_id FROM prodparts WHERE DATE(prod_date) < ? AND department = ? GROUP BY department, subpart_id, polist_id
             )F ON C.subpart_id = F.subpart_id AND A.id = F.polist_id", [$po_no, $department, $date, $department, $date, $department]);
-
-        return compact('Production');
+        
+        return compact('Production', 'Production_old');
     }
 
     /**
