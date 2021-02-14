@@ -188,6 +188,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
 
         this.fetchData()
@@ -449,10 +450,14 @@ export default {
 
         attendanceByDepartment() {
             let array = [], k=0
-            for (let i = 0; i < this.attendanceList.length; i++) {
-                if (this.attendanceList[i]['department'] == this.DepartmentName) {
-                    array[k++] = this.attendanceList[i]
-                }                
+            if (this.DepartmentName == 'All') {
+                array = this.attendanceList
+            } else {
+                for (let i = 0; i < this.attendanceList.length; i++) {
+                    if (this.attendanceList[i]['department'] == this.DepartmentName) {
+                        array[k++] = this.attendanceList[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length

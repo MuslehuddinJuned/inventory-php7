@@ -223,6 +223,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
         .catch(err => {
             alert(err.response.data.message);
@@ -286,10 +287,14 @@ export default {
 
         pfSummaryByDepartment() {
             let array = [], k=0
-            for (let i = 0; i < this.pfSummary.length; i++) {
-                if (this.pfSummary[i]['department'] == this.DepartmentName) {
-                    array[k++] = this.pfSummary[i]
-                }                
+            if (this.DepartmentName == 'All') {
+                array = this.pfSummary
+            } else {
+                for (let i = 0; i < this.pfSummary.length; i++) {
+                    if (this.pfSummary[i]['department'] == this.DepartmentName) {
+                        array[k++] = this.pfSummary[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length

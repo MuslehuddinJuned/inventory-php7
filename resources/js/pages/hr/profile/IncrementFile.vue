@@ -367,6 +367,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
 
         fetch(`api/settings/roles`)

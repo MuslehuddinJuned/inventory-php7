@@ -398,6 +398,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
 
         fetch(`api/settings/roles`)
@@ -480,10 +481,15 @@ export default {
 
         employeeListByDept() {
             let array = [], k=0
-            for (let i = 0; i < this.employeeList.length; i++) {
-                if (this.employeeList[i]['department'] == this.DepartmentName && new Date(this.employeeList[i]['effective_date']) >= new Date(this.start_date) && new Date(this.employeeList[i]['effective_date']) <= new Date(this.end_date)) {
-                    array[k++] = this.employeeList[i]
-                }                
+
+            if (this.DepartmentName == 'All') {
+                array = this.employeeList
+            } else {
+                for (let i = 0; i < this.employeeList.length; i++) {
+                    if (this.employeeList[i]['department'] == this.DepartmentName && new Date(this.employeeList[i]['effective_date']) >= new Date(this.start_date) && new Date(this.employeeList[i]['effective_date']) <= new Date(this.end_date)) {
+                        array[k++] = this.employeeList[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length

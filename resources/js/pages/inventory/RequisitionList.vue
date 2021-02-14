@@ -627,8 +627,8 @@ export default {
                     { key: 'polist_id', label : 'PO No', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'po_qty', label : 'PO Qty', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'inventory_id', label : this.$t('item'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'quantity', label : this.$t('stock_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'issue_etd', label : 'ETD', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'action', label: this.$t('Action'),  class: 'text-right align-middle', thClass: 'border-top border-dark font-weight-bold'}
@@ -673,11 +673,11 @@ export default {
                     { key: 'item', label : this.$t('material_name'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'grade', label : this.$t('grade'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'master_sheet', label : this.$t('stock_master_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock', label : this.$t('stock_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'quantity', label : this.$t('requisition_sheet'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'weight', label : this.$t('weight') + '/pcs', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('stock'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'quantity', label : this.$t('quantity'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'unit', label : this.$t('unit'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock_cann', label : this.$t('stock_cann'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'issue_etd', label : 'ETD', class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'remarks', label : this.$t('remarks'), class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 ]
@@ -733,7 +733,7 @@ export default {
             let array = []
             for (let i = 0; i < this.inventoryList.length; i++) {
                 if(this.inventoryList[i]['store_id'] == this.store){
-                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['unit'] + ' | ' + this.inventoryList[i]['specification']})
+                    array.unshift({'value' : this.inventoryList[i]['id'], 'text' : this.inventoryList[i]['item_code'] + ' | ' + this.inventoryList[i]['item'] + ' | ' + this.inventoryList[i]['specification'] + ' | ' + this.inventoryList[i]['weight'] + ' ' + this.inventoryList[i]['unit']})
                 }                
             }
 

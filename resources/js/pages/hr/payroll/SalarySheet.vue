@@ -513,6 +513,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
         .catch(err => {
             alert(err.response.data.message);
@@ -682,13 +683,14 @@ export default {
 
         salarySheetByDepartment() {
             let array = [], k=0
-            for (let i = 0; i < this.salarySheet.length; i++) {
-                if (this.salarySheet[i]['department'] == this.DepartmentName) {
-                    array[k] = this.salarySheet[i]
-                    if (array[k]['checked']) {
-                        array[k]['_rowVariant'] = 'success'
-                    } k++
-                }                
+            if (this.DepartmentName == 'All') {
+                array = this.salarySheet
+            } else {
+                for (let i = 0; i < this.salarySheet.length; i++) {
+                    if (this.salarySheet[i]['department'] == this.DepartmentName) {
+                        array[k++] = this.salarySheet[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length

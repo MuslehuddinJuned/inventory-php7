@@ -350,6 +350,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
 
         fetch(`api/settings/roles`)
@@ -711,10 +712,14 @@ export default {
 
         UsedleaveByDept() {
             let array = [], k=0
-            for (let i = 0; i < this.Usedleave.length; i++) {
-                if (this.Usedleave[i]['department'] == this.DepartmentName) {
-                    array[k++] = this.Usedleave[i]
-                }                
+            if (this.DepartmentName == 'All') {
+                array = this.Usedleave
+            } else {
+                for (let i = 0; i < this.Usedleave.length; i++) {
+                    if (this.Usedleave[i]['department'] == this.DepartmentName) {
+                        array[k++] = this.Usedleave[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length

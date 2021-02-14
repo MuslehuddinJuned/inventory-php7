@@ -10,19 +10,19 @@
                 </div>
                 <div class="card-body m-0 p-0">
                     <div class="card-header d-flex align-items-center noprint">
-                        <!-- <download-excel
+                        <download-excel
                             id="tooltip-target-1"
                             class="btn btn-outline-default btn-sm mr-3"
-                            title="List of Employee"
-                            :data="employeeList"
+                            title="Employee Salary"
+                            :data="employeeListByDept"
                             :fields="json_fields"
-                            worksheet="List of Employee"
-                            name="List of Employee.xls">
+                            worksheet="Employee Salary"
+                            name="Employee Salary.xls">
                             <b-icon icon="file-earmark-spreadsheet-fill"></b-icon>
                         </download-excel>
                         <b-tooltip target="tooltip-target-1" triggers="hover">
                             {{$t('save_this_table_to_excel')}}
-                        </b-tooltip> -->
+                        </b-tooltip>
                         <b-form-group class="mb-0 mr-auto">
                             <b-input-group size="sm">
                                 <b-form-input
@@ -304,6 +304,17 @@ export default {
             DepartmentList: [],
             DepartmentName: 'Management',
 
+            json_fields: {
+                'ID': 'official_id',
+                'Name': 'first_name',
+                'Designation': 'designation',
+                'Department' : 'department',
+                'Bank' : 'bank_name',
+                'Acc No' : 'acc_no',
+                'Basic Pay' : 'basic_pay',
+                'Total Salary' : 'total_salary'                
+            },
+
             transProps: {
                 // Transition name
                 name: 'flip-list'
@@ -337,6 +348,7 @@ export default {
         .then(res => res.json())
         .then(res => {
             this.DepartmentList = res['Department'];
+            this.DepartmentList.unshift('All');
         })
 
         fetch(`api/settings/roles`)
@@ -470,10 +482,14 @@ export default {
 
         employeeListByDept() {
             let array = [], k=0
-            for (let i = 0; i < this.employeeList.length; i++) {
-                if (this.employeeList[i]['department'] == this.DepartmentName) {
-                    array[k++] = this.employeeList[i]
-                }                
+            if (this.DepartmentName == 'All') {
+                array = this.employeeList
+            } else {
+                for (let i = 0; i < this.employeeList.length; i++) {
+                    if (this.employeeList[i]['department'] == this.DepartmentName) {
+                        array[k++] = this.employeeList[i]
+                    }                
+                }
             }
 
             this.totalRows = array.length
