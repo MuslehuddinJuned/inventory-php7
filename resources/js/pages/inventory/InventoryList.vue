@@ -83,9 +83,9 @@
                     <template v-slot:cell(stock)="row">
                         {{row.item.stock + ' ' + row.item.unit}}
                     </template>
-                    <template v-slot:cell(stock_cann)="row">
+                    <!-- <template v-slot:cell(stock_cann)="row">
                         {{(row.item.stock * row.item.cann_per_sheet).toFixed(0)}}
-                    </template>
+                    </template> -->
                     <template v-slot:cell(total_weight)="row">
                         {{(row.item.stock * row.item.weight).toFixed(2)}}
                     </template>
@@ -151,12 +151,12 @@
                                     <label class="col-form-label">{{ $t('accounts_code')}}</label>
                                     <input type="text" class="form-control" v-model="task[0]['accounts_code']">
                                 </div>
-                                <div v-if="store == 3" class="col-md-6">
+                                <!-- <div v-if="store == 3" class="col-md-6">
                                     <label class="col-form-label">{{ $t('cann_per_sheet')}}</label>
                                     <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" v-model="task[0]['cann_per_sheet']">
-                                </div>
+                                </div> -->
                                 <div class="col-md-6">
-                                    <label class="col-form-label">{{ $t('weight')}} (kg)</label>
+                                    <label class="col-form-label">{{ $t('weight')}} (kg)/pcs</label>
                                     <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" v-model="task[0]['weight']">
                                 </div>
                                 <div class="col-md-6">
@@ -651,11 +651,11 @@ export default {
                     { key: 'accounts_code', label : this.$t('accounts_code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     { key: 'specification', label : this.$t('size'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     // { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock_master_sheet', label : this.$t('stock_master_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock', label : this.$t('stock_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'weight', label : this.$t('weight') + '(kg)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                    { key: 'total_weight', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock_master_sheet', label : this.$t('stock_master_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock', label : this.$t('stock_sheet'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    // { key: 'stock_cann', label : this.$t('stock_cann'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'weight', label : this.$t('weight') + '(kg)/PCS', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                    { key: 'stock', label : this.$t('total_weight'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                     action
                 ]
                 
