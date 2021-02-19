@@ -86,6 +86,10 @@
                     </div>
                 </template>
                 <template v-slot:cell(index)="row">
+                    <div v-if="dataEdit">
+                        <button @click="altPresence(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra, '')" v-if="row.item._rowVariant == 'danger'">A</button>
+                        <button v-else @click="altPresence(row.item.id, row.item.in_time_1, row.item.out_time_1, row.item.in_time_2, row.item.out_time_2, row.item.ot, row.item.ot_extra, 'danger')">P</button>
+                    </div>
                     {{ row.index+1 }}
                 </template>
                 <template v-slot:cell(in_time_1)="row">
@@ -238,7 +242,7 @@ export default {
                     
                     if (this.attendanceList[i]['out_time_2'] == '00:00') {
                         this.attendanceList[i]['_rowVariant'] = 'danger'
-                    }
+                    } else this.attendanceList[i]['_rowVariant'] = ''
                 }
                 this.totalRows = this.attendanceList.length
                 this.isBusy = false
@@ -349,6 +353,27 @@ export default {
                     position: 'center',
                 })
             }
+        },
+
+        altPresence(id, in_time_1, out_time_1, in_time_2, out_time_2, ot, ot_extra, val) {
+            for (let i = 0; i < this.attendanceList.length; i++) {
+                if (this.attendanceList[i]['id'] == id) {
+                    if (val == 'danger') {
+                        this.attendanceList[i]['in_time_1'] = in_time_1 = '00:00'
+                        this.attendanceList[i]['out_time_1'] = out_time_1 = '00:00'
+                        this.attendanceList[i]['in_time_2'] = in_time_2 = '00:00'
+                        this.attendanceList[i]['out_time_2'] = out_time_2 = '00:00'
+                        this.attendanceList[i]['ot'] = ot = null
+                        this.attendanceList[i]['ot_extra'] = ot_extra = null
+                    } else {
+                        if (this.attendanceList[i]['time'] != '') this.attendanceList[i]['in_time_1'] = in_time_1 = '07:50'
+                        this.attendanceList[i]['out_time_2'] = out_time_2 = '17:05'
+                    }
+                    this.attendanceList[i]['_rowVariant'] = val
+                    break
+                }                
+            }
+            this.updating(id, in_time_1, out_time_1, in_time_2, out_time_2, ot, ot_extra)
         },
 
         save() {            
@@ -474,7 +499,7 @@ export default {
                 { key: 'name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'date', label : this.$t('date'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                // { key: 'time', label : this.$t('time'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                // { key: 'alt', label : 'alt', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'in_time_1', label : this.$t('in'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'out_time_1', label : this.$t('out') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'in_time_2', label : this.$t('in') + '(L)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
