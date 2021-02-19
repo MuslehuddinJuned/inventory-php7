@@ -366,7 +366,7 @@ export default {
                         this.attendanceList[i]['ot'] = ot = null
                         this.attendanceList[i]['ot_extra'] = ot_extra = null
                     } else {
-                        if (this.attendanceList[i]['time'] != '') this.attendanceList[i]['in_time_1'] = in_time_1 = '07:50'
+                        if (this.attendanceList[i]['time'] == '' || this.attendanceList[i]['in_time_1'] == '00:00') this.attendanceList[i]['in_time_1'] = in_time_1 = '07:50'
                         this.attendanceList[i]['out_time_2'] = out_time_2 = '17:05'
                     }
                     this.attendanceList[i]['_rowVariant'] = val
