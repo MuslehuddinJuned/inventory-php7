@@ -208,7 +208,7 @@ export default {
     mounted() {
         this.isBusy = true;
 
-        fetch(`api/salarysheet/1`)
+        fetch(`api/salarysheet/pf`)
         .then(res => res.json())
         .then(res => {
             this.pfDetails = res['pfDetails'];

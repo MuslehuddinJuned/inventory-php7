@@ -47,6 +47,7 @@ export default [
   { path: '/daily-attendance', name: 'hr.DailyAttendance', component: page('hr/attendance/DailyAttendance.vue') },
   { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
   { path: '/salary-sheet', name: 'hr.SalarySheet', component: page('hr/payroll/SalarySheet.vue') },
+  { path: '/pay-slip', name: 'hr.PaySlip', component: page('hr/payroll/PaySlip.vue') },
   { path: '/providant-fund', name: 'hr.ProvidantFund', component: page('hr/payroll/ProvidantFund.vue') },
 
   { path: '/payment', name: 'etc.Payment', component: page('etc/Payment.vue') },

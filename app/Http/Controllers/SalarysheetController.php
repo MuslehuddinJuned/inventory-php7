@@ -183,20 +183,28 @@ class SalarysheetController extends Controller
      * @param  \App\Salarysheet  $salarysheet
      * @return \Illuminate\Http\Response
      */
-    public function show($salarysheet)
+    public function show($val)
     {
-        $pfSummary = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, pf FROM (
-            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
-            )A LEFT JOIN(SELECT employee_id, SUM(pf)pf FROM salarysheets GROUP BY employee_id
-            )B ON A.id = B.employee_id");
+        if ($val == 'pf') {
+            $pfSummary = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, pf FROM (
+                SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
+                )A LEFT JOIN(SELECT employee_id, SUM(pf)pf FROM salarysheets GROUP BY employee_id
+                )B ON A.id = B.employee_id");
+    
+            $pfDetails = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, section, work_location, 
+                start_date, employee_image, year_mnth, pf FROM (SELECT id, employee_id, first_name, last_name, designation, department, 
+                section, work_location, start_date, employee_image FROM employees WHERE deleted_by = 0 and status = 'active'
+                )A LEFT JOIN(SELECT employee_id, year_mnth, pf FROM salarysheets
+                )B ON A.id = B.employee_id");
+    
+            return compact('pfSummary', 'pfDetails');
+        } else {
+            // For Pay Slip
+            $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, (fixed_allowance+attendance_allowance)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (SELECT *  FROM salarysheets WHERE year_mnth = ?
+            )A LEFT JOIN employees ON A.employee_id = employees.id", [$val]);
 
-        $pfDetails = DB::SELECT("SELECT id, A.employee_id, first_name, last_name, designation, department, section, work_location, 
-            start_date, employee_image, year_mnth, pf FROM (SELECT id, employee_id, first_name, last_name, designation, department, 
-            section, work_location, start_date, employee_image FROM employees WHERE deleted_by = 0 and status = 'active'
-            )A LEFT JOIN(SELECT employee_id, year_mnth, pf FROM salarysheets
-            )B ON A.id = B.employee_id");
-
-        return compact('pfSummary', 'pfDetails');
+            return compact('Salarysheet');
+        }
     }
 
     /**
@@ -205,7 +213,7 @@ class SalarysheetController extends Controller
      * @param  \App\Salarysheet  $salarysheet
      * @return \Illuminate\Http\Response
      */
-    public function edit(Salarysheet $salarysheet)
+    public function edit($date)
     {
         //
     }

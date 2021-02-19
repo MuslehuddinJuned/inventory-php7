@@ -1,4 +1,7 @@
 { 
+    "all" : "All",
+    "set_month" : "Set Month",
+    "to" : "to",
     "save_this_table_to_excel" : "Save this table to Excel",
     "monitor_parts_production" : "Monitor Parts Production",
     "product_parts" : "Product Parts",
