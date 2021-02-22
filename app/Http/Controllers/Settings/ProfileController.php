@@ -28,7 +28,7 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        if(!$request['check']) DB::SELECT('INSERT INTO role_user(user_id, role_id) VALUES (?, ?)', [$request['user_id'], $request['role_id']]);
+        if($request['check']) DB::SELECT('INSERT INTO role_user(user_id, role_id) VALUES (?, ?)', [$request['user_id'], $request['role_id']]);
         else DB::SELECT('DELETE FROM role_user WHERE user_id = ? AND role_id = ?', [$request['user_id'], $request['role_id']]);
     }
 

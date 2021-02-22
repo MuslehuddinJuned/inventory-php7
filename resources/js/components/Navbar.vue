@@ -4,7 +4,7 @@
       <div class="container">
         <img class="img-responsive mr-2" src="/favicon.ico" width="30px" alt="SUSTipe">
         <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
-          {{ $t('appName') }}
+          SUSTipe
           <!-- SUSTipe -->
         </router-link>
 
