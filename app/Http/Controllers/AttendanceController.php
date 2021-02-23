@@ -65,69 +65,69 @@ class AttendanceController extends Controller
 
         // $data = Excel::import(new AttendanceImport, $path);
         $data = Excel::toArray(new AttendanceImport, $path);
-        $begin = new DateTime( "2015-01-01" );
-        $end   = new DateTime( "2015-01-31" );
-        for ($i = $begin; $i <= $end; $i->modify('+1 day')) { 
-            if(count($data) > 0 && date('D', strtotime($i->format("Y-m-d"))) != 'Fri') {
-                foreach($data as $key => $value)
-                {
-                    foreach($value as $row)
-                    {
-                        $insert_data[] = array(
-                            'ac_no'     => $row['AC-No'],
-                            'name'      => $row['Name'],
-                            'department'=> $row['Department'],
-                            'date'      => $i->format("Y-m-d"),
-                            'time'      => $row['Time'],
-                            'in_time_1' => substr($row['Time'],0,5),
-                            'out_time_1'=> substr($row['Time'],6,5),
-                            'in_time_2' => substr($row['Time'],12,5),
-                            'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
-                        );
-                    }
-                }
-                if(!empty($insert_data)) {
-                    DB::table('attendances')->insert($insert_data);
-                    $insert_data = [];
-                }
-            }
-    
-            // if(!empty($insert_data)) {
-            //     DB::table('attendances')->insert($insert_data);
-            // }
-        }
 
-        // if(count($data) > 0) {
-        //     foreach($data as $key => $value)
-        //     {
-        //         foreach($value as $row)
+        /**************************start mass entry****************************/
+        // $begin = new DateTime( "2015-01-01" );
+        // $end   = new DateTime( "2015-01-31" );
+        // for ($i = $begin; $i <= $end; $i->modify('+1 day')) { 
+        //     if(count($data) > 0 && date('D', strtotime($i->format("Y-m-d"))) != 'Fri') {
+        //         foreach($data as $key => $value)
         //         {
-        //             $insert_data[] = array(
-        //                 'ac_no'     => $row['AC-No'],
-        //                 'name'      => $row['Name'],
-        //                 'department'=> $row['Department'],
-        //                 'date'      => date_create($row['Date']),
-        //                 'time'      => $row['Time'],
-        //                 'in_time_1' => substr($row['Time'],0,5),
-        //                 'out_time_1'=> substr($row['Time'],6,5),
-        //                 'in_time_2' => substr($row['Time'],12,5),
-        //                 'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
-        //             );
+        //             foreach($value as $row)
+        //             {
+        //                 $insert_data[] = array(
+        //                     'ac_no'     => $row['AC-No'],
+        //                     'name'      => $row['Name'],
+        //                     'department'=> $row['Department'],
+        //                     'date'      => $i->format("Y-m-d"),
+        //                     'time'      => $row['Time'],
+        //                     'in_time_1' => substr($row['Time'],0,5),
+        //                     'out_time_1'=> substr($row['Time'],6,5),
+        //                     'in_time_2' => substr($row['Time'],12,5),
+        //                     'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
+        //                 );
+        //             }
+        //         }
+        //         if(!empty($insert_data)) {
+        //             DB::table('attendances')->insert($insert_data);
+        //             $insert_data = [];
         //         }
         //     }
         // }
 
-        // if(!empty($insert_data)) {
-        //     DB::table('attendances')->insert($insert_data);
-        // }
+        /****************end mass entry*******************/
+
+
+
+        /****************start regular entry*******************/
+
+        if(count($data) > 0) {
+            foreach($data as $key => $value)
+            {
+                foreach($value as $row)
+                {
+                    $insert_data[] = array(
+                        'ac_no'     => $row['AC-No'],
+                        'name'      => $row['Name'],
+                        'department'=> $row['Department'],
+                        'date'      => date_create($row['Date']),
+                        'time'      => $row['Time'],
+                        'in_time_1' => substr($row['Time'],0,5),
+                        'out_time_1'=> substr($row['Time'],6,5),
+                        'in_time_2' => substr($row['Time'],12,5),
+                        'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
+                    );
+                }
+            }
+        }
+
+        if(!empty($insert_data)) {
+            DB::table('attendances')->insert($insert_data);
+        }
+
+        /****************end regular entry*******************/
         
         @unlink($path);
-
-        // if(request()->expectsJson()){
-        //     return response()->json([
-        //         'attendance' => $myArray[0]
-        //     ]);
-        // }
     }
 
     /**
