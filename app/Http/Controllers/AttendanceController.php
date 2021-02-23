@@ -85,7 +85,11 @@ class AttendanceController extends Controller
         }
 
         if(!empty($insert_data)) {
-            DB::table('attendances')->insert($insert_data);
+            foreach (array_chunk($insert_data,1000) as $t)  
+            {
+                DB::table('attendances')->insert($t); 
+            }
+            // DB::table('attendances')->insert($insert_data);
         }
         
         @unlink($path);
