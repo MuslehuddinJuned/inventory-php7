@@ -477,7 +477,16 @@ export default {
             fetch(`api/dailyattend/${this.attendance_date}`)
             .then(res => res.json())
             .then(res => {
-                this.attendanceList = res['Attendance']
+                let atten = [], empl = []
+                atten = res['Attendance']
+                empl = res['Employee']
+                for(let i=0; i<empl.length; i++) {
+                    this.attendanceList.push({
+                    ...empl[i], 
+                    ...(atten.find((itmInner) => itmInner.ac_no === empl[i].employee_id))}
+                    );
+                }
+                // this.attendanceList = res['Attendance']
                 for (let i = 0; i < this.attendanceList.length; i++) {
                     this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
                     this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])

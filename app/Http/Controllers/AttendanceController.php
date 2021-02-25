@@ -147,12 +147,16 @@ class AttendanceController extends Controller
     public function daily($attendance)
     {
         $date = date_create($attendance);
-        $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
-            SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
-            )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
-            )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
+        // $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+        //     SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
+        //     )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
+        //     )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
 
-        return compact('Attendance');
+        $Attendance = DB::SELECT("SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ? ORDER BY ac_no", [$date]);
+        $Employee = DB::SELECT("SELECT id, employee_id, first_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active' ORDER BY employee_id");
+
+
+        return compact('Attendance', 'Employee');
     }
 
     public function personnel($id, $start, $end)
