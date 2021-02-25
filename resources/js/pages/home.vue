@@ -46,18 +46,6 @@ export default {
       this.$store.dispatch('role/fetchRoles')
   },
 
-  mounted() {
-    // this.isBusy = true
-    // fetch(`api/settings/roles`)
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         this.roles = res['allRoles'];
-    //         this.isBusy = false
-    //     })
-
-    
-  },
-
   methods: {
     chooseModule(id) {
       // Cookies.set('module_no', id, { expires: 365 })
