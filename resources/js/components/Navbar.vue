@@ -84,7 +84,7 @@
                   <b-icon icon="graph-up"></b-icon>
                   {{ $t('daily_production') }}
                 </router-link>
-                <router-link v-if="checkRoles('production_View')" :to="{ name: 'production.PartsProduction' }" class="dropdown-item pl-3">
+                <router-link v-if="checkRoles('production_Insert')" :to="{ name: 'production.PartsProduction' }" class="dropdown-item pl-3">
                   <b-icon icon="columns-gap"></b-icon>
                   {{ $t('parts_production') }}
                 </router-link>
@@ -236,19 +236,16 @@ export default {
 
   data: () => ({
     appName: window.config.appName,
-    roles: [],
   }),
 
-  mounted() {
-    let payment = [], countDays = new Date()
+  created() {
+    if (this.user) this.$store.dispatch('role/fetchRoles')
+  },
 
-    if (this.user) {      
-      fetch(`api/settings/roles`)
-      .then(res => res.json())
-      .then(res => {
-          this.roles = res['allRoles'];
-      })
-    }
+  mounted() {
+    this.$store.dispatch('role/chooseModule')
+
+    let payment = [], countDays = new Date()
 
     fetch(`api/payment`)
     .then(res => res.json())
@@ -278,13 +275,15 @@ export default {
 
   computed: {
     ...mapGetters({
-      user: 'auth/user'
+      user: 'auth/user',
+      module_no: 'role/module_no',
+      roles: 'role/roles'
     }),
 
-    module_no() {
-      // return Cookies.get('module_no')
-      return localStorage.getItem("module_no")
-    },
+    // module_no() {
+    //   // return Cookies.get('module_no')
+    //   return localStorage.getItem("module_no")
+    // },
   },
 
   methods: {

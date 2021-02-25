@@ -1,0 +1,39 @@
+import axios from 'axios';
+import * as types from '../mutation-types'
+
+export const state = {
+    module_no: null,
+    roles: []
+};
+
+export const getters = {
+    module_no: state => state.module_no,
+    roles: state => state.roles
+};
+
+export const actions = {
+    async fetchRoles({commit}) {
+        console.log('hi')
+        const response = await axios.get(
+            'api/settings/roles'
+        )
+        console.log('data=', response.data.allRoles)
+        commit('setRoles', response.data.allRoles)
+    },
+
+    async chooseModule({commit}) {
+        commit('setModule', localStorage.getItem("module_no"))
+    }
+};
+
+export const mutations = {
+    setModule: (state, module_no) => (state.module_no = module_no),
+    setRoles: (state, roles) => (state.roles = roles)
+};
+
+// export default {
+//     state,
+//     getters,
+//     actions,
+//     mutations
+// }
