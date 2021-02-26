@@ -98,17 +98,27 @@ class SalarysheetController extends Controller
             $Salary = DB::SELECT("SELECT A.id employee_id, null year_mnth, ? no_fo_days, (basic_pay/?) basic_daily, basic_pay basic_monthly, medic_alw medic_allowance, house_rent, 
                 ta, da, fixed_allowance, providant_fund pf, tax, total_salary salary, 82 covert_rate, ((total_salary-ta-da+providant_fund)/82) salary_usd, 0 attendance_bonus, 0 production_bonus, 0 worked_friday_hour, 
                 0 worked_friday_amount, 0 worked_holiday_hour, 0 worked_holiday_amount, (basic_pay*2/208)ot_rate, 0 ot_hour, 0 ot_amount, 
-                0 attendance_allowance, 0 present_days, 0 holidays, 0 absent_days, 0 absent_amount, 0 leave_days, 0 not_for_join_days, 0 not_for_join_amount, 0 gross_pay, 0 total_deduction, 0 net_pay FROM(SELECT id, employee_id, weekly_holiday, start_date FROM employees WHERE deleted_by = 0 and status = 'active'
+                0 attendance_allowance, 0 present_days, 0 holidays, 0 absent_days, 0 absent_amount, 0 leave_days, 0 not_for_join_days, 0 not_for_join_amount, 0 gross_pay, 0 total_deduction, 0 net_pay FROM(SELECT id FROM employees WHERE deleted_by = 0 and status = 'active'
                 )A LEFT JOIN (SELECT id, COALESCE(basic_pay, 0)basic_pay, COALESCE(medic_alw, 0)medic_alw, COALESCE(house_rent, 0)house_rent, COALESCE(ta, 0)ta, COALESCE(da, 0)da, COALESCE(fixed_allowance, 0)fixed_allowance, COALESCE(other_field, 0)other_field, COALESCE(other_pay, 0)other_pay, COALESCE(providant_fund, 0)providant_fund, COALESCE(tax, 0)tax, COALESCE(total_salary, 0)total_salary, bank_name, acc_no, employee_id FROM salaries
                 )B ON A.id = B.employee_id", [$days, $days]);
 
             $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);        
 
-            for ($i=0; $i < count($Salary); $i++) { 
-                $Attendance = DB::SELECT("SELECT A.id, weekly_holiday, start_date, date, time, in_time_1, out_time_2, ot, ot_extra FROM(
-                SELECT id, employee_id, start_date, weekly_holiday FROM employees WHERE id = ?
-                )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date BETWEEN ? AND ?
-                )B ON A.employee_id = B.ac_no", [$Salary[$i]->employee_id, $start, $end]);
+            $employee = DB::SELECT("SELECT employee_id, start_date, weekly_holiday FROM employees WHERE deleted_by = 0 and status = 'active'");
+
+            $Attendance_1 = DB::SELECT("SELECT ac_no, date, time, in_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date BETWEEN ? AND ? ORDER BY ac_no", [$start, $end]);
+
+            for ($i=0; $i < count($Salary); $i++) {
+
+                $Attendance = []; $m=0;
+                for ($l=0; $l < count($Attendance_1); $l++) { 
+                    if($Attendance_1[$l]->ac_no == $employee[$i]->employee_id){
+                        $Attendance[] = $Attendance_1[$l];
+                        $m++;
+                    } elseif ($m>0) {
+                        break;
+                    }
+                }
                 
                 $Leave = DB::SELECT("SELECT leave_type, leave_start, leave_end, day_count, employee_id 
                 FROM usedleaves WHERE employee_id = ? AND ((leave_start BETWEEN ? AND ?) OR (leave_end BETWEEN ? AND ?))", [$Salary[$i]->employee_id, $start, $end, $start, $end]);
@@ -116,7 +126,7 @@ class SalarysheetController extends Controller
                 //for yearly holiday
                 $HolidayArray = [];
                 for ($j=0; $j < count($Holiday); $j++) { 
-                    if(strtotime($Holiday[$j]->yearly_holiday) > strtotime($Attendance[0]->start_date))
+                    if(strtotime($Holiday[$j]->yearly_holiday) > strtotime($employee[$i]->start_date))
                     $HolidayArray[] = $Holiday[$j]->yearly_holiday;
                 }
 
@@ -141,10 +151,10 @@ class SalarysheetController extends Controller
                 }
 
                 // to calculate  weekly_holiday
-                $weeklyHolidays = SalarysheetController::weeks($Attendance[0]->weekly_holiday, $HolidayArray, substr($request->start, 0, 7), $Attendance[0]->start_date);
+                $weeklyHolidays = SalarysheetController::weeks($employee[$i]->weekly_holiday, $HolidayArray, substr($request->start, 0, 7), $employee[$i]->start_date);
                 
                 $Salary[$i]->holidays += (count($HolidayArray) + $weeklyHolidays);
-                $Salary[$i]->not_for_join_days = floor((strtotime($Attendance[0]->start_date) - strtotime($request->start))/(24*3600));
+                $Salary[$i]->not_for_join_days = floor((strtotime($employee[$i]->start_date) - strtotime($request->start))/(24*3600));
                 if($Salary[$i]->not_for_join_days < 0) $Salary[$i]->not_for_join_days = 0;
                 $Salary[$i]->absent_days = $days - $Salary[$i]->present_days - $Salary[$i]->holidays - $Salary[$i]->not_for_join_days;
 
