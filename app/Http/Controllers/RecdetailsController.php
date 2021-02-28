@@ -64,7 +64,7 @@ class RecdetailsController extends Controller
      */
     public function show($id)
     {
-        $requisition = DB::SELECT('SELECT A.id, po_no, product_code, polist_id, po_qty, store_id, quantity, weight, ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, 
+        $requisition = DB::SELECT('SELECT A.id, po_no, product_code, polist_id, po_qty, store_id, quantity, weight, (COALESCE(receive_qty, 0) - COALESCE(issue_qty, 0))stock, 
         master_sheet, cann_per_sheet, grade, remarks, accept, A.inventory_id, A.issue_etd, A.rechead_id, store_name, item, item_code, specification, unit, unit_price, item_image FROM(
             SELECT id, polist_id, po_qty, quantity, master_sheet, remarks, accept, inventory_id, rechead_id, issue_etd FROM recdetails WHERE rechead_id = ?
             )A LEFT JOIN (
@@ -72,8 +72,8 @@ class RecdetailsController extends Controller
             )B ON A.inventory_id = B.id LEFT JOIN ( SELECT id, name store_name FROM stores
             )C ON B.store_id = C.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
-            )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, rechead_id, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd, rechead_id
-            )E ON A.inventory_id = E.inventory_id AND E.rechead_id = A.rechead_id LEFT JOIN (SELECT id, po_no, producthead_id FROM polists
+            )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
+            )E ON A.inventory_id = E.inventory_id LEFT JOIN (SELECT id, po_no, producthead_id FROM polists
             )F ON A.polist_id = F.id LEFT JOIN (SELECT id, product_code FROM productheads
             )G ON F.producthead_id = G.id', [$id]);
         
