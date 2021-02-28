@@ -13,11 +13,9 @@ export const getters = {
 
 export const actions = {
     async fetchRoles({commit}) {
-        console.log('hi')
         const response = await axios.get(
             'api/settings/roles'
         )
-        console.log('data=', response.data.allRoles)
         commit('setRoles', response.data.allRoles)
     },
 

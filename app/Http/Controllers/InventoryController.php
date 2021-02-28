@@ -112,36 +112,39 @@ class InventoryController extends Controller
             )A LEFT JOIN ( SELECT id, name store_name FROM stores
 			)B ON A.store_id = B.id LEFT JOIN (
 
-            SELECT inventory_id, challan_no rec_req_no, NULL po_no, receive_date inout_date, etd, received_qty, 0 issued_qty FROM(
-            SELECT inventory_id, inventoryreceive_id, receive_etd etd, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
-            )A LEFT JOIN (SELECT id, challan_no, receive_date FROM inventoryreceives WHERE deleted_by = 0
-            )B ON A.inventoryreceive_id = B.id WHERE inventory_id = ? and receive_date BETWEEN ? and ?
-                    
-            UNION ALL 
+                SELECT inventory_id, challan_no rec_req_no, NULL po_no, receive_date inout_date, etd, received_qty, 0 issued_qty FROM(
+                SELECT inventory_id, inventoryreceive_id, receive_etd etd, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
+                )A LEFT JOIN (SELECT id, challan_no, receive_date FROM inventoryreceives WHERE deleted_by = 0
+                )B ON A.inventoryreceive_id = B.id WHERE inventory_id = ? and receive_date BETWEEN ? and ?
                         
-            SELECT inventory_id, requisition_no rec_req_no, po_no, created_at inout_date, etd, 0 received_qty, issued_qty FROM(
-            SELECT (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) issued_qty, issue_etd etd, inventory_id, rechead_id, polist_id FROM recdetails WHERE accept = 1
-            )A LEFT JOIN (SELECT rechead_id, created_at FROM inventoryissues
-            )B ON A.rechead_id = B.rechead_id LEFT JOIN (SELECT id, po_no FROM polists
-            )C ON A.polist_id = C.id  LEFT JOIN (SELECT id, requisition_no FROM recheads
-            )D ON A.rechead_id = D.id WHERE inventory_id = ? and created_at BETWEEN ? and ?
-                
-            UNION ALL
+                UNION ALL 
+                            
+                SELECT inventory_id, requisition_no rec_req_no, po_no, created_at inout_date, etd, 0 received_qty, issued_qty FROM(
+                SELECT (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END) issued_qty, issue_etd etd, inventory_id, rechead_id, polist_id FROM recdetails WHERE accept = 1
+                )A LEFT JOIN (SELECT rechead_id, created_at FROM inventoryissues
+                )B ON A.rechead_id = B.rechead_id LEFT JOIN (SELECT id, po_no FROM polists
+                )C ON A.polist_id = C.id  LEFT JOIN (SELECT id, requisition_no FROM recheads
+                )D ON A.rechead_id = D.id WHERE inventory_id = ? and created_at BETWEEN ? and ?
                     
-            SELECT inventory_id, ('Opening Balance')rec_req_no, NULL po_no, NULL inout_date, NULL etd, 
-            (CASE WHEN received_qty IS NULL THEN 0 ELSE received_qty END - CASE WHEN issued_qty IS NULL THEN 0 ELSE issued_qty END) received_qty , 0 issued_qty FROM(
-            SELECT A.inventory_id, SUM(issued_qty)issued_qty, SUM(received_qty)received_qty FROM(
-                SELECT inventory_id, inventoryreceive_id, SUM(quantity)received_qty FROM invenrecalls WHERE inventory_id = ? GROUP BY inventory_id, inventoryreceive_id
-                )A INNER JOIN (SELECT id FROM inventoryreceives WHERE receive_date < ? AND deleted_by = 0
-                )B ON A.inventoryreceive_id = B.id LEFT JOIN(
-                    SELECT issued_qty, inventory_id FROM(SELECT rechead_id FROM inventoryissues WHERE  created_at < ?
-                    )A LEFT JOIN (SELECT id FROM recheads
-                    )B ON A.rechead_id= B.id LEFT JOIN (SELECT inventory_id, SUM(quantity)issued_qty, rechead_id FROM recdetails WHERE accept = 1 AND inventory_id IS NOT null GROUP BY inventory_id, rechead_id
-                    )C ON B.id = C.rechead_id
-                )C ON A.inventory_id = C.inventory_id GROUP BY A.inventory_id
-            )A 
-
-            )C ON A.id = C.inventory_id ORDER BY inout_date", [$id, $id, $date_1, $date_2, $id, $date_1, $date_2, $id, $date_1, $id, $date_1]);
+                UNION ALL
+                        
+                SELECT inventory_id, rec_req_no, po_no, inout_date, etd, (COALESCE(received_qty, 0)-COALESCE(issued_qty, 0))received_qty, 0 issued_qty FROM(
+                SELECT inventory_id, ('Opening Balance')rec_req_no, NULL po_no, NULL inout_date, NULL etd, SUM(received_qty)received_qty,SUM(issued_qty)issued_qty FROM(
+                    SELECT A.inventory_id, issued_qty, received_qty FROM(
+                        SELECT inventory_id, SUM(received_qty)received_qty  FROM(
+                            SELECT inventory_id, inventoryreceive_id, quantity received_qty, created_at FROM invenrecalls WHERE inventory_id = ?
+                            )A INNER JOIN (SELECT id, receive_date , deleted_by FROM inventoryreceives WHERE receive_date < ? AND deleted_by = 0
+                            )B ON A.inventoryreceive_id = B.id GROUP BY inventory_id
+                        )A LEFT JOIN(
+                        SELECT SUM(issued_qty)issued_qty, inventory_id FROM(
+                            SELECT rechead_id FROM inventoryissues WHERE  created_at < ?
+                            )A INNER JOIN (SELECT id FROM recheads
+                            )B ON A.rechead_id= B.id INNER JOIN (SELECT inventory_id, SUM(quantity)issued_qty, rechead_id FROM recdetails WHERE accept = 1 AND inventory_id = ? GROUP BY inventory_id, rechead_id
+                            )C ON B.id = C.rechead_id GROUP BY inventory_id
+                        )B ON B.inventory_id = A.inventory_id
+                    )A GROUP BY inventory_id
+                )A
+            )C ON A.id = C.inventory_id ORDER BY inout_date", [$id, $id, $date_1, $date_2, $id, $date_1, $date_2, $id, $date_1, $date_1, $id]);
 
         return compact('inOutDetails');
         
