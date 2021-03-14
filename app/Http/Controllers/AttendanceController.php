@@ -152,8 +152,22 @@ class AttendanceController extends Controller
         //     )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
         //     )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
 
-        $Attendance = DB::SELECT("SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ? ORDER BY ac_no", [$date]);
+        $Attendance = DB::SELECT("SELECT id, ac_no employee_id, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ? ORDER BY employee_id", [$date]);
         $Employee = DB::SELECT("SELECT id, employee_id, first_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active' ORDER BY employee_id");
+
+        // $array1 = json_decode(json_encode($Attendance), true);
+        // $array2 = json_decode(json_encode($Employee), true);
+        // $someVariable = 'someValue';
+        // $results = array_reduce(array_merge($array1, $array2), function ($carry, $item) use ($someVariable) {
+        //     if (isset($carry[$item['employee_id']])) {
+        //         $carry[$item['employee_id']] = array_merge($carry[$item['employee_id']], $item);
+        //     } else {
+        //         $carry[$item['employee_id']] = $item;
+        //     }
+        //     return $carry;
+        // }, array());
+
+        // $result = $results;
 
 
         return compact('Attendance', 'Employee');

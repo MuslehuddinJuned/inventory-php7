@@ -480,13 +480,15 @@ export default {
                 let atten = [], empl = []
                 atten = res['Attendance']
                 empl = res['Employee']
-                for(let i=0; i<empl.length; i++) {
-                    this.attendanceList.push({
-                    ...empl[i], 
-                    ...(atten.find((itmInner) => itmInner.ac_no === empl[i].employee_id))}
-                    );
-                }
-                // this.attendanceList = res['Attendance']
+
+                const mergeById = (a1, a2) =>
+                a1.map(itm => ({
+                    ...a2.find((item) => (item.employee_id === itm.employee_id) && item),
+                    ...itm
+                }));
+
+                this.attendanceList = mergeById(empl, atten)
+
                 for (let i = 0; i < this.attendanceList.length; i++) {
                     this.attendanceList[i]['in_time_1'] = this.in_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['in_time_1'])
                     this.attendanceList[i]['out_time_1'] = this.out_time_1(this.attendanceList[i]['time'], this.attendanceList[i]['out_time_1'])
