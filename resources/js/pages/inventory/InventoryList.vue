@@ -99,7 +99,7 @@
                         <div v-if="etd">{{`${row.item.etd}` | dateParse('YYYY-MM-DD') | dateFormat('DD-MM-YYYY')}}</div>
                         <div v-else>
                             <a v-if="checkRoles('InventoryItem_Update')" @click="editDetails(row.item.id, row.item.sn)" class="btn btn-sm text-black-50" v-b-modal.dataEdit><fa icon="edit" fixed-width /></a>
-                            <a v-if="row.item.stock < 1 && checkRoles('InventoryItem_Delete')" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a>
+                            <!-- <a v-if="row.item.stock < 1 && checkRoles('InventoryItem_Delete')" @click="destroy(row.item.id, row.item.sn)" class="btn btn-sm text-black-50"><fa icon="trash-alt" fixed-width /></a> -->
                         </div>
                     </template>
                     </b-table>

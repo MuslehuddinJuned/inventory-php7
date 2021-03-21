@@ -26,9 +26,9 @@ class InventoryreceiveController extends Controller
     public function index()
     {
         $Inventoryreceive = DB::SELECT('SELECT A.id, remarks, supplier_name, polist_id,  challan_no, challan_date, stock_type, receive_date, storeReceive_id, store_name, store_id, cann_per_sheet FROM (
-            SELECT id, remarks, supplier_name, polist_id, challan_no, challan_date, stock_type, storeReceive_id, receive_date FROM inventoryreceives
+            SELECT id, remarks, supplier_name, polist_id, challan_no, challan_date, stock_type, storeReceive_id, receive_date FROM inventoryreceives WHERE deleted_by = 0
             )A LEFT JOIN (
-            SELECT inventory_id, inventoryreceive_id FROM invenrecalls
+            SELECT inventory_id, inventoryreceive_id FROM invenrecalls WHERE deleted_by = 0
             )B ON A.id = B.inventoryreceive_id LEFT JOIN(
             SELECT id, store_id, cann_per_sheet FROM inventories
             )C ON B.inventory_id = C.id LEFT JOIN(SELECT id, name store_name FROM stores
@@ -93,7 +93,7 @@ class InventoryreceiveController extends Controller
         $etd = DB::SELECT('SELECT store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, 
             weight, unit_price, item_image, B.id, quantity, master_sheet, price, remarks, receive_etd FROM(
             SELECT id, store_id, item, item_code, specification, unit, cann_per_sheet, grade, accounts_code, weight, unit_price, item_image FROM inventories
-            )A INNER JOIN ( SELECT id, quantity, master_sheet, price, remarks, inventory_id, receive_etd FROM invenrecalls
+            )A INNER JOIN ( SELECT id, quantity, master_sheet, price, remarks, inventory_id, receive_etd FROM invenrecalls WHERE deleted_by = 0
             )B ON A.id = B.inventory_id');
 
         return compact('etd');
@@ -131,6 +131,11 @@ class InventoryreceiveController extends Controller
      */
     public function destroy(Inventoryreceive $inventoryreceive)
     {
-        $inventoryreceive->delete();
+        // $inventoryreceive->delete();
+        $Inventoryreceive = Inventoryreceive::find($inventoryreceive->id);
+        $Inventoryreceive->deleted_by = auth()->user()->id;
+        $Inventoryreceive->save();
+
+        DB::SELECT('UPDATE invenrecalls SET deleted_by= ? WHERE inventoryreceive_id = ?', [auth()->user()->id, $inventoryreceive->id]);
     }
 }

@@ -29,7 +29,7 @@ class InventoryController extends Controller
             ((CASE WHEN receive_qty IS NULL THEN 0 ELSE receive_qty END) - (CASE WHEN issue_qty IS NULL THEN 0 ELSE issue_qty END))stock, store_id, store_name, cann_per_sheet, grade, accounts_code, weight, item, item_code, specification, unit, unit_price, item_image FROM(            
             SELECT id, store_id, item, item_code, specification, cann_per_sheet, grade, accounts_code, COALESCE(weight, '')weight, unit, unit_price, item_image FROM inventories
             )A LEFT JOIN (
-            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty from invenrecalls WHERE deleted_by = 0 GROUP BY inventory_id
             )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
             )C ON A.id = C.inventory_id LEFT JOIN(SELECT id, name store_name FROM stores
 			)D ON A.store_id = D.id");
@@ -113,7 +113,7 @@ class InventoryController extends Controller
 			)B ON A.store_id = B.id LEFT JOIN (
 
                 SELECT inventory_id, challan_no rec_req_no, NULL po_no, receive_date inout_date, etd, received_qty, 0 issued_qty FROM(
-                SELECT inventory_id, inventoryreceive_id, receive_etd etd, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls
+                SELECT inventory_id, inventoryreceive_id, receive_etd etd, (CASE WHEN quantity IS NULL THEN 0 ELSE quantity END)received_qty FROM invenrecalls WHERE deleted_by = 0
                 )A LEFT JOIN (SELECT id, challan_no, receive_date FROM inventoryreceives WHERE deleted_by = 0
                 )B ON A.inventoryreceive_id = B.id WHERE inventory_id = ? and receive_date BETWEEN ? and ?
                         
@@ -132,7 +132,7 @@ class InventoryController extends Controller
                 SELECT inventory_id, ('Opening Balance')rec_req_no, NULL po_no, NULL inout_date, NULL etd, SUM(received_qty)received_qty,SUM(issued_qty)issued_qty FROM(
                     SELECT A.inventory_id, issued_qty, received_qty FROM(
                         SELECT inventory_id, SUM(received_qty)received_qty  FROM(
-                            SELECT inventory_id, inventoryreceive_id, quantity received_qty, created_at FROM invenrecalls WHERE inventory_id = ?
+                            SELECT inventory_id, inventoryreceive_id, quantity received_qty, created_at FROM invenrecalls WHERE inventory_id = ? AND deleted_by = 0
                             )A INNER JOIN (SELECT id, receive_date , deleted_by FROM inventoryreceives WHERE receive_date < ? AND deleted_by = 0
                             )B ON A.inventoryreceive_id = B.id GROUP BY inventory_id
                         )A LEFT JOIN(
@@ -157,7 +157,7 @@ class InventoryController extends Controller
             (CASE WHEN receive_etd IS NULL THEN issue_etd ELSE receive_etd END)etd, issue_etd, cann_per_sheet, grade, accounts_code, weight, item, item_code, specification, unit, unit_price, item_image FROM(            
             SELECT id, store_id, item, item_code, specification, cann_per_sheet, grade, accounts_code, weight, unit, unit_price, item_image FROM inventories
             )A LEFT JOIN (
-            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty, receive_etd from invenrecalls GROUP BY inventory_id, receive_etd
+            SELECT inventory_id, SUM(master_sheet)receive_master_sheet, SUM(quantity)receive_qty, receive_etd FROM invenrecalls WHERE deleted_by = 0 GROUP BY inventory_id, receive_etd
             )B ON A.id = B.inventory_id LEFT JOIN(SELECT inventory_id, SUM(master_sheet)issue_master_sheet, SUM(quantity)issue_qty, issue_etd from recdetails WHERE accept = 1 GROUP BY inventory_id, issue_etd
             )C ON A.id = C.inventory_id and B.receive_etd = C.issue_etd LEFT JOIN(SELECT id, name store_name FROM stores
             )D ON A.store_id = D.id');
@@ -177,11 +177,11 @@ class InventoryController extends Controller
             )A LEFT JOIN ( SELECT id, name store_name FROM stores
 			)B ON A.store_id = B.id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)received_qty FROM(SELECT id FROM inventoryreceives WHERE deleted_by = 0 AND receive_date < ?
-                )A LEFT JOIN(SELECT inventory_id, quantity, inventoryreceive_id FROM invenrecalls
+                )A LEFT JOIN(SELECT inventory_id, quantity, inventoryreceive_id FROM invenrecalls WHERE deleted_by = 0
                 )B ON A.id = B.inventoryreceive_id WHERE inventory_id IS NOT null GROUP BY inventory_id
             )D ON A.id = D.inventory_id LEFT JOIN (
             SELECT inventory_id, SUM(quantity)receiving_qty FROM(SELECT id FROM inventoryreceives WHERE deleted_by = 0 AND receive_date BETWEEN ? and ?
-                )A LEFT JOIN(SELECT inventory_id, quantity, inventoryreceive_id FROM invenrecalls
+                )A LEFT JOIN(SELECT inventory_id, quantity, inventoryreceive_id FROM invenrecalls WHERE deleted_by = 0
                 )B ON A.id = B.inventoryreceive_id WHERE inventory_id IS NOT null GROUP BY inventory_id
             )E ON A.id = E.inventory_id LEFT JOIN (
             SELECT SUM(quantity)issued_qty, inventory_id FROM(SELECT rechead_id FROM inventoryissues WHERE  created_at < ?
@@ -280,15 +280,16 @@ class InventoryController extends Controller
     public function destroy(Inventory $inventory)
     {
         // delete previous image
-        $Inventory = Inventory::find($inventory->id);
 
-        if($Inventory->item_image != 'noimage.jpg'){
-            //Delete Image
-            $path = public_path().'/images/item/'.$Inventory->item_image;
-            // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$Inventory->item_image;
-            @unlink($path);
-        }
+        // $Inventory = Inventory::find($inventory->id);
 
-        $inventory->delete();
+        // if($Inventory->item_image != 'noimage.jpg'){
+        //     //Delete Image
+        //     $path = public_path().'/images/item/'.$Inventory->item_image;
+        //     // $path = '/home/sustipe/inventory.sustipe.com/images/item/'.$Inventory->item_image;
+        //     @unlink($path);
+        // }
+
+        // $inventory->delete();
     }
 }
