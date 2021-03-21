@@ -71,7 +71,7 @@ class RecdetailsController extends Controller
             SELECT id, store_id, cann_per_sheet, grade, item, item_code, specification, unit, unit_price, item_image, weight FROM inventories
             )B ON A.inventory_id = B.id LEFT JOIN ( SELECT id, name store_name FROM stores
             )C ON B.store_id = C.id LEFT JOIN (
-            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls GROUP BY inventory_id
+            SELECT inventory_id, SUM(quantity)receive_qty from invenrecalls WHERE deleted_by = 0 GROUP BY inventory_id
             )D ON A.inventory_id = D.inventory_id LEFT JOIN(SELECT inventory_id, SUM(quantity)issue_qty from recdetails WHERE accept = 1 GROUP BY inventory_id
             )E ON A.inventory_id = E.inventory_id LEFT JOIN (SELECT id, po_no, producthead_id FROM polists
             )F ON A.polist_id = F.id LEFT JOIN (SELECT id, product_code FROM productheads
