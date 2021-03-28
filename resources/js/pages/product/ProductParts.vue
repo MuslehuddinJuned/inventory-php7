@@ -100,7 +100,7 @@
                     <label for="po_no">{{$t('department')}}</label>
                     <select @change="change_department" class="form-control" v-model="department">
                         <option value="assembly">{{ $t('assembly') }}</option>
-                        <option value="wash">{{ $t('wash') }}</option>
+                        <option value="spray">{{ $t('spray') }}</option>
                         <option value="polish">{{ $t('polish') }}</option>
                         <option value="injection">{{ $t('injection') }}</option>
                         <option value="cutting">{{ $t('cutting') }}</option>
@@ -188,7 +188,7 @@
                     <label for="po_no">{{$t('department')}}</label>
                     <select @change="change_department" class="form-control" v-model="department">
                         <option value="assembly">{{ $t('assembly') }}</option>
-                        <option value="wash">{{ $t('wash') }}</option>
+                        <option value="spray">{{ $t('spray') }}</option>
                         <option value="polish">{{ $t('polish') }}</option>
                         <option value="injection">{{ $t('injection') }}</option>
                         <option value="cutting">{{ $t('cutting') }}</option>
