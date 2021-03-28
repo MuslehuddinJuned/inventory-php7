@@ -14,7 +14,7 @@
                 <div class="card-body d-flex align-items-center">
                     <select @change="departmentChange" class="form-control mr-3" v-model="department">
                         <option value="assembly">{{ $t('assembly') }}</option>
-                        <option value="wash">{{ $t('wash') }}</option>
+                        <option value="spray">{{ $t('spray') }}</option>
                         <option value="polish">{{ $t('polish') }}</option>
                         <option value="injection">{{ $t('injection') }}</option>
                         <option value="cutting">{{ $t('cutting') }}</option>

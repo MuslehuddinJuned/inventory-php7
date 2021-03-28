@@ -10,7 +10,7 @@
                         <select class="form-control" v-model="department">
                             <option value="assembly">{{ $t('assembly') }}</option>
                             <option value="polish">{{ $t('polish') }}</option>
-                            <option value="wash">{{ $t('wash') }}</option>
+                            <option value="spray">{{ $t('spray') }}</option>
                             <option value="injection">{{ $t('injection') }}</option>
                             <option value="cutting">{{ $t('cutting') }}</option>
                         </select>
