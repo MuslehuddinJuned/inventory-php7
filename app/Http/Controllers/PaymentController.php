@@ -37,7 +37,7 @@ class PaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($payment)
     {
         //
     }
@@ -48,9 +48,12 @@ class PaymentController extends Controller
      * @param  \App\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function show(Payment $payment)
+    public function show($payment)
     {
-        //
+        if(auth()->user()->id == 1) {
+            DB::SELECT("INSERT INTO payments(ac_name, service_name, mnth_of_payment, amount) VALUES ('SHBD','ERP',CURDATE(), ?)", [$payment]);
+            return "Payment done: $payment";
+        }
     }
 
     /**
