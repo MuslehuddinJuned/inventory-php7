@@ -134,11 +134,11 @@
                         <div class="mt-3 float-left col-2 border-top border-dark text-center">{{$t('approved_by')}}</div>
                     </div>
                     <div class="col-md-5">
-                        <button @click="editDetails(-1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-danger float-left">{{ $t('reject') }}</button>
+                        <button @click="editDetails(-1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-danger float-left" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ $t('reject') }}</button>
                     </div>
                     <div class="col-md-7">
                         <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
-                        <button @click="editDetails(1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-default float-right">{{ $t('accept') }}</button>
+                        <button @click="editDetails(1)" v-if="checkRoles('ItemIssue_Update')" class="mdb btn btn-outline-default float-right" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ $t('accept') }}</button>
                     </div>
                 </div>
             </template>
@@ -257,6 +257,9 @@ export default {
             if(this.stockOverFlow == true && val == 1){
                 this.$toast.error(this.$t('stock_insifficient'), this.$t('error_alert_title'), {timeout: 3000, position: 'center'})
             } else{
+                this.disable = !this.disable;
+                this.buttonTitle = this.$t('saving')
+
                 axios.post(`/api/inventoryissue`, {'accept' : val, 'rechead_id' : this.taskHeadId
                 })
                 .then(res => {
