@@ -384,7 +384,7 @@ export default {
         this.isBusy = true
         this.src = '/images/employee/'
 
-        fetch(`api/employee/1`)
+        fetch(`api/employee/exit`)
         .then(res => res.json())
         .then(res => {
             this.employeeList = res['EmployeeList'];
