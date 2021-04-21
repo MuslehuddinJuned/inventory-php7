@@ -27,6 +27,7 @@ class SalaryController extends Controller
     {
         $Salary = DB::SELECT("SELECT B.id, A.id employee_id, A.employee_id official_id, first_name, designation, department, section, employee_image, 
             0 medic_alw_percent, 0 house_rent_percent, 0 ta_percent, 0 da_percent, 0 providant_fund_percent, 0 tax_percent, 0 fixed_allowance_percent,
+            (CASE WHEN current_pay_doller IS NULL THEN 0 ELSE cast(current_pay_doller as decimal(12,2)) END)current_pay_doller, 
             (CASE WHEN basic_pay IS NULL THEN 0 ELSE cast(basic_pay as decimal(12,2)) END)basic_pay, 
             (CASE WHEN medic_alw IS NULL THEN 0 ELSE cast(medic_alw as decimal(12,2)) END)medic_alw, 
             (CASE WHEN house_rent IS NULL THEN 0 ELSE cast(house_rent as decimal(12,2)) END)house_rent, 
@@ -37,7 +38,7 @@ class SalaryController extends Controller
             (CASE WHEN tax IS NULL THEN 0 ELSE cast(tax as decimal(12,2)) END)tax, 
             (CASE WHEN total_salary IS NULL THEN 0 ELSE cast(total_salary as decimal(12,2)) END)total_salary,  bank_name, acc_no FROM(
             SELECT id, employee_id, first_name, designation, department, section, employee_image, status, deleted_by FROM employees WHERE deleted_by = 0 and status = 'active'
-            )A LEFT JOIN (SELECT id, basic_pay, medic_alw, house_rent, ta, da, providant_fund, tax, fixed_allowance, other_field, other_pay, total_salary, bank_name, acc_no, employee_id FROM salaries
+            )A LEFT JOIN (SELECT id, current_pay_doller, basic_pay, medic_alw, house_rent, ta, da, providant_fund, tax, fixed_allowance, other_field, other_pay, total_salary, bank_name, acc_no, employee_id FROM salaries
             )B ON A.id = B.employee_id");
 
         return compact('Salary');

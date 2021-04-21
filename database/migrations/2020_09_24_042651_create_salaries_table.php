@@ -15,6 +15,7 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
+            $table->double('current_pay_doller')->nullable();
             $table->double('basic_pay')->nullable();
             $table->double('medic_alw')->nullable();
             $table->double('house_rent')->nullable();

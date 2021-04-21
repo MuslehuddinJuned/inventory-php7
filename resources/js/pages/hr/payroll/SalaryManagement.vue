@@ -107,49 +107,55 @@
                 <b-table-simple hover small caption-top responsive class="text-center">
                     <b-thead class="bg-info font-weight-bolder text-white">
                         <b-tr class="border border-dark">
-                            <b-th class="border border-dark">{{$t('salary')}}</b-th> <b-th class="border border-dark">%</b-th> <b-th class="border border-dark">{{$t('amount')}}</b-th>
+                            <b-th class="border border-dark">{{$t('salary')}}</b-th> <b-th class="border border-dark">{{$t('amount')}} ($)</b-th> <b-th class="border border-dark">{{$t('amount')}} (৳)</b-th>
                         </b-tr>
                     </b-thead>
                     <b-tbody>
                         <b-tr>
+                            <b-th class="border border-dark align-middle">{{$t('current_salary')}}</b-th>
+                            <b-td class="border border-dark"><input v-model="task['current_pay_doller']" @keyup="current_salary" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark">{{task['current_salary'].toFixed(2)}}</b-td>
+                        </b-tr>
+                        <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('basic_pay')}}</b-th>
-                            <b-td class="border border-dark"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['basic_pay']" @keyup="basic_pay" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark">{{task['basic_pay_doller']}}</b-td>
+                            <b-td class="border border-dark">{{task['basic_pay']}}</b-td>
+                            <!-- <b-td class="border border-dark"><input v-model="task['basic_pay']" @keyup="basic_pay" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td> -->
                         </b-tr>
                         <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('house_rent')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['house_rent_percent']" @keyup="house_rent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['house_rent']" @keyup="house_rent_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark">{{task['house_rent_doller']}}</b-td>
+                            <b-td class="border border-dark">{{task['house_rent']}}</b-td>
                         </b-tr>
                         <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('medic_alw')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['medic_alw_percent']" @keyup="medic_alw" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['medic_alw']" @keyup="medic_alw_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                        </b-tr>
-                        <b-tr>
-                            <b-th class="border border-dark align-middle">{{$t('ta')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['ta_percent']" @keyup="ta" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['ta']" @keyup="ta_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                        </b-tr>
-                        <b-tr>
-                            <b-th class="border border-dark align-middle">{{$t('da')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['da_percent']" @keyup="da" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['da']" @keyup="da_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['medic_alw_doller']" @keyup="medic_alw" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark">{{task['medic_alw']}}</b-td>
                         </b-tr>
                         <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('fixed_allowance')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['fixed_allowance_percent']" @keyup="fixed_allowance" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['fixed_allowance']" @keyup="fixed_allowance_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['fixed_allowance']" @keyup="fixed_allowance_doller" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th class="border border-dark align-middle">{{$t('ta')}}</b-th>
+                            <b-td class="border border-dark"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['ta']" @keyup="ta_doller" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th class="border border-dark align-middle">{{$t('da')}}</b-th>
+                            <b-td class="border border-dark"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['da']" @keyup="da_doller" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                         </b-tr>
                         <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('providant_fund')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['providant_fund_percent']" @keyup="providant_fund" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['providant_fund']" @keyup="providant_fund_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['providant_fund']" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                         </b-tr>
                         <b-tr>
                             <b-th class="border border-dark align-middle">{{$t('tax')}}</b-th>
-                            <b-td class="border border-dark"><input v-model="task['tax_percent']" @keyup="tax" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
-                            <b-td class="border border-dark"><input v-model="task['tax']" @keyup="tax_percent" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
+                            <b-td class="border border-dark"></b-td>
+                            <b-td class="border border-dark"><input v-model="task['tax']" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control text-center row-fluid m-0 border-0 bg-transparent rounded-0"></b-td>
                         </b-tr>
                     </b-tbody>
                     <b-tfoot>
@@ -184,19 +190,27 @@
                     <div class="col-md-12 mt-5 p-0">
                         <h4>{{$t('salary_details')}}</h4>
                         <div class="row m-0 p-0 col-md-12">
-                            <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('bank_name')}}</p>
+                            <div class="col-md-6 bg-light my-auto">
+                                <p class="my-auto font-weight-bold">{{$t('bank_name')}}</p>
+                            </div>
+                            <div class="col-md-6 bg-light">
+                                <p class="my-auto">{{task['bank_name']}}</p>
+                            </div>
+                        </div>
+                        <div class="row m-0 p-0 col-md-12">
+                            <div class="col-md-6 my-auto bg-info">
+                                <p class="my-auto text-white font-weight-bold">{{$t('acc_no')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['bank_name']}}</p>
+                                <p class="my-auto text-white">{{task['acc_no']}}</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('acc_no')}}</p>
+                                <p class="my-auto font-weight-bold">{{$t('current_salary')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['acc_no']}}</p>
+                                <p class="my-auto">{{(task['current_pay_doller']*82).toFixed(2)}} (${{task['current_pay_doller']}})</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -204,7 +218,7 @@
                                 <p class="my-auto text-white font-weight-bold">{{$t('basic_pay')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['basic_pay']}}</p>
+                                <p class="my-auto text-white">{{task['basic_pay']}} (${{task['basic_pay_doller'].toFixed(2)}})</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -212,7 +226,7 @@
                                 <p class="my-auto font-weight-bold">{{$t('house_rent')}}</p>
                             </div>
                             <div class="col-md-6 bg-light">
-                                <p class="my-auto">{{task['house_rent']}}</p>
+                                <p class="my-auto">{{task['house_rent']}} (${{task['house_rent_doller'].toFixed(2)}})</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -220,7 +234,7 @@
                                 <p class="my-auto text-white font-weight-bold">{{$t('medic_alw')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['medic_alw']}}</p>
+                                <p class="my-auto text-white">{{task['medic_alw']}} (${{task['medic_alw_doller'].toFixed(2)}})</p>
                             </div>
                         </div>
                         <div class="row m-0 p-0 col-md-12">
@@ -268,7 +282,7 @@
                                 <p class="my-auto text-white font-weight-bold">{{$t('total_salary')}}</p>
                             </div>
                             <div class="col-md-6 bg-info">
-                                <p class="my-auto text-white">{{task['total_salary']}}</p>
+                                <p class="my-auto text-white">{{task['total_salary'].toFixed(2)}}</p>
                             </div>
                         </div>
                     </div>
@@ -296,7 +310,7 @@ export default {
             employeeList : [],
             roles: [],
             errors : [],
-            task: {'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'fixed_allowance': 0, 'fixed_allowance_percent': 0, 'providant_fund': 0, 'tax': 0, 'medic_alw_percent': 0, 'house_rent_percent': 0, 'ta_percent': 0, 'da_percent': 0, 'providant_fund_percent': 0, 'tax_percent': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
+            task: {'current_salary': 0, 'basic_pay': 0, 'medic_alw': 0, 'house_rent': 0, 'ta': 0, 'da': 0, 'fixed_allowance': 0, 'fixed_allowance_doller': 0, 'providant_fund': 0, 'tax': 0,'basic_pay_doller' : 0, 'medic_alw_doller': 0, 'house_rent_doller': 0, 'ta_doller': 0, 'da_doller': 0, 'providant_fund_doller': 0, 'tax_doller': 0, 'other_field': null, 'other_pay': null, 'total_salary': 0, 'bank_name': null, 'acc_no': null, 'employee_id': null},
             taskId: null,
             buttonTitle : this.$t('save'),
             disable: false,
@@ -377,13 +391,25 @@ export default {
             this.taskId = id
             this.noprint = 'noprint'
             this.task = this.singleTask(employee_id)
-            this.task['house_rent_percent'] =  this.task['house_rent'] * 100 / this.task['basic_pay']
-            this.task['medic_alw_percent'] =  this.task['medic_alw'] * 100 / this.task['basic_pay']
-            this.task['ta_percent'] =  this.task['ta'] * 100 / this.task['basic_pay']
-            this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay']
-            this.task['fixed_allowance_percent'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay']
-            this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay']
-            this.task['tax_percent'] =  this.task['tax'] * 100 / this.task['basic_pay']
+            // all percent is considered as doller
+            this.task['current_salary'] =  this.task['current_pay_doller'] * 82
+            this.task['house_rent_doller'] =  this.task['house_rent'] / 82
+            this.task['basic_pay_doller'] =  this.task['basic_pay'] / 82
+            this.task['medic_alw_doller'] =  this.task['medic_alw'] / 82
+            this.task['ta_doller'] =  ''
+            this.task['da_doller'] =  ''
+            this.task['fixed_allowance_doller'] =  ''
+            this.task['providant_fund_doller'] =  ''
+            this.task['tax_doller'] =  ''
+
+            // this.task['house_rent_doller'] =  this.task['house_rent'] * 100 / this.task['basic_pay']
+            // this.task['medic_alw_doller'] =  this.task['medic_alw'] * 100 / this.task['basic_pay']
+            // this.task['ta_doller'] =  this.task['ta'] * 100 / this.task['basic_pay']
+            // this.task['da_doller'] =  this.task['da'] * 100 / this.task['basic_pay']
+            // this.task['fixed_allowance_doller'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay']
+            // this.task['providant_fund_doller'] =  this.task['providant_fund'] * 100 / this.task['basic_pay']
+            // this.task['tax_doller'] =  this.task['tax'] * 100 / this.task['basic_pay']
+
             this.$refs['dataView'].show()
         },
 
@@ -406,29 +432,37 @@ export default {
             return [year, mnth, day].join("-");
         },
 
-        basic_pay() {
-            this.task['house_rent'] =  this.task['basic_pay'] * this.task['house_rent_percent'] / 100
-            this.task['medic_alw'] =  this.task['basic_pay'] * this.task['medic_alw_percent'] / 100
-            this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100
-            this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100
-            this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_percent'] / 100
-            this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100
-            this.task['tax'] =  this.task['basic_pay'] * this.task['tax_percent'] / 100
+        current_salary() {
+            this.task['current_salary'] =  this.task['current_pay_doller'] * 82
+            this.task['basic_pay_doller'] =  (this.task['current_pay_doller'] - this.task['medic_alw_doller']) / 1.5
+            this.task['basic_pay'] =  this.task['basic_pay_doller'] * 82
+            this.task['house_rent'] =  this.task['basic_pay'] / 2
+            this.task['house_rent_doller'] =  this.task['basic_pay_doller'] / 2
         },
-        house_rent_percent() { this.task['house_rent_percent'] =  this.task['house_rent'] * 100 / this.task['basic_pay'] },
-        house_rent() { this.task['house_rent'] =  this.task['basic_pay'] * this.task['house_rent_percent'] / 100 },
-        medic_alw_percent() { this.task['medic_alw_percent'] =  this.task['medic_alw'] * 100 / this.task['basic_pay'] },
-        medic_alw() { this.task['medic_alw'] =  this.task['basic_pay'] * this.task['medic_alw_percent'] / 100 },
-        ta_percent() { this.task['ta_percent'] =  this.task['ta'] * 100 / this.task['basic_pay'] }, 
-        ta() { this.task['ta'] =  this.task['basic_pay'] * this.task['ta_percent'] / 100 },
-        da_percent() { this.task['da_percent'] =  this.task['da'] * 100 / this.task['basic_pay'] },
-        da() { this.task['da'] =  this.task['basic_pay'] * this.task['da_percent'] / 100 },
-        fixed_allowance_percent() { this.task['fixed_allowance_percent'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay'] },
-        fixed_allowance() { this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_percent'] / 100 },
-        providant_fund_percent() { this.task['providant_fund_percent'] =  this.task['providant_fund'] * 100 / this.task['basic_pay'] },
-        providant_fund() { this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_percent'] / 100 },
-        tax_percent() { this.task['tax_percent'] =  this.task['tax'] * 100 / this.task['basic_pay'] },
-        tax() { this.task['tax'] =  this.task['basic_pay'] * this.task['tax_percent'] / 100 },
+
+        basic_pay() {
+            this.task['house_rent'] =  this.task['basic_pay'] * this.task['house_rent_doller'] / 100
+            this.task['medic_alw'] =  this.task['basic_pay'] * this.task['medic_alw_doller'] / 100
+            this.task['ta'] =  this.task['basic_pay'] * this.task['ta_doller'] / 100
+            this.task['da'] =  this.task['basic_pay'] * this.task['da_doller'] / 100
+            this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_doller'] / 100
+            this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_doller'] / 100
+            this.task['tax'] =  this.task['basic_pay'] * this.task['tax_doller'] / 100
+        },
+        house_rent_doller() { this.task['house_rent_doller'] =  this.task['house_rent'] * 100 / this.task['basic_pay'] },
+        house_rent() { this.task['house_rent'] =  this.task['basic_pay'] * this.task['house_rent_doller'] / 100 },
+        medic_alw_doller() { this.task['medic_alw_doller'] =  this.task['medic_alw'] * 100 / this.task['basic_pay'] },
+        medic_alw() { this.task['medic_alw'] =  this.task['medic_alw_doller'] * 82 },
+        ta_doller() { this.task['ta_doller'] =  this.task['ta'] * 100 / this.task['basic_pay'] }, 
+        ta() { this.task['ta'] =  this.task['basic_pay'] * this.task['ta_doller'] / 100 },
+        da_doller() { this.task['da_doller'] =  this.task['da'] * 100 / this.task['basic_pay'] },
+        da() { this.task['da'] =  this.task['basic_pay'] * this.task['da_doller'] / 100 },
+        fixed_allowance_doller() { this.task['fixed_allowance_doller'] =  this.task['fixed_allowance'] * 100 / this.task['basic_pay'] },
+        fixed_allowance() { this.task['fixed_allowance'] =  this.task['basic_pay'] * this.task['fixed_allowance_doller'] / 100 },
+        providant_fund_doller() { this.task['providant_fund_doller'] =  this.task['providant_fund'] * 100 / this.task['basic_pay'] },
+        providant_fund() { this.task['providant_fund'] =  this.task['basic_pay'] * this.task['providant_fund_doller'] / 100 },
+        tax_doller() { this.task['tax_doller'] =  this.task['tax'] * 100 / this.task['basic_pay'] },
+        tax() { this.task['tax'] =  this.task['basic_pay'] * this.task['tax_doller'] / 100 },
 
         save() {
             this.disable = !this.disable
