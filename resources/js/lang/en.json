@@ -1,4 +1,7 @@
 { 
+    "current_salary" : "Current Salary",
+    "search" : "Search",
+    "job_card" : "Job Card",
     "all" : "All",
     "set_month" : "Set Month",
     "to" : "to",

@@ -93,6 +93,7 @@
                         <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center"></td>
+                        <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalOpening'].toFixed(0)}}</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalIn'].toFixed(0)}}</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalOut'].toFixed(0)}}</td>
@@ -385,6 +386,7 @@ export default {
                 { key: 'item_image', label : this.$t('image'), sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'border-top border-dark font-weight-bold' },
                 { key: 'item_code', label : this.$t('item_code'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'item', label : this.$t('item'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'specification', label : this.$t('specification'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit', label : this.$t('unit'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'unit_price', label : this.$t('unit_price') + '($)', sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'opening', label : this.$t('opening'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},

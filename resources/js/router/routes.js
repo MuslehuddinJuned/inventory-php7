@@ -46,6 +46,7 @@ export default [
   { path: '/leave-management', name: 'hr.LeaveManagement', component: page('hr/attendance/LeaveManagement.vue') },
   { path: '/upload-attendance', name: 'hr.UploadAttendance', component: page('hr/attendance/UploadAttendance.vue') },
   { path: '/daily-attendance', name: 'hr.DailyAttendance', component: page('hr/attendance/DailyAttendance.vue') },
+  { path: '/job-card', name: 'hr.JobCard', component: page('hr/attendance/JobCard.vue') },
   { path: '/salary-management', name: 'hr.SalaryManagement', component: page('hr/payroll/SalaryManagement.vue') },
   { path: '/salary-sheet', name: 'hr.SalarySheet', component: page('hr/payroll/SalarySheet.vue') },
   { path: '/pay-slip', name: 'hr.PaySlip', component: page('hr/payroll/PaySlip.vue') },
@@ -56,14 +57,14 @@ export default [
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
   { path: '/home', name: 'home', component: page('home.vue') },
-  // { path: '/settings',
-  //   component: page('settings/index.vue'),
-  //   children: [
-  //     { path: '', redirect: { name: 'settings.profile' } },
-  //     // { path: 'role', name: 'settings.role', component: page('settings/role.vue') },
-  //     { path: 'profile', name: 'settings.profile', component: page('settings/profile.vue') },
-  //     { path: 'password', name: 'settings.password', component: page('settings/password.vue') }
-  //   ] },
+  { path: '/settings',
+    component: page('settings/index.vue'),
+    children: [
+      { path: '', redirect: { name: 'settings.profile' } },
+      // { path: 'role', name: 'settings.role', component: page('settings/role.vue') },
+      { path: 'profile', name: 'settings.profile', component: page('settings/profile.vue') },
+      { path: 'password', name: 'settings.password', component: page('settings/password.vue') }
+    ] },
 
   { path: '*', component: page('errors/404.vue') }
 ]
