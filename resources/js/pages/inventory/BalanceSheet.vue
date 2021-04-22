@@ -93,6 +93,7 @@
                         <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center"></td>
+                        <td class="text-white bg-info font-weight-bold text-center"></td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalOpening'].toFixed(0)}}</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalIn'].toFixed(0)}}</td>
                         <td class="text-white bg-info font-weight-bold text-center">{{Total[0]['totalOut'].toFixed(0)}}</td>
