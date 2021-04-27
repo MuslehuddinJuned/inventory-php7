@@ -30,13 +30,27 @@ class SalarysheetController extends Controller
         return compact('Department');
     }
 
-    public function ot($time, $in_time_1, $out_time_2, $ot) {
-        if ($ot) return $ot + $ot_extra;
+    // public function ot($time, $in_time_1, $out_time_2, $ot, $ot_extra) {
+    //     if ($ot) return $ot + $ot_extra;
+    //     if(!$time || strlen($out_time_2) < 5 || strlen($in_time_1) < 5) return 0;
+        
+    //     $diff = floor((strtotime($out_time_2) - strtotime($in_time_1))/3600);
+
+    //     if(($diff - 9) > 0) return $diff - 9;
+    //     return 0;
+    // }
+
+    public function ot($time, $in_time_1, $out_time_2, $ot, $ot_extra) {
+        if ($ot) return $ot;
+        //if ($ot) return $ot + $ot_extra;   //extra OT will not be calculated
         if(!$time || strlen($out_time_2) < 5 || strlen($in_time_1) < 5) return 0;
         
         $diff = floor((strtotime($out_time_2) - strtotime($in_time_1))/3600);
 
-        if(($diff - 9) > 0) return $diff - 9;
+        if(($diff - 9) > 0) {
+            if(($diff - 9) > 1) return 2; // extra OT will not be calculated
+            else return 1;
+        }
         return 0;
     }
 
@@ -165,7 +179,7 @@ class SalarysheetController extends Controller
                 $Salary[$i]->year_mnth = substr($request->start, 0, 7);
                 $Salary[$i]->ot_amount = $Salary[$i]->ot_hour * $Salary[$i]->ot_rate;
                 $Salary[$i]->absent_amount = $Salary[$i]->absent_days * (($Salary[$i]->basic_monthly/$days) + ($Salary[$i]->ta/$days) + ($Salary[$i]->da/$days));
-                $Salary[$i]->salary = $Salary[$i]->salary - $Salary[$i]->ta - $Salary[$i]->da + $Salary[$i]->pf;
+                $Salary[$i]->salary = $Salary[$i]->salary - $Salary[$i]->ta - $Salary[$i]->da - $Salary[$i]->fixed_allowance + $Salary[$i]->pf + $Salary[$i]->tax;
                 $Salary[$i]->gross_pay = $Salary[$i]->salary + $Salary[$i]->ta + $Salary[$i]->da + $Salary[$i]->ot_amount + $Salary[$i]->attendance_bonus + $Salary[$i]->attendance_allowance;
                 $Salary[$i]->not_for_join_amount = $Salary[$i]->not_for_join_days * ($Salary[$i]->gross_pay/$days);
                 $Salary[$i]->total_deduction = $Salary[$i]->pf + $Salary[$i]->absent_amount + $Salary[$i]->not_for_join_amount;
@@ -175,6 +189,16 @@ class SalarysheetController extends Controller
             $data= json_decode( json_encode($Salary), true);
             DB::table('salarysheets')->insert($data);
         }
+
+        // $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, 
+        // ROUND(basic_daily, 2)basic_daily, ROUND(basic_monthly, 2)basic_monthly, ROUND(house_rent, 2)house_rent, ROUND(medic_allowance, 2)medic_allowance, ROUND(A.salary, 2)salary, ROUND(salary_usd, 2)salary_usd, 
+        // covert_rate, ROUND(ta, 2)ta, ROUND(da, 2)da, ROUND(attendance_bonus, 2)attendance_bonus, ROUND(production_bonus, 2)production_bonus, ROUND(worked_friday_hour, 2)worked_friday_hour, 
+        // ROUND(worked_friday_amount, 2)worked_friday_amount, ROUND(worked_holiday_hour, 2)worked_holiday_hour, ROUND(worked_holiday_amount, 2)worked_holiday_amount, ROUND(ot_rate, 2)ot_rate, ot_hour, ot_amount, 
+        // ROUND(fixed_allowance, 2)fixed_allowance, ROUND(attendance_allowance, 2)attendance_allowance, ROUND(fixed_allowance+attendance_allowance, 2)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, 
+        // ROUND(tax, 2)tax, ROUND(deducted, 2)deducted, not_for_join_days, ROUND(not_for_join_amount, 2)not_for_join_amount, lay_off_days, ROUND(lay_off_amount, 2)lay_off_amount, suspense_days, 
+        // ROUND(suspense_amount, 2)suspense_amount, ROUND(gross_pay, 2)gross_pay, ROUND(total_deduction, 2)total_deduction, ROUND(net_pay, 2)net_pay FROM (
+        //     SELECT *  FROM salarysheets WHERE year_mnth = ?
+        // )A LEFT JOIN employees ON A.employee_id = employees.id", [substr($request->start, 0, 7)]);
 
         $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, (fixed_allowance+attendance_allowance)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (SELECT *  FROM salarysheets WHERE year_mnth = ?
             )A LEFT JOIN employees ON A.employee_id = employees.id", [substr($request->start, 0, 7)]);
