@@ -70,6 +70,18 @@
                     <template v-slot:cell(employee_image)="row">
                         <a :href="'/images/employee/' + row.item.employee_image"><b-img :src="'/images/employee/' + row.item.employee_image" style="height: 50px; max-width: 150px;" alt=""></b-img></a>
                     </template>
+                    <!-- <template v-slot:cell(basic_pay)="row">
+                        {{ (row.item.basic_pay).toFixed(2) }}
+                    </template>
+                    <template v-slot:cell(house_rent)="row">
+                        {{ (row.item.house_rent).toFixed(2) }}
+                    </template>
+                    <template v-slot:cell(medic_alw)="row">
+                        {{ (row.item.medic_alw).toFixed(2) }}
+                    </template> -->
+                    <template v-slot:cell(current_pay_doller)="row">
+                        {{ (row.item.current_pay_doller * 82).toFixed(2) }}
+                    </template>
                     </b-table>                    
                     <div class="col-12 mx-auto p-0 noprint">
                         <b-pagination
@@ -541,10 +553,10 @@ export default {
                 { key: 'first_name', label : this.$t('name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'department', label : this.$t('department'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'bank_name', label : this.$t('bank_name'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'acc_no', label : this.$t('acc_no'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'basic_pay', label : this.$t('basic_pay'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
-                { key: 'total_salary', label : this.$t('total_salary'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'house_rent', label : this.$t('house_rent'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'medic_alw', label : this.$t('medic_alw'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
+                { key: 'current_pay_doller', label : this.$t('total_salary'), sortable: true, class: 'text-center align-middle', thClass: 'border-top border-dark font-weight-bold'},
             ]
         },
 
