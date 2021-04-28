@@ -28,6 +28,7 @@
 import Cookies from 'js-cookie'
 import { mapGetters } from 'vuex';
 import Dashboard from './dashboard.vue'
+
 export default {
   middleware: 'auth',
 

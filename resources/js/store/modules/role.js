@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from 'axios';
+import * as types from '../mutation-types'
 
 export const state = {
     module_no: null,
@@ -27,3 +28,10 @@ export const mutations = {
     setModule: (state, module_no) => (state.module_no = module_no),
     setRoles: (state, roles) => (state.roles = roles)
 };
+
+// export default {
+//     state,
+//     getters,
+//     actions,
+//     mutations
+// }
