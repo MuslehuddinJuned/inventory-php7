@@ -336,7 +336,7 @@ export default {
                         k++                  
                     }
                 }
-
+                
                 // for attendance
                 let perAttendanceList = res['Attendance']
                 for (let i = 0; i < perAttendanceList.length; i++) {
@@ -548,10 +548,10 @@ export default {
                 var minutes = Math.floor(diff / 1000 / 60);
                 if (hours < 0) hours = hours + 24;
 
-                if(hours > 11) {
+                if(hours > 11 || (hours > 10 && minutes > 15)) {
                     end1[0] = parseInt(end1[0]) - (hours - 11)
                     if (end1[0] < 0) end1[0] = end1[0] + 24;
-                    return end1[0] + ':' + end1[1]
+                    return end1[0] + ':15'
                 }
                 return end
             }
