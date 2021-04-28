@@ -6,6 +6,7 @@ use App\Attendance;
 use App\Imports\AttendanceImport;
 use DB;
 use Excel;
+use DateTime;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -64,6 +65,42 @@ class AttendanceController extends Controller
 
         // $data = Excel::import(new AttendanceImport, $path);
         $data = Excel::toArray(new AttendanceImport, $path);
+
+        /**************************start mass entry****************************/
+        // $begin = new DateTime( "2015-01-01" );
+        // $end   = new DateTime( "2015-01-31" );
+        // for ($i = $begin; $i <= $end; $i->modify('+1 day')) { 
+        //     if(count($data) > 0 && date('D', strtotime($i->format("Y-m-d"))) != 'Fri') {
+        //         foreach($data as $key => $value)
+        //         {
+        //             foreach($value as $row)
+        //             {
+        //                 $insert_data[] = array(
+        //                     'ac_no'     => $row['AC-No'],
+        //                     'name'      => $row['Name'],
+        //                     'department'=> $row['Department'],
+        //                     'date'      => $i->format("Y-m-d"),
+        //                     'time'      => $row['Time'],
+        //                     'in_time_1' => substr($row['Time'],0,5),
+        //                     'out_time_1'=> substr($row['Time'],6,5),
+        //                     'in_time_2' => substr($row['Time'],12,5),
+        //                     'out_time_2'=> substr($row['Time'],strrpos($row['Time']," ") + 1,5)
+        //                 );
+        //             }
+        //         }
+        //         if(!empty($insert_data)) {
+        //             DB::table('attendances')->insert($insert_data);
+        //             $insert_data = [];
+        //         }
+        //     }
+        // }
+
+        /****************end mass entry*******************/
+
+
+
+        /****************start regular entry*******************/
+
         if(count($data) > 0) {
             foreach($data as $key => $value)
             {
@@ -91,14 +128,10 @@ class AttendanceController extends Controller
             }
             // DB::table('attendances')->insert($insert_data);
         }
+
+        /****************end regular entry*******************/
         
         @unlink($path);
-
-        // if(request()->expectsJson()){
-        //     return response()->json([
-        //         'attendance' => $myArray[0]
-        //     ]);
-        // }
     }
 
     /**
@@ -118,8 +151,27 @@ class AttendanceController extends Controller
     public function daily($attendance)
     {
         $date = date_create($attendance);
+        // $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+        //     SELECT id, employee_id, first_name, last_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active'
+        //     )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ?
+        //     )B ON A.employee_id = B.ac_no ORDER BY employee_id", [$date]);
+
         $Attendance = DB::SELECT("SELECT id, ac_no employee_id, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date = ? ORDER BY employee_id", [$date]);
         $Employee = DB::SELECT("SELECT id, employee_id, first_name, designation, department FROM employees WHERE deleted_by = 0 and status = 'active' ORDER BY employee_id");
+
+        // $array1 = json_decode(json_encode($Attendance), true);
+        // $array2 = json_decode(json_encode($Employee), true);
+        // $someVariable = 'someValue';
+        // $results = array_reduce(array_merge($array1, $array2), function ($carry, $item) use ($someVariable) {
+        //     if (isset($carry[$item['employee_id']])) {
+        //         $carry[$item['employee_id']] = array_merge($carry[$item['employee_id']], $item);
+        //     } else {
+        //         $carry[$item['employee_id']] = $item;
+        //     }
+        //     return $carry;
+        // }, array());
+
+        // $result = $results;
 
         return compact('Attendance', 'Employee');
     }

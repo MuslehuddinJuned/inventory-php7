@@ -1,6 +1,15 @@
 <template>
     <div class="container">
-        <div class="card">
+        <!-- <div v-if="module_no == 1">
+          Inventory
+        </div>
+        <div v-else-if="module_no == 2">
+          HRM
+        </div> -->
+        <div v-if="module_no">
+            <dashboard></dashboard>
+        </div>
+        <div v-else class="card">
             <div class="card-header text-center">
                 <h3 v-if="isBusy"><b-icon icon="circle-fill" animation="throb"></b-icon> Please wait ...</h3>
                 <h3 v-else>{{ $t('choose_a_module') }}</h3>
@@ -18,6 +27,8 @@
 <script>
 import Cookies from 'js-cookie'
 import { mapGetters } from 'vuex';
+import Dashboard from './dashboard.vue'
+
 export default {
   middleware: 'auth',
 
@@ -59,5 +70,9 @@ export default {
           roles: 'role/roles'
       }),
   },
+
+  components: {
+    Dashboard
+  }
 }
 </script>

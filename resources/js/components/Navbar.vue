@@ -4,7 +4,7 @@
       <div class="container">
         <img class="img-responsive mr-2" src="/favicon.ico" width="30px" alt="SUSTipe">
         <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
-          {{ $t('appName') }}
+          SUSTipe
           <!-- SUSTipe -->
         </router-link>
 
@@ -184,12 +184,12 @@
                 {{ user.name }}
               </a>
               <div class="dropdown-menu">
-                <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
+                <!-- <router-link :to="{ name: 'settings.profile' }" class="dropdown-item pl-3">
                   <fa icon="cog" fixed-width />
                   {{ $t('settings') }}
-                </router-link>
+                </router-link> 
 
-                <div class="dropdown-divider" />
+                <div class="dropdown-divider" /> -->
                 <a href="#" class="dropdown-item pl-3" @click.prevent="logout">
                   <fa icon="sign-out-alt" fixed-width />
                   {{ $t('logout') }}
@@ -203,11 +203,11 @@
                   {{ $t('login') }}
                 </router-link>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <router-link :to="{ name: 'register' }" class="nav-link" active-class="active">
                   {{ $t('register') }}
                 </router-link>
-              </li>
+              </li> -->
             </template>
           </ul>
         </div>
@@ -313,9 +313,7 @@ export default {
           year = date.getFullYear(),
           mnth = ("0" + (date.getMonth() + 1)).slice(-2),
           day = '06'
-
-          console.log(date)
-
+          
       var end = new Date([year, mnth, day].join("-"));
       var _second = 1000;
       var _minute = _second * 60;

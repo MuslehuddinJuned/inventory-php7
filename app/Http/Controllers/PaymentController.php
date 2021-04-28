@@ -52,7 +52,6 @@ class PaymentController extends Controller
     {
         if(auth()->user()->id == 1) {
             DB::SELECT("INSERT INTO payments(ac_name, service_name, mnth_of_payment, amount) VALUES ('SHBD','ERP',CURDATE(), ?)", [$payment]);
-            return "Payment done: $payment";
         }
     }
 
