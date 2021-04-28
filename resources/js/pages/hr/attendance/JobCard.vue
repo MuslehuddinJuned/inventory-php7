@@ -144,7 +144,7 @@ export default {
             alert(err.response.data.message);
         })
     },
-
+    
     mounted() {
         fetch(`api/salarysheet`)
         .then(res => res.json())
@@ -371,6 +371,7 @@ export default {
                 this.start_limit = 1
                 this.end_limit = 0
             }
+
             this.attendanceSheet = []
             this.attendanceByDepartment
         },
@@ -489,7 +490,6 @@ export default {
             if ((hours - 9) > 2) return hours - 11
             return null
         },
-
     },
 
     computed: {
@@ -507,6 +507,7 @@ export default {
         },
 
         month_year() {
+
             if(this.attendanceMonth) {
                 var date = new Date(this.attendanceMonth),
                 year = date.getFullYear(),
