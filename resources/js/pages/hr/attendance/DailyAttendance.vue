@@ -336,7 +336,7 @@ export default {
                         k++                  
                     }
                 }
-                console.log(this.personnelLeave)
+                
                 // for attendance
                 let perAttendanceList = res['Attendance']
                 for (let i = 0; i < perAttendanceList.length; i++) {

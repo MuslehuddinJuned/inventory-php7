@@ -372,8 +372,9 @@ export default {
                 this.end_limit = 0
             }
 
-            this.attendanceSheet = []
-            this.attendanceByDepartment
+            this.fetchData()
+            // this.attendanceSheet = []
+            // this.attendanceByDepartment
         },
 
         convertDate(str) {
