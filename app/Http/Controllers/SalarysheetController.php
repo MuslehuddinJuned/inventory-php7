@@ -182,7 +182,7 @@ class SalarysheetController extends Controller
                 $Salary[$i]->salary = $Salary[$i]->salary - $Salary[$i]->ta - $Salary[$i]->da - $Salary[$i]->fixed_allowance + $Salary[$i]->pf + $Salary[$i]->tax;
                 $Salary[$i]->gross_pay = $Salary[$i]->salary + $Salary[$i]->ta + $Salary[$i]->da + $Salary[$i]->ot_amount + $Salary[$i]->attendance_bonus + $Salary[$i]->attendance_allowance;
                 $Salary[$i]->not_for_join_amount = $Salary[$i]->not_for_join_days * ($Salary[$i]->gross_pay/$days);
-                $Salary[$i]->total_deduction = $Salary[$i]->pf + $Salary[$i]->absent_amount + $Salary[$i]->not_for_join_amount;
+                $Salary[$i]->total_deduction = $Salary[$i]->pf + $Salary[$i]->tax + $Salary[$i]->absent_amount + $Salary[$i]->not_for_join_amount;
                 $Salary[$i]->net_pay = $Salary[$i]->gross_pay - $Salary[$i]->total_deduction;
             }
 
@@ -200,7 +200,8 @@ class SalarysheetController extends Controller
         //     SELECT *  FROM salarysheets WHERE year_mnth = ?
         // )A LEFT JOIN employees ON A.employee_id = employees.id", [substr($request->start, 0, 7)]);
 
-        $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, (fixed_allowance+attendance_allowance)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (SELECT *  FROM salarysheets WHERE year_mnth = ?
+        $Salarysheet = DB::SELECT("SELECT A.id, checked, employees.employee_id, first_name, last_name, designation, department, section, work_location, start_date, employee_image, year_mnth, no_fo_days, basic_daily, basic_monthly, house_rent, medic_allowance, A.salary, salary_usd, covert_rate, ta, da, attendance_bonus, production_bonus, worked_friday_hour, worked_friday_amount, worked_holiday_hour, worked_holiday_amount, ot_rate, ot_hour, ot_amount, fixed_allowance, attendance_allowance, (fixed_allowance+attendance_allowance)total_allowance, present_days, holidays, absent_days, absent_amount, leave_days, advance, pf, tax, deducted, not_for_join_days, not_for_join_amount, lay_off_days, lay_off_amount, suspense_days, suspense_amount, gross_pay, total_deduction, net_pay FROM (
+            SELECT *  FROM salarysheets WHERE year_mnth = ?
             )A LEFT JOIN employees ON A.employee_id = employees.id", [substr($request->start, 0, 7)]);
 
         if(request()->expectsJson()){

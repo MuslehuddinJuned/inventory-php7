@@ -328,8 +328,8 @@
                         <div class="col-4 text-right">{{(task['advance'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(task['pf'] || 0).toFixed(2)}}</div>
-                        <div class="col-8">Penalty (জরিমানা)</div>
-                        <div class="col-4 text-right">{{(0).toFixed(2)}}</div>
+                        <div class="col-8">Income Tax (আয়কর)</div>
+                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(task['deducted'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
@@ -437,8 +437,8 @@
                         <div class="col-4 text-right">{{(task['advance'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(task['pf'] || 0).toFixed(2)}}</div>
-                        <div class="col-8">Penalty (জরিমানা)</div>
-                        <div class="col-4 text-right">{{(0).toFixed(2)}}</div>
+                        <div class="col-8">Income Tax (আয়কর)</div>
+                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(task['deducted'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
@@ -750,6 +750,7 @@ export default {
                     'ID': 'employee_id',
                     'Name': 'first_name',
                     'Designation': 'designation',
+                    'Joining Date': 'start_date',
                     'Basic (Monthly)': 'basic_monthly',
                     'House Rent': 'house_rent',
                     'Medical Allowance': 'medic_allowance',
