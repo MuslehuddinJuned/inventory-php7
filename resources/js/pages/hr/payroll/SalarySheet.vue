@@ -835,7 +835,7 @@ export default {
                 { key: 'employee_id', label : 'ID', sortable: true, class: 'text-center align-middle', tdClass: 'p-0', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 { key: 'first_name', label : this.$t('name'), sortable: true, stickyColumn: true, class: 'text-center align-middle bg-white bg-white', thClass: 'border-top border-dark font-weight-bold'},
                 { key: 'designation', label : this.$t('designation'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
-                // { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
+                { key: 'start_date', label : this.$t('joining_date'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 // { key: 'no_fo_days', label : this.$t('days'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 // { key: 'basic_daily', label : this.$t('basic_daily'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
                 { key: 'basic_monthly', label : this.$t('basic_monthly'), sortable: true, class: 'text-center align-middle', thClass: 'bg-white border-top border-dark font-weight-bold'},
