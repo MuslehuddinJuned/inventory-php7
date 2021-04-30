@@ -314,8 +314,6 @@ export default {
           mnth = ("0" + (date.getMonth() + 1)).slice(-2),
           day = '06'
 
-          console.log(date)
-
       var end = new Date([year, mnth, day].join("-"));
       var _second = 1000;
       var _minute = _second * 60;
