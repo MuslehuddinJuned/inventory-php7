@@ -98,6 +98,7 @@ export default {
             start_limit: 1,
             end_limit: 0,
             all: 0,
+            audit: true,
             holiday: [],
             weeklyHoliday: [],
             n_present: [],
