@@ -114,7 +114,7 @@
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(data.pf + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Income Tax (আয়কর)</div>
-                        <div class="col-4 text-right">{{(data.tax).toFixed(2)}}</div>
+                        <div class="col-4 text-right">{{(data.tax + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(data.deducted + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
@@ -222,7 +222,7 @@
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(data.pf + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Income Tax (আয়কর)</div>
-                        <div class="col-4 text-right">{{(data.tax).toFixed(2)}}</div>
+                        <div class="col-4 text-right">{{(data.tax + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(data.deducted + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
