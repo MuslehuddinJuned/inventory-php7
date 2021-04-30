@@ -70,8 +70,8 @@ export default {
 
   data: () => ({
     form: new Form({
-      email: 'demo@sustipe.com',
-      password: '123456'
+      email: '',
+      password: ''
     }),
     remember: false
   }),

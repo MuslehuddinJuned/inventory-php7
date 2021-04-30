@@ -1,7 +1,7 @@
 <template>
   <div class="flex-center position-ref full-height">
     <div class="content">
-        <!-- <div class="title m-b-md">
+        <div class="title m-b-md">
             {{ $t('appName') }}
         </div>
 
@@ -9,8 +9,8 @@
           <router-link :to="{ name: 'login' }">
             {{ $t('software_title') }}
           </router-link>
-        </div> -->
-        <div class="title m-b-md">
+        </div>
+        <!-- <div class="title m-b-md">
             SUSTipe Realtime Solution
         </div>
 
@@ -19,12 +19,12 @@
             {{ $t('software_title') }}
           </router-link>
         </div>
-        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-primary text-white p-2">Human Resource Management</a>
-        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-primary text-white p-2">Inventory Management</a>
-        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-primary text-white p-2">Supply Chain Management</a>
-        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-primary text-white p-2">Production</a>
-        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-primary text-white p-2">Planning</a>
-        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-primary text-white p-2">IE Tools</a>
+        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-outline-purple p-2">Human Resource Management</a>
+        <a href="https://www.hrm.sustipe.com/home" class="text-nowrap mdb btn btn-outline-purple p-2">Inventory Management</a>
+        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Supply Chain Management</a>
+        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Production</a>
+        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">Planning</a>
+        <a href="https://www.sustipe.com" class="text-nowrap mdb btn btn-outline-purple p-2">IE Tools</a> -->
     </div>
   </div>
 </template>
