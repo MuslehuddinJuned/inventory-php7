@@ -236,7 +236,7 @@
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 my-auto bg-light">
-                                <p class="my-auto font-weight-bold">{{$t('In Time')}}</p>
+                                <p class="my-auto font-weight-bold">In Time</p>
                             </div>
                             <div class="col-md-6 bg-light">
                                 <p class="my-auto">{{task['start_time']}}</p>
@@ -244,7 +244,7 @@
                         </div>
                         <div class="row m-0 p-0 col-md-12">
                             <div class="col-md-6 bg-info my-auto">
-                                <p class="my-auto text-white font-weight-bold">{{$t('Out Time')}}</p>
+                                <p class="my-auto text-white font-weight-bold">Out Time</p>
                             </div>
                             <div class="col-md-6 bg-info">
                                 <p class="my-auto text-white">{{task['end_time']}}</p>
@@ -384,7 +384,7 @@ export default {
         this.isBusy = true
         this.src = '/images/employee/'
 
-        fetch(`api/employee/1`)
+        fetch(`api/employee/exit`)
         .then(res => res.json())
         .then(res => {
             this.employeeList = res['EmployeeList'];
