@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('salarysheet', 'SalarysheetController')->middleware('can:salary_sheet_View');
     Route::get('dailyattend/{date}', 'AttendanceController@daily')->middleware('can:upload_attendance_View');
     Route::get('persattend/{id}/{start}/{end}', 'AttendanceController@personnel')->middleware('can:upload_attendance_View');
-    Route::get('jobcard/{department}/{date}', 'AttendanceController@personnel')->middleware('can:upload_attendance_View');
+    Route::get('jobcard/{department}/{start}/{end}', 'AttendanceController@jobcard')->middleware('can:upload_attendance_View');
     Route::get('absent/{id}/{date}', 'AttendanceController@absent')->middleware('can:leave_management_View');
     Route::resource('attendance', 'AttendanceController')->middleware('can:upload_attendance_View');
     Route::resource('personnel', 'PersonnelController')->middleware('can:personnel_file_View');
