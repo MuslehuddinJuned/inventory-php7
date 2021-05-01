@@ -226,6 +226,26 @@ class AttendanceController extends Controller
         return compact('absentList', 'holiday');
     }
 
+    public function jobcard($department, $start, $end)
+    {
+        $start = date_create($start);
+        $end = date_create($end);
+        $Attendance = DB::SELECT("SELECT A.id, employee_id, first_name, last_name, designation, department, employee_image, weekly_holiday, null status,
+            date, DAYNAME(date)day, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM(
+            SELECT id, employee_id, first_name, last_name, designation, department, employee_image, weekly_holiday FROM employees WHERE department = ? and deleted_by = 0 and status = 'active'
+            )A LEFT JOIN (SELECT id, ac_no, date, time, in_time_1, in_time_2, out_time_1, out_time_2, ot, ot_extra FROM attendances WHERE date BETWEEN ? AND ?
+            )B ON A.employee_id = B.ac_no ORDER BY employee_id, date", [$department, $start, $end]);
+            
+        $Leave = DB::SELECT("SELECT id, department, leave_type, leave_start, leave_end, day_count, A.employee_id FROM (
+            SELECT id, department, employee_id FROM employees WHERE department = ? AND deleted_by = 0 AND status = 'active'
+            )A LEFT JOIN (SELECT leave_type, leave_start, leave_end, day_count, employee_id FROM usedleaves WHERE (leave_start BETWEEN ? AND ?) OR (leave_end BETWEEN ? AND ?)
+            )B ON A.id = B.employee_id ORDER BY employee_id", [$department, $start, $end, $start, $end]);
+
+        $Holiday = DB::SELECT("SELECT  event, yearly_holiday FROM holidays WHERE yearly_holiday BETWEEN ? AND ?", [$start, $end]);
+
+        return compact('Attendance', 'Leave', 'Holiday');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
