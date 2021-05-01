@@ -177,7 +177,6 @@ class AttendanceController extends Controller
         return compact('absentList', 'holiday');
     }
 
-
     public function jobcard($department, $start, $end)
     {
         $start = date_create($start);
