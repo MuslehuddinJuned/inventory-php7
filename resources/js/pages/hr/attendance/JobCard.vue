@@ -8,7 +8,7 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text">{{$t('set_month')}}</div>
                         </div>
-                        <input type="date" @change="changeView" v-model="attendanceMonth" class="form-control">
+                        <input type="date" v-model="attendanceMonth" class="form-control">
                     </div>
                 </div>
             </div>
@@ -179,6 +179,7 @@ export default {
         },
 
         fetchData() {
+            this.isBusy = true
             var date = new Date(this.attendanceMonth),
                 year = date.getFullYear(),
                 mnth = ("0" + (date.getMonth() + 1)).slice(-2)
@@ -186,6 +187,7 @@ export default {
             let end = this.convertDate(new Date(year, mnth, 0))
             let first = new Date(start)
             let last = new Date(end)
+
             
             this.all = this.employeeListByDept.length
 
@@ -201,7 +203,7 @@ export default {
                 fetch(`api/jobcard/${this.DepartmentName}/${start}/${end}`)
                 .then(res => res.json())
                 .then(res => {
-                    this.isBusy = true
+                    
                     // For Holiday
                     this.holiday = res['Holiday']
 
@@ -217,7 +219,6 @@ export default {
                             k++                  
                         }
                     }
-
                     // for attendance
                     let perAttendanceList = res['Attendance']
                     for (let i = 0; i < perAttendanceList.length; i++) {
@@ -232,6 +233,7 @@ export default {
                     
                     let j=0, sn = 0, check = false, dates = []
                     for (let z = 0; z < this.employeeListByDept.length; z++) {
+                        this.isBusy = true
                         dates[z] = new Date(start)
                         if (perAttendanceList[j]['id'] == this.employeeListByDept[z]['id']) {
                             // For weekly holiday
@@ -259,8 +261,9 @@ export default {
                                 // j = 0
                                 check = false
                                 for (j; j < perAttendanceList.length; j++) {
-                                        if(perAttendanceList[j]['date'] == this.convertDate(dates[z])) {
-                                            this.perAttendanceList[sn] = perAttendanceList[j]
+                                    console.log(perAttendanceList[j])
+                                    if(perAttendanceList[j]['date'] == this.convertDate(dates[z])) {
+                                        this.perAttendanceList[sn] = perAttendanceList[j]
                                             this.perAttendanceList[sn]['regular_days'] = 1
                                             this.n_regular_days[z]++
                                             if (this.perAttendanceList[sn]['in_time_1'].length > 0 && this.perAttendanceList[sn]['in_time_1'] != '00:00') {
@@ -368,12 +371,12 @@ export default {
         },
 
         changeView(val = null) {
+            this.jobCards = []
             if (val == 'all') {
                 this.start_limit = 1
                 this.end_limit = 0
             }
-
-            this.fetchData()
+            // this.fetchData()
             // this.attendanceSheet = []
             // this.attendanceByDepartment
         },
@@ -531,6 +534,7 @@ export default {
 
         employeeListByDept() {
             let array = [], k=0
+            this.jobCards = []
             if (this.DepartmentName == 'All') {
                 array = this.employeeList
             } else {
