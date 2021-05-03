@@ -328,8 +328,10 @@
                         <div class="col-4 text-right">{{(task['advance'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(task['pf'] || 0).toFixed(2)}}</div>
-                        <div class="col-8">Income Tax (আয়কর)</div>
-                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <!-- <div class="col-8">Income Tax (আয়কর)</div>
+                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div>                         -->
+                        <div class="col-8">Penalty (জরিমানা)</div>
+                        <div class="col-4 text-right">0.00</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(task['deducted'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
@@ -343,9 +345,9 @@
                         <div class="col-8">Amount (টাকা)</div>
                         <div class="col-4 text-right">{{(task['lay_off_amount'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Total Deduction (মোট বিয়োজন )</div>
-                        <div class="col-4 text-right border-top border-bottom border-dark">{{(task['total_deduction'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <div class="col-4 text-right border-top border-bottom border-dark">{{((task['total_deduction'] - task['tax']) + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">NET PAY (প্রাপ্ত বেতন)</div>
-                        <div class="col-4 text-right border-bottom border-dark border-3">{{(task['net_pay'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <div class="col-4 text-right border-bottom border-dark border-3">{{((task['net_pay'] + task['tax']) + 1e-9 || 0).toFixed(2)}}</div>
                     </div>
                     <div class="col-2 mt-5"></div>
                     <div class="col-3 text-center border-top border-dark mt-5">Prepared by</div>
@@ -437,8 +439,10 @@
                         <div class="col-4 text-right">{{(task['advance'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Provident  Fund (ভবিষ্যত তহবিল)</div>
                         <div class="col-4 text-right">{{(task['pf'] || 0).toFixed(2)}}</div>
-                        <div class="col-8">Income Tax (আয়কর)</div>
-                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <!-- <div class="col-8">Income Tax (আয়কর)</div>
+                        <div class="col-4 text-right">{{(task['tax'] + 1e-9 || 0).toFixed(2)}}</div> -->
+                        <div class="col-8">Penalty (জরিমানা)</div>
+                        <div class="col-4 text-right">0.00</div>
                         <div class="col-8">Ded'l Adjustment (কর্তনযোগ্য সম্বনয়)</div>
                         <div class="col-4 text-right">{{(task['deducted'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Subscription For W. A. (কল্যানতহবিলে চাঁদা)</div>
@@ -452,9 +456,9 @@
                         <div class="col-8">Amount (টাকা)</div>
                         <div class="col-4 text-right">{{(task['lay_off_amount'] + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">Total Deduction (মোট বিয়োজন )</div>
-                        <div class="col-4 text-right border-top border-bottom border-dark">{{(task['total_deduction'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <div class="col-4 text-right border-top border-bottom border-dark">{{((task['total_deduction'] - task['tax']) + 1e-9 || 0).toFixed(2)}}</div>
                         <div class="col-8">NET PAY (প্রাপ্ত বেতন)</div>
-                        <div class="col-4 text-right border-bottom border-dark border-3">{{(task['net_pay'] + 1e-9 || 0).toFixed(2)}}</div>
+                        <div class="col-4 text-right border-bottom border-dark border-3">{{((task['net_pay'] - task['tax']) + 1e-9 || 0).toFixed(2)}}</div>
                     </div>
                     <div class="col-2 mt-5"></div>
                     <div class="col-3 text-center border-top border-dark mt-5">Prepared by</div>
