@@ -78,10 +78,14 @@ export default {
 
   methods: {
     async login () {
-      if (this.paymentMethod == 0) {
-        this.$router.push({ name: 'etc.Payment' })
-        return
-      }
+      // Start for paument check-----------------
+
+      // if (this.paymentMethod == 0) {
+      //   this.$router.push({ name: 'etc.Payment' })
+      //   return
+      // }
+      // End for paument check-------------------
+
       // Submit the form.
       const { data } = await this.form.post('/api/login')
 
@@ -100,9 +104,11 @@ export default {
   },
 
   computed: {
-    paymentMethod() {
-      return Cookies.get('payment')
-    },
+    // Start for paument check-----------------
+    // paymentMethod() {
+    //   return Cookies.get('payment')
+    // },
+    // End for paument check-----------------
   },
 }
 </script>

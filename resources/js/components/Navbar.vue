@@ -249,31 +249,33 @@ export default {
   mounted() {
     this.$store.dispatch('role/chooseModule')
 
-    let payment = [], countDays = new Date()
+    // Start for paument check-----------------
+    // let payment = [], countDays = new Date()
 
-    fetch(`api/payment`)
-    .then(res => res.json())
-    .then(res => {
-      payment = res['payment'];
-      if (payment.length == 0) {
-        this.CountDownTimer()
-        this.$refs['payment'].show()
-        if(countDays.getDate()>5) {
-          Cookies.set('payment', 0, { expires: 365 })
-          if (this.user) { 
-            // Log out the user.
-            this.$store.dispatch('auth/logout')
+    // fetch(`api/payment`)
+    // .then(res => res.json())
+    // .then(res => {
+    //   payment = res['payment'];
+    //   if (payment.length == 0) {
+    //     this.CountDownTimer()
+    //     this.$refs['payment'].show()
+    //     if(countDays.getDate()>5) {
+    //       Cookies.set('payment', 0, { expires: 365 })
+    //       if (this.user) { 
+    //         // Log out the user.
+    //         this.$store.dispatch('auth/logout')
 
-            // Redirect to login.
-            this.$router.push({ name: 'login' })
-          }
-        }
-      }
+    //         // Redirect to login.
+    //         this.$router.push({ name: 'login' })
+    //       }
+    //     }
+    //   }
       
-      if (payment.length > 0 || countDays.getDate()<6) {        
-        Cookies.set('payment', 1, { expires: 365 })
-      }
-    })
+    //   if (payment.length > 0 || countDays.getDate()<6) {        
+    //     Cookies.set('payment', 1, { expires: 365 })
+    //   }
+    // })
+    // End for paument check-----------------
 
   },
 
