@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Holiday;
 use Illuminate\Http\Request;
+use DB;
 
 class HolidayController extends Controller
 {
@@ -24,7 +25,9 @@ class HolidayController extends Controller
     public function index()
     {
         $HolidayList = Holiday::orderBy('yearly_holiday', 'asc')->get();
-        return compact('HolidayList');
+        $remainHoliday = DB::select('SELECT event, yearly_holiday FROM holidays WHERE yearly_holiday >= CURDATE() ORDER BY yearly_holiday ASC');
+
+        return compact('HolidayList', 'remainHoliday');
     }
 
     /**

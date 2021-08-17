@@ -1,4 +1,6 @@
 { 
+    "notice_board" : "Notice Board",
+    "anniversary" : "Anniversary",
     "current_salary" : "Current Salary",
     "search" : "Search",
     "job_card" : "Job Card",
