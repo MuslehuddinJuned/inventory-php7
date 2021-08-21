@@ -525,10 +525,10 @@ export default {
                     if(err.response.status == 422){
                         this.errors = err.response.data.errors
                         this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
-                    }
+                    } else alert(err.response.data.message)
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
-                    alert(err.response.data.message)                      
+                                          
                 })
             } else {
                 axios.patch(`api/inventory/${this.taskId}`, this.task[0], options)
@@ -544,7 +544,8 @@ export default {
                 .catch(err => {
                     if(err.response.status == 422){
                         this.errors = err.response.data.errors
-                    }
+                        this.$toast.error(this.$t('required_field'), this.$t('error'), {timeout: 3000, position: 'center'})
+                    } else alert(err.response.data.message)
                     this.disable = !this.disable
                     this.buttonTitle = this.$t('save')
                 });
