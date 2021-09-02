@@ -232,4 +232,12 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function payment(){
         return $this->hasMany(Payment::class);
     }
+
+    public function m_attendance(){
+        return $this->hasMany(M_attendance::class);
+    }
+
+    public function m_employee(){
+        return $this->hasMany(M_employee::class);
+    }
 }
