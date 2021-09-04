@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\M_attendance;
 use Illuminate\Http\Request;
+use DB;
 
 class MAttendanceController extends Controller
 {
@@ -35,7 +36,34 @@ class MAttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        switch ($request['others']) {
+            case 'In':
+                $request['in_time'] = date('H:i:s', strtotime(gmdate("H:i:s")) + 3600*6);
+                $request['others'] = null;
+                break;
+            case 'Out':
+                $request['out_time'] = date('H:i:s', strtotime(gmdate("H:i:s")) + 3600*6);
+                $request['others'] = null;
+                break;            
+            default:
+                # code...
+                break;
+        }
+
+        $M_attendance = new M_attendance;
+        $M_attendance->others = $request['others'];
+        $M_attendance->in_time = $request['in_time'];
+        $M_attendance->out_time = $request['out_time'];
+        $M_attendance->att_date = $request['att_date'];
+        $M_attendance->employee_id = $request['employee_id'];
+
+        $M_attendance->save();
+
+        // if(request()->expectsJson()){
+        //     return response()->json([
+        //         'attendance' => $attendance
+        //     ]);
+        // }
     }
 
     /**
@@ -44,9 +72,14 @@ class MAttendanceController extends Controller
      * @param  \App\M_attendance  $m_attendance
      * @return \Illuminate\Http\Response
      */
-    public function show(M_attendance $m_attendance)
+    public function show($att_date)
     {
-        //
+        $attendance = DB::SELECT('SELECT A.id, B.id att_id, name, id_no, designation, att_date, in_time, out_time, others FROM(
+            SELECT id, name, id_no, designation FROM m_employees
+                )A LEFT JOIN (SELECT id, att_date, in_time, out_time, others, employee_id FROM m_attendances WHERE att_date = ?
+                )B ON A.id = B.employee_id', [$att_date]);
+
+        return compact ('attendance');
     }
 
     /**

@@ -54,6 +54,12 @@ export default [
 
   { path: '/payment', name: 'etc.Payment', component: page('etc/Payment.vue') },
 
+  // Start Majesto
+  { path: '/majesto-attendance', name: 'majesto.Attendance', component: page('majesto/Attendance.vue') },
+
+  // End Majesto
+
+
 
   { path: '/role', name: 'settings.role', component: page('settings/role.vue') },
   { path: '/home', name: 'home', component: page('home.vue') },

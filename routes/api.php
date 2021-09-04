@@ -73,3 +73,6 @@ Route::group(['middleware' => 'guest:api'], function () {
 });
 
 Route::resource('payment', 'PaymentController');
+
+Route::resource('m_attendance', 'MAttendanceController');
+Route::resource('m_employee', 'MEmployeeController');
