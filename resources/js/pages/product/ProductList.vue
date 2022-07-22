@@ -207,10 +207,10 @@
                     </b-table>
                 </div>                               -->
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                     <h3 class="panel-title float-left">{{ title }}</h3> 
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('product_details_Insert')" @click.prevent="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>
@@ -264,10 +264,10 @@
                     <span class="font-weight-bold">{{ $t('remarks')}}:</span> {{taskHead[0]['remarks']}}
                 </div>                            
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                     <h3 class="panel-title float-left">{{ $t('product_details') }}</h3> 
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="row m-0 p-0 col-md-12">
                     <div class="col-md-5">
                         <button v-if="checkRoles('product_details_Delete')" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>

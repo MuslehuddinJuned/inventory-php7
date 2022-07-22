@@ -151,10 +151,10 @@
                     </div>
                 </div>
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <b-form-select @change="prodStoreMethod" v-model="prodStore" :options="prodStoreList" value-field="id" text-field="name"></b-form-select>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('production_Update')" @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>

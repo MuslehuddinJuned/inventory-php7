@@ -303,7 +303,7 @@
                     </div>
                 </div>                                                
             </div>                        
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="saveExit" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
@@ -474,7 +474,7 @@
                     </div>
                 </div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="col-md-12">
                     <div class="col-md-5 float-left">
                         <button v-if="checkRoles('employee_profile_Delete')" @click="employeeExit" class="mdb btn btn-outline-danger float-left">{{ $t('employee_exit') }}</button>
@@ -513,7 +513,7 @@
                     <input type="date" class="form-control" id="effective_date" name="effective_date" v-model="exit['effective_date']">
                 </div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('employee_profile_Delete')" @click="destroy" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }} </button>
                 <button @click="$refs['dataExit'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>

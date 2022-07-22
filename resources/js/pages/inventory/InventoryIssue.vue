@@ -122,7 +122,7 @@
                     </b-table>
                 </div>                              
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="row m-0 p-0 col-md-12">
                     <div class="onlyprint fixed-bottom">
                         <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>

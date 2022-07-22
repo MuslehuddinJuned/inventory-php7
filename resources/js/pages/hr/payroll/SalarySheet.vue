@@ -245,7 +245,7 @@
         <!-- Start view Details Modal -->
         <b-modal class="b-0" ref="dataView" id="dataView" size="xxl" :title="$t('employee_profile')" no-close-on-backdrop>
             
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="col-12 row m-0 p-0">
                     <div class="col-4 border-bottom">
                         Payslip (বেতন রশিদ)
@@ -356,7 +356,7 @@
                     <div class="col-2 mt-5"></div>                    
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="col-12 row m-0 p-0">
                     <div class="col-4 border-bottom">
                         Payslip (বেতন রশিদ)

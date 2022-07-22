@@ -100,7 +100,7 @@
                     <input type="text" class="form-control" v-model="task['event']">
                 </div>                             
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('holiday_management_Delete') && taskId" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
                 <button v-if="checkRoles('holiday_management_Insert')" @click="update" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>

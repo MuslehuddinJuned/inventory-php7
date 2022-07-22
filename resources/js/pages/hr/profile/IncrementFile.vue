@@ -182,10 +182,10 @@
                     <p>ধন্যবাদান্তে,</p>
                 </div>
             </div>                        
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="text-center"><h2>Letter of Increment</h2></div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="row m-0 p-0 col-md-12">
                     <div class="onlyprint fixed-bottom">
                         <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">Head of Dept.</div>
@@ -283,7 +283,7 @@
                     </b-table>
                 </div> 
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="d-flex align-items-center col-12 m-0 p-0" :class="noprint">
                     <h3 class="panel-title float-left">{{ $t('increment_file') }}</h3>                     
                     <div class="ml-auto">
@@ -291,7 +291,7 @@
                     </div>
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
         </b-modal>

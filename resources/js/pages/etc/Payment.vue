@@ -15,7 +15,7 @@
                 <div v-if="paymentMethod == 'Nexus'" class="col-md-6 text-center mx-auto"><b-img fluid src="https://i.pinimg.com/originals/3a/c1/19/3ac11952f81cf1daa8a48655591178f5.jpg" alt="Nexus Payment" style="cursor: pointer;"></b-img></div>
                 <div v-if="paymentMethod == 'SEBL'" class="col-md-6 text-center mx-auto"><b-img fluid src="https://i.pinimg.com/originals/d3/52/22/d352223f618bafb4f3e967f05b6b1dd8.jpg" alt="Nexus Payment" style="cursor: pointer;"></b-img></div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="$refs['payment'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>
         </b-modal>                    

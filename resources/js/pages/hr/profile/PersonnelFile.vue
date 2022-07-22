@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>                        
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="col-md-12">
                     <div class="col-md-5 float-left">
                         <button v-if="checkRoles('personnel_file_Delete') && taskId" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
@@ -175,7 +175,7 @@
                     </b-table>
                 </div> 
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="d-flex align-items-center col-12 m-0 p-0">
                     <h3 class="panel-title float-left">{{ $t('personnel_file') }}</h3>                     
                     <div class="ml-auto">
@@ -183,7 +183,7 @@
                     </div>
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
         </b-modal>

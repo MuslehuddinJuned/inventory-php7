@@ -192,7 +192,7 @@
                     <input type="date" class="form-control" v-model="taskDetails[0]['leave_end']">
                 </div>                              
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="row m-0 p-0 col-12">
                     <div class="col-md-4">
                         <button v-if="checkRoles('leave_management_Delete') && taskDetailsId" @click="destroy" class="mdb btn btn-outline-danger float-left">{{ $t('delete') }}</button>
@@ -260,13 +260,13 @@
                     </b-table>
                 </div>                              
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <h3 class="panel-title float-left">{{ $t('personal_leave_management') }}</h3> 
                 <div class="ml-auto">
                     <button v-if="checkRoles('leave_management_Insert')" @click="editDetails(null)" class="mdb btn btn-outline-info" v-b-modal.dataEdit>{{ $t('InsertNew') }}</button>
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right">{{$t('Close')}}</button>
             </template>
         </b-modal>

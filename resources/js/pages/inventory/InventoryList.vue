@@ -186,7 +186,7 @@
                             </div>
                                                             
                         </div>                        
-                        <template v-slot:modal-footer="">
+                        <template v-slot:modal-footer>
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                             <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
                         </template>
@@ -227,7 +227,7 @@
                     </div>
                 </div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="storeTask == 'insert' && checkRoles('store_Insert')" @click="saveStore" class="mdb btn btn-outline-default" :disabled="disable"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{ buttonTitle }}</button>
                 <button v-if="storeTask == 'update' && checkRoles('store_Update')" @click="saveStore" class="mdb btn btn-outline-default" :disabled="disable"><i class="fas fa-spinner fa-spin" :class="loading"></i> {{ buttonTitle }}</button>
                 <button @click="$refs['dataStore'].hide()" type="button" class="mdb btn btn-outline-mdb-color">Close</button>

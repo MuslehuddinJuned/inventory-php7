@@ -160,7 +160,7 @@
                     </b-tfoot>
                 </b-table-simple>
             </div>                        
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="$refs['dataEdit'].hide()" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
@@ -274,7 +274,7 @@
                     </div>
                 </div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('salary_management_Update')" @click="$refs['dataEdit'].show()" class="mdb btn btn-outline-default float-right">{{ $t('edit') }}</button>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
             </template>

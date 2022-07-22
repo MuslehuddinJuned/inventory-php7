@@ -134,7 +134,7 @@
                     </b-table>
                 </div>                              
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="col-md-9">
                     <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
                 </div>
@@ -142,7 +142,7 @@
                     <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button v-if="checkRoles('requisition_Insert')" @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                 <button @click="archive" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
             </template>
@@ -187,7 +187,7 @@
                     </b-table>
                 </div>                              
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <div class="col-md-9">
                     <h3 class="panel-title float-left">{{ $t('requisition') }}</h3> 
                 </div>
@@ -195,7 +195,7 @@
                     <button @click="archive" class="mdb btn btn-outline-info float-right"><fa icon="history" fixed-width /> {{ $t('archive') }}</button>
                 </div>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="row m-0 p-0 col-md-12">
                     <div class="onlyprint fixed-bottom">
                         <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>

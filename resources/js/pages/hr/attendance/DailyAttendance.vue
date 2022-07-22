@@ -152,10 +152,10 @@
                     </b-table>
                 </div>                              
             </div>
-            <template v-slot:modal-header="">
+            <template v-slot:modal-header>
                 <h3>Individual Job Card for the Month of {{attendance_date | dateParse('YYYY-MM-DD') | dateFormat('MMMM-YYYY')}}</h3>
             </template>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <div class="onlyprint fixed-bottom">
                     <div class="mt-3 float-left ml-3 col-2 border-top border-dark text-center">{{$t('prepared_by')}}</div>
                     <div class="mt-3 float-left col-1"></div>

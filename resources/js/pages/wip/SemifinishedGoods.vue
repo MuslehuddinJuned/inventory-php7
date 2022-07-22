@@ -180,7 +180,7 @@
                             </div>
                                                             
                         </div>                        
-                        <template v-slot:modal-footer="">
+                        <template v-slot:modal-footer>
                             <button @click="save" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                             <button @click="hideModal" type="button" class="mdb btn btn-outline-mdb-color" data-dismiss="modal">{{$t('Close')}}</button>
                         </template>

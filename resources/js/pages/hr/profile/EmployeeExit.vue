@@ -289,7 +289,7 @@
                     </div>
                 </div>
             </div>
-            <template v-slot:modal-footer="">
+            <template v-slot:modal-footer>
                 <button @click="$refs['dataView'].hide()" type="button" class="mdb btn btn-outline-mdb-color float-right" data-dismiss="modal">{{$t('Close')}}</button>
             </template>
         </b-modal>

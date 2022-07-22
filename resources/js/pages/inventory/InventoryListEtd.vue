@@ -116,7 +116,7 @@
                             <label for="etdDate" class="col-form-label mr-2">{{ $t('ETD')}}</label>
                             <input type="date" class="form-control" v-model="etdDate">                                                            
                         </div>                        
-                        <template v-slot:modal-footer="">
+                        <template v-slot:modal-footer>
                             <button v-if="etdButton == 'hide'" @click="save('delete')" class="mdb btn btn-outline-danger" :disabled="disable">{{$t('delete')}}</button>
                             <button @click="save('edit')" class="mdb btn btn-outline-default" :disabled="disable"><b-icon icon="circle-fill" animation="throb" :class="loading"></b-icon> {{ buttonTitle }}</button>
                         </template>
