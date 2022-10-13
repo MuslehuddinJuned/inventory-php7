@@ -219,7 +219,7 @@
           <h3 class="mx-auto my-3">Please pay your monthly subscription fee ৳ 3,000 to stay connected</h3>
           <h1 id="timer_id" class="mx-auto my-5 bg-info rounded-pill px-5 py-3 text-white"></h1>
         </div>
-        <template v-slot:modal-footer="">
+        <template v-slot:modal-footer>
             <button @click="payNow" class="mdb btn btn-outline-default">Pay Now</button>
             <button @click="$refs['payment'].hide()" type="button" class="mdb btn btn-outline-mdb-color">{{$t('Close')}}</button>
         </template>
